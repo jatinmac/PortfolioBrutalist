@@ -1,0 +1,183 @@
+:root {
+  /* Colors */
+  --bg-primary: #09090b;       /* Deep rich dark zinc */
+  --bg-secondary: #121216;     /* Lighter container background */
+  --accent-color: #2563eb;     /* Electric blue accent */
+  --accent-rgb: 37, 99, 235;
+  --accent-glow: rgba(37, 99, 235, 0.2);
+  
+  --text-primary: #f4f4f5;     /* High contrast zinc */
+  --text-secondary: #a1a1aa;   /* Muted zinc */
+  --text-muted: #71717a;       /* Zinc-500 — WCAG AA compliant */
+  
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.16);
+
+  /* Navbar specific variables */
+  --nav-bg: rgba(15, 15, 20, 0.6);
+  --nav-border: rgba(255, 255, 255, 0.08);
+  --nav-pill-bg: rgba(255, 255, 255, 0.07);
+  --nav-pill-border: rgba(255, 255, 255, 0.12);
+  --navbar-text-shadow: rgba(255, 255, 255, 0.5);
+  
+  /* Fonts */
+  --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  
+  /* Transitions */
+  --transition-spring: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:root.light {
+  --bg-primary: #f8fafc;       /* Clean light slate/zinc background */
+  --bg-secondary: #ffffff;     /* Bright card background */
+  --accent-color: #2563eb;     /* Keep the electric blue accent for consistency */
+  --accent-rgb: 37, 99, 235;
+  --accent-glow: rgba(37, 99, 235, 0.15);
+  
+  --text-primary: #0f172a;     /* Slate-900 for premium text contrast */
+  --text-secondary: #475569;   /* Slate-600 for muted description text */
+  --text-muted: #64748b;       /* Slate-500 — WCAG AA compliant */
+  
+  --border-color: rgba(15, 23, 42, 0.08); /* Muted slate border */
+  --border-hover: rgba(15, 23, 42, 0.15);
+
+  --nav-bg: rgba(255, 255, 255, 0.6);
+  --nav-border: rgba(15, 23, 42, 0.08);
+  --nav-pill-bg: rgba(15, 23, 42, 0.05);
+  --nav-pill-border: rgba(15, 23, 42, 0.08);
+  --navbar-text-shadow: rgba(15, 23, 42, 0.2);
+}
+
+/* Reset & Base Elements */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modern Utility Styles */
+.glass-panel {
+  background: rgba(18, 18, 22, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Smooth Focus States */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 4px;
+}
+
+/* Circular View Transition for Theme Switcher */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+/* Screen Reader Only — visually hidden, accessible to assistive tech */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip to Content Link — visible only on keyboard focus */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 1rem;
+  z-index: 999;
+  padding: 0.5rem 1rem;
+  background: var(--accent-color);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.skip-link:focus-visible {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Reduced Motion — shorten animations, don't remove them */
+@media (prefers-reduced-motion: reduce) {
+  .word-reveal {
+    animation-duration: 0.3s;
+    animation-delay: calc(var(--index) * 50ms);
+    filter: none;
+  }
+
+  .tab-pane.exit-up,
+  .tab-pane.enter-down {
+    animation-duration: 0.15s;
+  }
+
+  .bg-glow {
+    animation: none;
+  }
+
+  .navbar-pill-highlight {
+    transition-duration: 0.15s;
+  }
+
+  .modal-backdrop {
+    animation-duration: 0.15s;
+  }
+
+  .modal-content {
+    animation-duration: 0.15s;
+  }
+
+  .app-footer {
+    animation-duration: 0.3s;
+    animation-delay: 0.2s;
+  }
+
+  .pong-paddle,
+  .pong-ball,
+  .home-heading.is-hit {
+    animation-duration: 0.01ms;
+  }
+}

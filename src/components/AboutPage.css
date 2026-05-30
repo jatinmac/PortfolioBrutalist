@@ -1,0 +1,34 @@
+/* About-specific container and grid — shared item styles in bento.css */
+
+.about-bento-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 1 / 1;
+  margin: 2rem auto;
+  box-sizing: border-box;
+}
+
+.about-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 1rem;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .about-bento-container {
+    max-width: 90vw;
+    aspect-ratio: auto;
+  }
+
+  .about-bento-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 1rem;
+  }
+}

@@ -1,0 +1,199 @@
+.navbar-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 100;
+  pointer-events: none;
+  /* Let clicks pass through the header container */
+}
+
+/* Wrapper to hold capsule and resume button side-by-side */
+.navbar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  /* Exactly 16px gap on the right of the tab group */
+  pointer-events: auto;
+}
+
+.navbar-container {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  padding: 0.25rem;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--nav-border);
+  border-radius: 12px;
+
+  /* 3D perspective settings */
+  perspective: 800px;
+  transform-style: preserve-3d;
+}
+
+/* Tablist wrapper — invisible to layout */
+.navbar-container [role="tablist"] {
+  display: contents;
+}
+
+/* Sliding Pill Highlight with 3D Pivot Flip */
+.navbar-pill-highlight {
+  position: absolute;
+  border-radius: 8px;
+  background: var(--nav-pill-bg);
+  border: 1px solid var(--nav-pill-border);
+  z-index: 1;
+  pointer-events: none;
+
+  /* 
+    3D properties for flipping.
+  */
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+  will-change: transform;
+  transform-origin: center center;
+
+  /* Transitions for moving and flipping */
+  transition:
+    left 0.42s cubic-bezier(0.25, 1, 0.5, 1),
+    top 0.42s cubic-bezier(0.25, 1, 0.5, 1),
+    width 0.42s cubic-bezier(0.25, 1, 0.5, 1),
+    height 0.42s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.42s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Resume Button external to tab group */
+.navbar-resume-btn {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  /* White text */
+  text-decoration: none;
+  background: var(--accent-color);
+  /* Solid electric blue background */
+  border: 1px solid var(--accent-color);
+  min-height: 40px;
+  /* Matches tab button minimum height */
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
+  /* Matches tab button padding */
+  border-radius: 8px;
+  /* Matches tab button rounded pill shape */
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.navbar-resume-btn:hover {
+  background: #1d4ed8;
+  /* Slightly darker blue */
+  color: #ffffff;
+  /* Remains white text */
+  border-color: #1d4ed8;
+
+}
+
+.navbar-resume-btn:active {
+  transform: scale(0.96);
+}
+
+/* Individual Tab Button */
+.navbar-tab-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 9999px;
+  transition: color 0.25s ease;
+  z-index: 2;
+  user-select: none;
+  /* Minimum touch target accessibility standard */
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.navbar-tab-btn.is-active {
+  color: var(--text-primary);
+  text-shadow: 0 0 1px var(--navbar-text-shadow);
+}
+
+/* Micro-interaction: tiny tap squash effect */
+.navbar-tab-btn:active {
+  transform: scale(0.96);
+  transition: transform 0.1s ease;
+}
+
+.navbar-tab-btn:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Container for Resume and Theme Switcher */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  /* Exactly 24px gap on the right of the resume button */
+}
+
+/* Responsive adjustment for small viewports */
+@media (max-width: 768px) {
+  .navbar-actions {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .navbar-actions {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-header {
+    padding: 1rem 0.75rem;
+  }
+
+  .navbar-wrapper {
+    gap: 0.5rem;
+    max-width: 100%;
+  }
+
+  .navbar-tab-btn {
+    padding: 0.5rem 0.55rem;
+    font-size: 0.64rem;
+  }
+
+  .navbar-resume-btn {
+    min-height: 40px;
+    padding: 0.5rem 0.65rem;
+    font-size: 0.64rem;
+  }
+}
