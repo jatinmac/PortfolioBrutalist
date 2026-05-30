@@ -3,6 +3,8 @@ import { playClickSound } from '../utils/sound';
 import './Navbar.css';
 
 const TABS = ['Home', 'About', 'Work', 'Contact'];
+const RESUME_PDF_PATH = '/Jatin%20Davis%20Resume%20JDR%20.pdf';
+const RESUME_DRIVE_URL = 'https://drive.google.com/file/d/1-zqfQ3X3NTgxAEKJag8ebzWExW7-ngC0/view?usp=sharing';
 
 export default function Navbar({ activeTab, setActiveTab }) {
   const [pillStyle, setPillStyle] = useState({});
@@ -78,6 +80,11 @@ export default function Navbar({ activeTab, setActiveTab }) {
     }
   };
 
+  const handleResumeClick = () => {
+    playClickSound();
+    window.open(RESUME_DRIVE_URL, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <header className="navbar-header">
       <div className="navbar-wrapper">
@@ -116,11 +123,10 @@ export default function Navbar({ activeTab, setActiveTab }) {
         <div className="navbar-actions">
           {/* Resume Button */}
           <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+            href={RESUME_PDF_PATH}
+            download="Jatin Davis Resume.pdf"
             className="navbar-resume-btn"
-            onClick={() => playClickSound()}
+            onClick={handleResumeClick}
           >
             Resume
           </a>
