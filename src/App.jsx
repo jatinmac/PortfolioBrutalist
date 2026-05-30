@@ -15,7 +15,7 @@ const REDUCED_WORD_STAGGER_MS = 50;
 const PONG_START_BUFFER_MS = 600;
 const BALL_SIZE = 18;
 
-function HomeHero({ headingWords }) {
+function HomeHero({ headingWords, onViewWork }) {
   const [pongActive, setPongActive] = useState(false);
   const [ballPosition, setBallPosition] = useState({ x: 24, y: 24 });
   const [headingHit, setHeadingHit] = useState(false);
@@ -199,22 +199,38 @@ function HomeHero({ headingWords }) {
           />
         </>
       )}
-      <h1
-        ref={headingRef}
-        className={`home-heading ${headingHit ? 'is-hit' : ''}`}
-      >
-        {headingWords.map((word, index) => (
-          <Fragment key={index}>
-            <span
-              className={`word-reveal ${hitWordIndex === index ? 'word-is-hit' : ''}`}
-              style={{ '--index': index }}
-            >
-              {word}
-            </span>
-            {index < headingWords.length - 1 && ' '}
-          </Fragment>
-        ))}
-      </h1>
+      <div className="home-hero-text">
+        <span className="home-overheading">Hi, i'm Jatin Davis.</span>
+        <h1
+          ref={headingRef}
+          className={`home-heading ${headingHit ? 'is-hit' : ''}`}
+        >
+          {headingWords.map((word, index) => (
+            <Fragment key={index}>
+              <span
+                className={`word-reveal ${hitWordIndex === index ? 'word-is-hit' : ''}`}
+                style={{ '--index': index }}
+              >
+                {word}
+              </span>
+              {index < headingWords.length - 1 && ' '}
+            </Fragment>
+          ))}
+        </h1>
+        <p
+          className="home-subheading"
+          style={{ '--sub-delay': `${headingWords.length * 400 + 800}ms` }}
+        >
+          Build and launched Quilo chrome ext with 600 users and youtube channel to 1mn+ views.
+        </p>
+        <button
+          onClick={onViewWork}
+          className="home-cta-btn"
+          style={{ '--cta-delay': `${headingWords.length * 400 + 1100}ms` }}
+        >
+          <span>View Work</span>
+        </button>
+      </div>
     </div>
   );
 }
@@ -232,7 +248,7 @@ export default function App() {
   const [soundEnabled, setSoundEnabledState] = useState(() => getSoundEnabled());
 
   const headingWords = useMemo(() => {
-    return "Designer and builder using product thinking and user centered design to build shippable deliverables and products.".split(" ");
+    return "Product design builder with 3+ yrs of experience, using agentic ai and workflows to build shippable deliverables and products. Worked in b2b and b2c. Prev. Maruti Suzuki.".split(" ");
   }, []);
 
   const handleToggleSound = useCallback(() => {
@@ -331,7 +347,7 @@ export default function App() {
   const renderTabContent = useCallback((tabName) => {
     switch (tabName) {
       case 'Home':
-        return <HomeHero headingWords={headingWords} />;
+        return <HomeHero headingWords={headingWords} onViewWork={() => handleTabChange('Work')} />;
       case 'About':
         return <AboutPage />;
       case 'Work':
@@ -341,7 +357,7 @@ export default function App() {
       default:
         return null;
     }
-  }, [headingWords]);
+  }, [headingWords, handleTabChange]);
 
   const renderContent = () => {
     if (prevTab) {

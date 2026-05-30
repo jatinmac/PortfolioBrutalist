@@ -30,7 +30,7 @@ export default function ContactPage() {
           <span className="bento-tag">Email</span>
           <button
             className="corner-link-btn"
-            onClick={() => copyToClipboard('jatin.davis@gmail.com', 'email')}
+            onClick={() => copyToClipboard('jatindavis5@gmail.com', 'email')}
             aria-label="Copy email address"
           >
             {copiedEmail ? <Check size={14} /> : <Copy size={14} />}
@@ -57,7 +57,7 @@ export default function ContactPage() {
           <span className="bento-tag">Phone</span>
           <button
             className="corner-link-btn"
-            onClick={() => copyToClipboard('+91 99999 99999', 'phone')}
+            onClick={() => copyToClipboard('+91 8920152733', 'phone')}
             aria-label="Copy phone number"
           >
             {copiedPhone ? <Check size={14} /> : <Copy size={14} />}

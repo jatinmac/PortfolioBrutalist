@@ -175,6 +175,9 @@ export default function WorkPage() {
                   {/* Project name */}
                   <div className="project-card-footer">
                     <h3 id={titleId} className="project-name-active">{project.title}</h3>
+                    {project.subtitle && (
+                      <p className="project-subtitle-active">{project.subtitle}</p>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -218,12 +221,12 @@ export default function WorkPage() {
             {/* Modal Scrollable Wrapper */}
             <div className="modal-scroll-area">
               {/* Image box */}
-              <div
-                className="modal-image-box"
-                style={{ backgroundImage: `url(${activeProject.image})` }}
-                role="img"
-                aria-label={`${activeProject.title} project image`}
-              >
+              <div className="modal-image-box">
+                <img
+                  src={activeProject.image}
+                  alt={`${activeProject.title} project image`}
+                  className="modal-image"
+                />
                 <span className="modal-number-tag">{activeProject.number}</span>
               </div>
 

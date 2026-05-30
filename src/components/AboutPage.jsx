@@ -26,12 +26,12 @@ export default function AboutPage() {
           <span className="bento-placeholder">Product thinking.</span>
         </div>
         <div className="about-bento-item col-span-1">
-          <span className="bento-tag">Interests</span>
+          <span className="bento-tag">Tool</span>
           <div className="bento-icon"><Cpu size={14} strokeWidth={2.5} /></div>
           <span className="bento-placeholder">AI coding agents.</span>
         </div>
         <div className="about-bento-item col-span-1">
-          <span className="bento-tag">Impact</span>
+          <span className="bento-tag">Goal</span>
           <div className="bento-icon"><TrendingUp size={14} strokeWidth={2.5} /></div>
           <span className="bento-placeholder">Product metrics & impact.</span>
         </div>
@@ -45,7 +45,7 @@ export default function AboutPage() {
         <div className="about-bento-item col-span-2">
           <span className="bento-tag">Experience</span>
           <div className="bento-icon"><Briefcase size={14} strokeWidth={2.5} /></div>
-          <span className="bento-placeholder">Product designer at Double ai, Prev. Maruti Suzuki.</span>
+          <span className="bento-placeholder">Product designer at Double ai, Prev. Maruti Suzuki, colliers Int.</span>
         </div>
       </div>
     </div>
