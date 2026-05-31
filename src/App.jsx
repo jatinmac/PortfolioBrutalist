@@ -8,16 +8,24 @@ const AboutPage = lazy(() => import('./components/AboutPage'));
 const WorkPage = lazy(() => import('./components/WorkPage'));
 const ContactPage = lazy(() => import('./components/ContactPage'));
 
-const WORD_REVEAL_MS = 2000;
-const WORD_STAGGER_MS = 400;
-const REDUCED_WORD_REVEAL_MS = 300;
-const REDUCED_WORD_STAGGER_MS = 50;
+const HEADING_LINE_REVEAL_MS = 1450;
+const HEADING_LINE_STAGGER_MS = 220;
+const REDUCED_HEADING_LINE_REVEAL_MS = 260;
+const REDUCED_HEADING_LINE_STAGGER_MS = 45;
 const PONG_START_BUFFER_MS = 600;
-const BALL_SIZE = 18;
+const BALL_INITIAL_SIZE = 18;
+const BALL_MIN_SIZE = 2.5;
+const BALL_SHRINK_FACTOR = 0.88;
+const WALL_MIN_OPACITY = 0.08;
 
-function HomeHero({ headingWords, onViewWork }) {
+function HomeHero({ headingLines, onViewWork }) {
   const [pongActive, setPongActive] = useState(false);
   const [ballPosition, setBallPosition] = useState({ x: 24, y: 24 });
+  const [ballSize, setBallSize] = useState(BALL_INITIAL_SIZE);
+  const [ballVisible, setBallVisible] = useState(true);
+  const [ballVanishing, setBallVanishing] = useState(false);
+  const [wallOpacity, setWallOpacity] = useState(1);
+  const [gameComplete, setGameComplete] = useState(false);
   const [headingHit, setHeadingHit] = useState(false);
   const [hitWordIndex, setHitWordIndex] = useState(null);
   const containerRef = useRef(null);
@@ -27,26 +35,74 @@ function HomeHero({ headingWords, onViewWork }) {
     y: 24,
     vx: 178,
     vy: 132,
+    size: BALL_INITIAL_SIZE,
+    visible: true,
     lastTime: 0,
   });
   const headingHitTimerRef = useRef(null);
   const wordHitTimerRef = useRef(null);
+  const ballVanishTimerRef = useRef(null);
+  const lineWords = useMemo(() => {
+    let globalIndex = 0;
+
+    return headingLines.map((line, lineIndex) => (
+      line.split(' ').map((word, wordIndex) => ({
+        globalIndex: globalIndex++,
+        key: `${lineIndex}-${wordIndex}`,
+        word,
+      }))
+    ));
+  }, [headingLines]);
+  const headingRevealTotalMs = (
+    (headingLines.length - 1) * HEADING_LINE_STAGGER_MS
+    + HEADING_LINE_REVEAL_MS
+  );
 
   useEffect(() => {
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const revealMs = reduceMotionQuery.matches ? REDUCED_WORD_REVEAL_MS : WORD_REVEAL_MS;
-    const staggerMs = reduceMotionQuery.matches ? REDUCED_WORD_STAGGER_MS : WORD_STAGGER_MS;
-    const totalRevealMs = (headingWords.length - 1) * staggerMs + revealMs + PONG_START_BUFFER_MS;
+    const revealMs = reduceMotionQuery.matches ? REDUCED_HEADING_LINE_REVEAL_MS : HEADING_LINE_REVEAL_MS;
+    const staggerMs = reduceMotionQuery.matches ? REDUCED_HEADING_LINE_STAGGER_MS : HEADING_LINE_STAGGER_MS;
+    const totalRevealMs = (headingLines.length - 1) * staggerMs + revealMs + PONG_START_BUFFER_MS;
     const startTimer = window.setTimeout(() => setPongActive(true), totalRevealMs);
 
     return () => window.clearTimeout(startTimer);
-  }, [headingWords.length]);
+  }, [headingLines.length]);
 
   useEffect(() => {
     if (!pongActive) return undefined;
 
     let animationFrame;
     const ballState = ballRef.current;
+
+    const registerBallHit = () => {
+      if (!ballState.visible) return;
+
+      const nextSize = ballState.size * BALL_SHRINK_FACTOR;
+      const nextWallOpacity = Math.max(
+        WALL_MIN_OPACITY,
+        nextSize / BALL_INITIAL_SIZE
+      );
+
+      if (nextSize <= BALL_MIN_SIZE) {
+        ballState.visible = false;
+        ballState.size = 0;
+        setBallSize(0);
+        setBallVanishing(true);
+        setWallOpacity(0);
+        if (ballVanishTimerRef.current) {
+          window.clearTimeout(ballVanishTimerRef.current);
+        }
+        ballVanishTimerRef.current = window.setTimeout(() => {
+          setBallVisible(false);
+          setGameComplete(true);
+        }, 320);
+        return;
+      }
+
+      ballState.size = nextSize;
+      setBallSize(nextSize);
+      setWallOpacity(nextWallOpacity);
+    };
 
     const pulseHeading = () => {
       setHeadingHit(true);
@@ -61,8 +117,8 @@ function HomeHero({ headingWords, onViewWork }) {
       if (!wordNodes?.length) return;
 
       const ballCenter = {
-        x: ballBox.left + BALL_SIZE / 2,
-        y: ballBox.top + BALL_SIZE / 2,
+        x: ballBox.left + ballState.size / 2,
+        y: ballBox.top + ballState.size / 2,
       };
 
       const hitIndex = Array.from(wordNodes).findIndex((wordNode) => {
@@ -108,6 +164,9 @@ function HomeHero({ headingWords, onViewWork }) {
       }
 
       const ball = ballState;
+      if (!ball.visible) return;
+
+      const currentBallSize = ball.size;
       const delta = ball.lastTime ? Math.min((time - ball.lastTime) / 1000, 0.04) : 0;
       ball.lastTime = time;
 
@@ -122,22 +181,25 @@ function HomeHero({ headingWords, onViewWork }) {
 
       let nextX = ball.x + ball.vx * delta;
       let nextY = ball.y + ball.vy * delta;
+      let hitThisFrame = false;
 
-      if (nextX <= 0 || nextX + BALL_SIZE >= containerRect.width) {
+      if (nextX <= 0 || nextX + currentBallSize >= containerRect.width) {
         ball.vx *= -1;
-        nextX = Math.max(0, Math.min(nextX, containerRect.width - BALL_SIZE));
+        nextX = Math.max(0, Math.min(nextX, containerRect.width - currentBallSize));
+        hitThisFrame = true;
       }
 
-      if (nextY <= 0 || nextY + BALL_SIZE >= containerRect.height) {
+      if (nextY <= 0 || nextY + currentBallSize >= containerRect.height) {
         ball.vy *= -1;
-        nextY = Math.max(0, Math.min(nextY, containerRect.height - BALL_SIZE));
+        nextY = Math.max(0, Math.min(nextY, containerRect.height - currentBallSize));
+        hitThisFrame = true;
       }
 
       const ballBox = {
         left: nextX,
-        right: nextX + BALL_SIZE,
+        right: nextX + currentBallSize,
         top: nextY,
-        bottom: nextY + BALL_SIZE,
+        bottom: nextY + currentBallSize,
       };
       const overlapsHeading = (
         ballBox.right >= headingBox.left
@@ -147,25 +209,31 @@ function HomeHero({ headingWords, onViewWork }) {
       );
 
       if (overlapsHeading) {
-        const previousBottom = ball.y + BALL_SIZE;
+        const previousBottom = ball.y + currentBallSize;
         const previousTop = ball.y;
         const hitFromAbove = previousBottom <= headingBox.top;
         const hitFromBelow = previousTop >= headingBox.bottom;
 
         if (hitFromAbove || hitFromBelow) {
           ball.vy *= -1;
-          nextY = hitFromAbove ? headingBox.top - BALL_SIZE : headingBox.bottom;
+          nextY = hitFromAbove ? headingBox.top - currentBallSize : headingBox.bottom;
         } else {
           ball.vx *= -1;
-          nextX = ball.x < headingBox.left ? headingBox.left - BALL_SIZE : headingBox.right;
+          nextX = ball.x < headingBox.left ? headingBox.left - currentBallSize : headingBox.right;
         }
 
+        hitThisFrame = true;
         pulseHeading();
         fadeHitWord(ballBox, containerRect);
       }
 
-      ball.x = Math.max(0, Math.min(nextX, containerRect.width - BALL_SIZE));
-      ball.y = Math.max(0, Math.min(nextY, containerRect.height - BALL_SIZE));
+      if (hitThisFrame) {
+        registerBallHit();
+      }
+
+      const nextBallSize = ball.size;
+      ball.x = Math.max(0, Math.min(nextX, containerRect.width - nextBallSize));
+      ball.y = Math.max(0, Math.min(nextY, containerRect.height - nextBallSize));
       setBallPosition({ x: ball.x, y: ball.y });
       animationFrame = window.requestAnimationFrame(tick);
     };
@@ -180,23 +248,33 @@ function HomeHero({ headingWords, onViewWork }) {
       if (wordHitTimerRef.current) {
         window.clearTimeout(wordHitTimerRef.current);
       }
+      if (ballVanishTimerRef.current) {
+        window.clearTimeout(ballVanishTimerRef.current);
+      }
       ballState.lastTime = 0;
     };
   }, [pongActive]);
 
   return (
-    <div className={`home-container ${pongActive ? 'pong-is-active' : ''}`} ref={containerRef}>
+    <div
+      className={`home-container ${pongActive ? 'pong-is-active' : ''}`}
+      ref={containerRef}
+      style={{ '--pong-wall-opacity': wallOpacity }}
+    >
       {pongActive && (
         <>
           <span className="pong-paddle pong-paddle-left" aria-hidden="true" />
           <span className="pong-paddle pong-paddle-right" aria-hidden="true" />
-          <span
-            className="pong-ball"
-            aria-hidden="true"
-            style={{
-              transform: `translate3d(${ballPosition.x}px, ${ballPosition.y}px, 0)`,
-            }}
-          />
+          {ballVisible && (
+            <span
+              className={`pong-ball ${ballVanishing ? 'is-vanishing' : ''}`}
+              aria-hidden="true"
+              style={{
+                '--ball-size': `${ballSize}px`,
+                transform: `translate3d(${ballPosition.x}px, ${ballPosition.y}px, 0)`,
+              }}
+            />
+          )}
         </>
       )}
       <div className="home-hero-text">
@@ -205,28 +283,39 @@ function HomeHero({ headingWords, onViewWork }) {
           ref={headingRef}
           className={`home-heading ${headingHit ? 'is-hit' : ''}`}
         >
-          {headingWords.map((word, index) => (
-            <Fragment key={index}>
+          {lineWords.map((words, lineIndex) => (
+            <span
+              className="heading-line"
+              key={lineIndex}
+            >
               <span
-                className={`word-reveal ${hitWordIndex === index ? 'word-is-hit' : ''}`}
-                style={{ '--index': index }}
+                className="heading-line-content"
+                style={{ '--line-index': lineIndex }}
               >
-                {word}
+                {words.map(({ globalIndex, key, word }, wordIndex) => (
+                  <Fragment key={key}>
+                    <span
+                      className={`word-reveal ${hitWordIndex === globalIndex ? 'word-is-hit' : ''} ${gameComplete && globalIndex % 2 === 0 ? 'word-is-highlighted' : ''}`}
+                    >
+                      {word}
+                    </span>
+                    {wordIndex < words.length - 1 && ' '}
+                  </Fragment>
+                ))}
               </span>
-              {index < headingWords.length - 1 && ' '}
-            </Fragment>
+            </span>
           ))}
         </h1>
         <p
           className="home-subheading"
-          style={{ '--sub-delay': `${headingWords.length * 400 + 800}ms` }}
+          style={{ '--sub-delay': `${headingRevealTotalMs + 500}ms` }}
         >
           Build and launched Quilo chrome ext with 600 users and youtube channel to 1mn+ views.
         </p>
         <button
           onClick={onViewWork}
           className="home-cta-btn"
-          style={{ '--cta-delay': `${headingWords.length * 400 + 1100}ms` }}
+          style={{ '--cta-delay': `${headingRevealTotalMs + 800}ms` }}
         >
           <span>View Work</span>
         </button>
@@ -247,8 +336,15 @@ export default function App() {
 
   const [soundEnabled, setSoundEnabledState] = useState(() => getSoundEnabled());
 
-  const headingWords = useMemo(() => {
-    return "Product design builder with 3+ yrs of experience, using agentic ai and workflows to build shippable deliverables and products. Worked in b2b and b2c. Prev. Maruti Suzuki.".split(" ");
+  const headingLines = useMemo(() => {
+    return [
+      'Product design builder',
+      'with 3+ yrs of experience.',
+      'Using agentic ai and workflows',
+      'to build shippable deliverables and products.',
+      'Worked in b2b and b2c.',
+      'Prev. Maruti Suzuki.',
+    ];
   }, []);
 
   const handleToggleSound = useCallback(() => {
@@ -347,17 +443,17 @@ export default function App() {
   const renderTabContent = useCallback((tabName) => {
     switch (tabName) {
       case 'Home':
-        return <HomeHero headingWords={headingWords} onViewWork={() => handleTabChange('Work')} />;
+        return <HomeHero headingLines={headingLines} onViewWork={() => handleTabChange('Work')} />;
       case 'About':
         return <AboutPage />;
       case 'Work':
-        return <WorkPage />;
+        return <WorkPage onNavigate={handleTabChange} />;
       case 'Contact':
         return <ContactPage />;
       default:
         return null;
     }
-  }, [headingWords, handleTabChange]);
+  }, [headingLines, handleTabChange]);
 
   const renderContent = () => {
     if (prevTab) {
