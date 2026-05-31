@@ -197,3 +197,21 @@
     font-size: 0.64rem;
   }
 }
+
+@media (max-width: 768px), (pointer: coarse) {
+  .navbar-container {
+    perspective: none;
+    transform-style: flat;
+  }
+
+  .navbar-pill-highlight {
+    transform: none !important;
+    transform-style: flat;
+    will-change: auto;
+    transition:
+      left 0.24s ease,
+      top 0.24s ease,
+      width 0.24s ease,
+      height 0.24s ease;
+  }
+}
