@@ -9,10 +9,31 @@ export default function WorkPage({ onNavigate }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [motionDirection, setMotionDirection] = useState('next');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tiltEnabled, setTiltEnabled] = useState(false);
   const modalRef = useRef(null);
   const triggerRef = useRef(null);
 
   const activeProject = PROJECTS[activeIndex];
+
+  useEffect(() => {
+    const hoverQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const updateTiltMode = () => setTiltEnabled(hoverQuery.matches);
+
+    updateTiltMode();
+    if (hoverQuery.addEventListener) {
+      hoverQuery.addEventListener('change', updateTiltMode);
+    } else {
+      hoverQuery.addListener(updateTiltMode);
+    }
+
+    return () => {
+      if (hoverQuery.removeEventListener) {
+        hoverQuery.removeEventListener('change', updateTiltMode);
+      } else {
+        hoverQuery.removeListener(updateTiltMode);
+      }
+    };
+  }, []);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -169,8 +190,8 @@ export default function WorkPage({ onNavigate }) {
                   setActiveIndex(index);
                 }
               }}
-              onPointerMove={handleCardPointerMove}
-              onPointerLeave={handleCardPointerLeave}
+              onPointerMove={tiltEnabled ? handleCardPointerMove : undefined}
+              onPointerLeave={tiltEnabled ? handleCardPointerLeave : undefined}
               onKeyDown={!isActive ? (e) => handleCardKeyDown(e, index) : undefined}
               role={isActive ? 'group' : 'button'}
               tabIndex={isActive ? undefined : 0}

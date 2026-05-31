@@ -34,7 +34,11 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.12s ease;
 }
 
 .nav-btn:focus:not(:focus-visible) {
@@ -100,7 +104,8 @@
     transform 0.58s cubic-bezier(0.16, 1, 0.3, 1),
     background-color 0.3s,
     border-color 0.3s;
-  will-change: flex, height, transform;
+  contain: layout paint;
+  will-change: transform;
 }
 
 :root.light .project-card {
@@ -213,7 +218,11 @@
   color: var(--text-secondary);
   cursor: pointer;
   z-index: 5;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.12s ease;
   transform: translateZ(34px);
 }
 
@@ -340,6 +349,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  contain: layout paint;
   animation: modalScaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -594,7 +604,10 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.12s ease;
   box-sizing: border-box;
 }
 
@@ -631,7 +644,11 @@
   font-weight: 500;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.12s ease;
   box-sizing: border-box;
 }
 
@@ -908,5 +925,86 @@
     flex-direction: column;
     gap: 0.75rem;
     align-items: center;
+  }
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+  .projects-grid {
+    perspective: none;
+  }
+
+  .project-card {
+    background: rgba(18, 18, 22, 0.58);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transform: none;
+    transform-style: flat;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+    will-change: auto;
+  }
+
+  :root.light .project-card {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .expanded-card-content,
+  .project-card-footer,
+  .project-image-black-box {
+    animation: none;
+  }
+
+  .project-image-container,
+  .project-card-footer,
+  .expand-corner-btn {
+    transform: none;
+  }
+
+  .project-image-black-box,
+  .project-card.is-expanded:hover .project-image-black-box {
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+
+  .nav-btn,
+  .expand-corner-btn,
+  .modal-close-btn,
+  .modal-backdrop,
+  .modal-sticky-tldr-header,
+  .live-app-btn-secondary {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .nav-btn,
+  .expand-corner-btn,
+  .live-app-btn-secondary {
+    background: rgba(18, 18, 22, 0.68);
+  }
+
+  .modal-backdrop {
+    background: rgba(0, 0, 0, 0.82);
+  }
+
+  .modal-close-btn {
+    background: rgba(18, 18, 22, 0.86);
+  }
+
+  .modal-sticky-tldr-header {
+    background: rgba(18, 18, 22, 0.98);
+  }
+
+  :root.light .nav-btn,
+  :root.light .expand-corner-btn,
+  :root.light .live-app-btn-secondary,
+  :root.light .modal-close-btn,
+  :root.light .modal-sticky-tldr-header {
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  :root.light .modal-backdrop {
+    background: rgba(15, 23, 42, 0.42);
   }
 }

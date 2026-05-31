@@ -8,7 +8,6 @@ export const PROJECTS = [
     role: 'Product Designer',
     year: '2026',
     tools: 'Figma, AI for research & flow, AI coding agents',
-    metric: '+35% Lead Gen',
     tags: ['0→1', 'Growth'],
     hook: 'Sales professionals lost 40% of leads due to response latency → We designed a cloned-voice AI twin agent that handles instant qualification, driving +35% lead generation.',
     context: {
@@ -27,20 +26,6 @@ export const PROJECTS = [
       ideation: 'Explored three directions: a wizard onboarding flow, an interactive text-to-speech tester, and a quick voice recorder with real-time audio feedback. Chose the quick voice recorder.',
       tradeoff: 'Engineers estimated 6 weeks to build an advanced noise-canceling algorithm. I simplified scope by designing visual "audio health" guidance that prompted users to speak in quiet spaces, saving 4 weeks of engineering.',
       iteration: 'Initial onboarding required users to read a 1-page script. We iterated to a 3-sentence high-vocal-range script, reducing setup abandonment by 45%.'
-    },
-    solution: {
-      screens: [
-        {
-          title: 'Vocal Recording Interface',
-          desc: 'Designed visual sound waves and audio health meters. This guides non-technical users to capture clean audio on the first try, reducing voice training retries by 62%.',
-          image: '/double-ai.webp'
-        },
-        {
-          title: 'AI Twin Customizer',
-          desc: 'Enables sales reps to configure agent personality, response speed, and custom call-to-actions, bridging the gap between automation and human-like personalization.',
-          image: '/double-ai.webp'
-        }
-      ]
     },
     impact: {
       quantitative: '+35% lead generation, -78% lead response latency, setup completion rate increased from 24% to 78%.',
@@ -109,15 +94,6 @@ export const PROJECTS = [
       tradeoff: 'Engineers pushed back on rendering 3D maps due to chipset heat limits. I designed a highly optimized 2D layout with vector assets, reducing CPU overhead by 35% while keeping UI modern.',
       iteration: 'Re-spaced visual layouts after testing with physical simulator rigs to ensure tap targets are easily reachable from the driver\'s seat angle.'
     },
-    solution: {
-      screens: [
-        {
-          title: 'Glanceable Widget Dashboard',
-          desc: 'Cards prioritize maps, media, and car status. High contrast states and text sizes make critical driving info readable within a 1.5-second glance.',
-          image: '/maruti-suzuki-smartplay-pro-x.webp'
-        }
-      ]
-    },
     impact: {
       quantitative: 'Shipped in 1M+ cars globally, 42% reduction in menu navigation time, 98% driver test satisfaction score.',
       qualitative: 'The touch targets are large and the visual layout feels intuitive even in heavy Bengaluru traffic. — Beta Tester'
@@ -173,15 +149,6 @@ export const PROJECTS = [
       ideation: 'Explored three visual strategies: 3D animated CAD models, schematic overlays on real race footage, and interactive comparison sliders. Settled on schematic overlays.',
       tradeoff: 'Creating 3D models for every race took 60 hours per video. I optimized the pipeline by building a custom vector asset library, reducing video production time to 15 hours.',
       iteration: 'Tested different thumbnail typography scales and colors, proving that high-contrast display fonts increased Click-Through-Rate (CTR) by 4.5%.'
-    },
-    solution: {
-      screens: [
-        {
-          title: 'Thumbnail & Branding System',
-          desc: 'Designed a clean brand identity system and thumbnail templates prioritizing typography hierarchy, boosting organic reach on YouTube.',
-          image: '/formula-1-design-youtube.webp'
-        }
-      ]
     },
     impact: {
       quantitative: '1M+ views, 15k+ subscribers, 8.2% average CTR (industry average is 4%), 68% average video retention rate.',
@@ -239,15 +206,6 @@ export const PROJECTS = [
       tradeoff: 'Instead of building a complex cloud sync system, I leveraged Chrome\'s native local storage, saving development time and eliminating user privacy concerns.',
       iteration: 'Iterated the search behavior from a traditional submit button to instant fuzzy search as the user types, reducing prompt retrieval time to under 1.5 seconds.'
     },
-    solution: {
-      screens: [
-        {
-          title: 'Contextual Extension Panel',
-          desc: 'Compact sidebar interface with search, copy-on-click, and categories. Integrates seamlessly next to ChatGPT and Claude interfaces.',
-          image: '/quilo.webp'
-        }
-      ]
-    },
     impact: {
       quantitative: '600+ active users, 12,000+ prompts saved, 92% week-over-week user retention.',
       qualitative: 'Quilo became my default companion panel. I no longer have to keep a messy Google Doc of prompt templates. — Product Manager at Colliers'
@@ -301,15 +259,6 @@ export const PROJECTS = [
       ideation: 'Penciled cluster layouts utilizing custom segment blocks. Coordinated with manufacturing to outline which dial locations were optimal for viewing angles through the steering wheel.',
       tradeoff: 'Manufacturing could only support 120 custom segments. We cut secondary warning icons (relocating them to standard LEDs) to free up segments for a large digital speed readout and live fuel economy meter.',
       iteration: 'Optimized display illumination and color filters to ensure absolute readability under direct summer sunlight.'
-    },
-    solution: {
-      screens: [
-        {
-          title: 'Segmented Screen Layout',
-          desc: 'Symmetric layout featuring high-contrast speedometer, gear indicator, and dynamic fuel gauge. High legibility segmented glyphs.',
-          image: '/u3k-instrument-cluster.webp'
-        }
-      ]
     },
     impact: {
       quantitative: 'Adopted across 3 upcoming entry-level car models, kept manufacturing cost at Rs 2,850 (under the Rs 3,000 target), 94% approval rating in clinics.',

@@ -4,9 +4,13 @@ import Navbar from './components/Navbar';
 import { playTabChangeSound, playThemeToggleSound, getSoundEnabled, setSoundEnabled } from './utils/sound';
 import './App.css';
 
-const AboutPage = lazy(() => import('./components/AboutPage'));
-const WorkPage = lazy(() => import('./components/WorkPage'));
-const ContactPage = lazy(() => import('./components/ContactPage'));
+const preloadAboutPage = () => import('./components/AboutPage');
+const preloadWorkPage = () => import('./components/WorkPage');
+const preloadContactPage = () => import('./components/ContactPage');
+
+const AboutPage = lazy(preloadAboutPage);
+const WorkPage = lazy(preloadWorkPage);
+const ContactPage = lazy(preloadContactPage);
 
 const HEADING_LINE_REVEAL_MS = 1450;
 const HEADING_LINE_STAGGER_MS = 220;
@@ -17,6 +21,7 @@ const BALL_INITIAL_SIZE = 18;
 const BALL_MIN_SIZE = 2.5;
 const BALL_SHRINK_FACTOR = 0.88;
 const WALL_MIN_OPACITY = 0.08;
+const MOBILE_PERFORMANCE_QUERY = '(max-width: 768px), (pointer: coarse)';
 
 function HomeHero({ headingLines, onViewWork }) {
   const [pongActive, setPongActive] = useState(false);
@@ -60,6 +65,11 @@ function HomeHero({ headingLines, onViewWork }) {
 
   useEffect(() => {
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mobilePerformanceQuery = window.matchMedia(MOBILE_PERFORMANCE_QUERY);
+    if (reduceMotionQuery.matches || mobilePerformanceQuery.matches) {
+      return undefined;
+    }
+
     const revealMs = reduceMotionQuery.matches ? REDUCED_HEADING_LINE_REVEAL_MS : HEADING_LINE_REVEAL_MS;
     const staggerMs = reduceMotionQuery.matches ? REDUCED_HEADING_LINE_STAGGER_MS : HEADING_LINE_STAGGER_MS;
     const totalRevealMs = (headingLines.length - 1) * staggerMs + revealMs + PONG_START_BUFFER_MS;
@@ -363,6 +373,22 @@ export default function App() {
     }
   }, []); // Run once on mount
 
+  useEffect(() => {
+    const preloadLazyPages = () => {
+      preloadWorkPage();
+      preloadAboutPage();
+      preloadContactPage();
+    };
+
+    if ('requestIdleCallback' in window) {
+      const idleId = window.requestIdleCallback(preloadLazyPages, { timeout: 2500 });
+      return () => window.cancelIdleCallback(idleId);
+    }
+
+    const preloadTimer = window.setTimeout(preloadLazyPages, 1600);
+    return () => window.clearTimeout(preloadTimer);
+  }, []);
+
   const toggleTheme = useCallback((e, newTheme) => {
     if (theme === newTheme) return;
     playThemeToggleSound();
@@ -379,7 +405,8 @@ export default function App() {
     };
 
     const isAppearanceTransition = document.startViewTransition
-      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      && !window.matchMedia(MOBILE_PERFORMANCE_QUERY).matches;
 
     if (!isAppearanceTransition) {
       changeThemeDOM();
