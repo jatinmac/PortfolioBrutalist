@@ -228,6 +228,13 @@ export default function WorkPage({ onNavigate }) {
                     {project.subtitle && (
                       <p className="project-subtitle-active">{project.subtitle}</p>
                     )}
+                    {project.tags && (
+                      <div className="project-card-tags">
+                        {project.tags.map((tag) => (
+                          <span key={tag} className="project-card-tag">{tag}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -280,26 +287,6 @@ export default function WorkPage({ onNavigate }) {
                 <span className="modal-number-tag">{activeProject.number}</span>
               </div>
 
-              {/* Sticky TL;DR Header */}
-              <div className="modal-sticky-tldr-header">
-                <div className="tldr-item">
-                  <span className="tldr-label">Role</span>
-                  <span className="tldr-val">{activeProject.role}</span>
-                </div>
-                <div className="tldr-item">
-                  <span className="tldr-label">Timeline</span>
-                  <span className="tldr-val">{activeProject.context.timeline || activeProject.year}</span>
-                </div>
-                <div className="tldr-item">
-                  <span className="tldr-label">Team</span>
-                  <span className="tldr-val">{activeProject.context.team}</span>
-                </div>
-                <div className="tldr-item">
-                  <span className="tldr-label">Outcome</span>
-                  <span className="tldr-val">{activeProject.metric || 'Shipped'}</span>
-                </div>
-              </div>
-
               {/* Modal Body */}
               <div className="modal-body">
                 <div className="modal-title-row">
@@ -321,9 +308,56 @@ export default function WorkPage({ onNavigate }) {
                   ) : null}
                 </div>
 
+                {activeProject.context && (
+                  <>
+                    <div className="modal-meta-grid">
+                      <div className="meta-item">
+                        <span className="meta-label">Company</span>
+                        <span className="meta-val">{activeProject.context.company}</span>
+                      </div>
+                      <div className="meta-item">
+                        <span className="meta-label">Role</span>
+                        <span className="meta-val">{activeProject.context.role || activeProject.role}</span>
+                      </div>
+                      <div className="meta-item">
+                        <span className="meta-label">Timeline</span>
+                        <span className="meta-val">{activeProject.context.timeline || activeProject.year}</span>
+                      </div>
+                      <div className="meta-item">
+                        <span className="meta-label">Team</span>
+                        <span className="meta-val">{activeProject.context.team}</span>
+                      </div>
+                      {activeProject.metric && (
+                        <div className="meta-item">
+                          <span className="meta-label">Outcome</span>
+                          <span className="meta-val">{activeProject.metric}</span>
+                        </div>
+                      )}
+                      {activeProject.context.constraints && (
+                        <div className="meta-item col-span-full">
+                          <span className="meta-label">Constraints</span>
+                          <span className="meta-val">{activeProject.context.constraints}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="modal-divider" />
+                  </>
+                )}
+
                 {/* The Hook */}
                 <div className="modal-description-section">
                   <p>{activeProject.hook}</p>
+                </div>
+
+                <div className="modal-divider" />
+
+                {/* Project Overview */}
+                <div className="modal-description-section">
+                  <h4>Project Overview</h4>
+                  <p>{activeProject.description}</p>
+                  {activeProject.details && (
+                    <p className="modal-body-details">{activeProject.details}</p>
+                  )}
                 </div>
 
                 <div className="modal-divider" />
