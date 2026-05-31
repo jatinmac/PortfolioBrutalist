@@ -143,9 +143,9 @@ a:focus-visible, button:focus-visible {
 
 /* Reduced Motion — shorten animations, don't remove them */
 @media (prefers-reduced-motion: reduce) {
-  .word-reveal {
-    animation-duration: 0.3s;
-    animation-delay: calc(var(--index) * 50ms);
+  .heading-line-content {
+    animation-duration: 0.26s;
+    animation-delay: calc(var(--line-index) * 45ms);
     filter: none;
   }
 

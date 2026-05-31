@@ -5,8 +5,9 @@ import { playClickSound, playModalOpenSound, playModalCloseSound } from '../util
 import { PROJECTS } from '../data/projects';
 import './WorkPage.css';
 
-export default function WorkPage() {
+export default function WorkPage({ onNavigate }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [motionDirection, setMotionDirection] = useState('next');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
   const triggerRef = useRef(null);
@@ -79,11 +80,13 @@ export default function WorkPage() {
 
   const handlePrev = () => {
     playClickSound();
+    setMotionDirection('prev');
     setActiveIndex((prev) => (prev === 0 ? PROJECTS.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
     playClickSound();
+    setMotionDirection('next');
     setActiveIndex((prev) => (prev === PROJECTS.length - 1 ? 0 : prev + 1));
   };
 
@@ -92,14 +95,37 @@ export default function WorkPage() {
     setIsModalOpen(false);
   };
 
+  const handleNavigateToContact = () => {
+    handleCloseModal();
+    if (onNavigate) {
+      onNavigate('Contact');
+    }
+  };
+
   const handleCardKeyDown = (e, index) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       if (index !== activeIndex) {
         playClickSound();
+        setMotionDirection(index > activeIndex ? 'next' : 'prev');
         setActiveIndex(index);
       }
     }
+  };
+
+  const handleCardPointerMove = (e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const pointerX = ((e.clientX - rect.left) / rect.width - 0.5).toFixed(3);
+    const pointerY = ((e.clientY - rect.top) / rect.height - 0.5).toFixed(3);
+
+    card.style.setProperty('--pointer-x', pointerX);
+    card.style.setProperty('--pointer-y', pointerY);
+  };
+
+  const handleCardPointerLeave = (e) => {
+    e.currentTarget.style.setProperty('--pointer-x', '0');
+    e.currentTarget.style.setProperty('--pointer-y', '0');
   };
 
   return (
@@ -127,7 +153,7 @@ export default function WorkPage() {
       </div>
 
       {/* Projects Accordion Grid */}
-      <div className="projects-grid">
+      <div className={`projects-grid motion-${motionDirection}`}>
         {PROJECTS.map((project, index) => {
           const isActive = index === activeIndex;
           const titleId = `project-title-${project.id}`;
@@ -139,9 +165,12 @@ export default function WorkPage() {
               onClick={() => {
                 if (!isActive) {
                   playClickSound();
+                  setMotionDirection(index > activeIndex ? 'next' : 'prev');
                   setActiveIndex(index);
                 }
               }}
+              onPointerMove={handleCardPointerMove}
+              onPointerLeave={handleCardPointerLeave}
               onKeyDown={!isActive ? (e) => handleCardKeyDown(e, index) : undefined}
               role={isActive ? 'group' : 'button'}
               tabIndex={isActive ? undefined : 0}
@@ -149,7 +178,7 @@ export default function WorkPage() {
               aria-label={!isActive ? `View ${project.title}` : undefined}
             >
               {isActive ? (
-                <div className="expanded-card-content">
+                <div className="expanded-card-content" key={`expanded-${project.id}`}>
                   {/* Image container */}
                   <div className="project-image-container">
                     <div
@@ -230,6 +259,26 @@ export default function WorkPage() {
                 <span className="modal-number-tag">{activeProject.number}</span>
               </div>
 
+              {/* Sticky TL;DR Header */}
+              <div className="modal-sticky-tldr-header">
+                <div className="tldr-item">
+                  <span className="tldr-label">Role</span>
+                  <span className="tldr-val">{activeProject.role}</span>
+                </div>
+                <div className="tldr-item">
+                  <span className="tldr-label">Timeline</span>
+                  <span className="tldr-val">{activeProject.context.timeline || activeProject.year}</span>
+                </div>
+                <div className="tldr-item">
+                  <span className="tldr-label">Team</span>
+                  <span className="tldr-val">{activeProject.context.team}</span>
+                </div>
+                <div className="tldr-item">
+                  <span className="tldr-label">Outcome</span>
+                  <span className="tldr-val">{activeProject.metric || 'Shipped'}</span>
+                </div>
+              </div>
+
               {/* Modal Body */}
               <div className="modal-body">
                 <div className="modal-title-row">
@@ -251,39 +300,71 @@ export default function WorkPage() {
                   ) : null}
                 </div>
 
-                {/* Project Metadata Grid */}
-                <div className="modal-meta-grid">
-                  <div className="meta-item">
-                    <span className="meta-label">Role</span>
-                    <span className="meta-val">{activeProject.role}</span>
-                  </div>
-                  <div className="meta-item">
-                    <span className="meta-label">Year</span>
-                    <span className="meta-val">{activeProject.year}</span>
-                  </div>
-                  <div className="meta-item col-span-full">
-                    <span className="meta-label">Tools & Stack</span>
-                    <span className="meta-val">{activeProject.tools}</span>
-                  </div>
+                {/* The Hook */}
+                <div className="modal-description-section">
+                  <p>{activeProject.hook}</p>
                 </div>
 
                 <div className="modal-divider" />
 
-                {/* Project Description */}
+                {/* Problems Section */}
                 <div className="modal-description-section">
-                  <h4>Overview</h4>
-                  <p>{activeProject.description}</p>
-                  <p className="modal-body-details">{activeProject.details}</p>
+                  <h4>The Challenge</h4>
+                  <p><strong>Business Problem:</strong> {activeProject.problems.business}</p>
+                  <p><strong>User Problem:</strong> {activeProject.problems.user}</p>
                 </div>
 
-                {/* Work Done */}
+                <div className="modal-divider" />
+
+                {/* Worked On Section */}
                 <div className="modal-insights-section">
-                  <h4>Work</h4>
+                  <h4>Worked On</h4>
                   <ul>
                     {activeProject.work.map((item, i) => (
                       <li key={i}>{item}</li>
                     ))}
                   </ul>
+                </div>
+
+                <div className="modal-divider" />
+
+                {/* Process Section */}
+                <div className="modal-description-section">
+                  <h4>The Process</h4>
+                  <p><strong>Research & Discovery:</strong> {activeProject.process.research}</p>
+                  <p><strong>Ideation & Explorations:</strong> {activeProject.process.ideation}</p>
+                  <p><strong>Decision & Trade-offs:</strong> {activeProject.process.tradeoff}</p>
+                  <p><strong>Testing & Iteration:</strong> {activeProject.process.iteration}</p>
+                </div>
+
+                <div className="modal-divider" />
+
+                {/* Impact Section */}
+                <div className="modal-description-section">
+                  <h4>Impact</h4>
+                  <p><strong>Quantitative Impact:</strong> {activeProject.impact.quantitative}</p>
+                  <p><strong>Qualitative Outcome:</strong> {activeProject.impact.qualitative}</p>
+                </div>
+
+                <div className="modal-divider" />
+
+                {/* What Went Wrong Section */}
+                <div className="modal-description-section">
+                  <h4>What Went Wrong</h4>
+                  <p>{activeProject.whatWentWrong.narrative}</p>
+                </div>
+
+                <div className="modal-divider" />
+
+                {/* Case Study Footer CTA */}
+                <div className="modal-case-study-footer">
+                  <span>For more</span>
+                  <button
+                    className="live-app-btn-secondary"
+                    onClick={handleNavigateToContact}
+                  >
+                    <span>Get in touch</span>
+                  </button>
                 </div>
               </div>
             </div>
