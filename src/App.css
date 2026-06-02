@@ -156,6 +156,59 @@
   border-color: rgba(255, 255, 255, 0.12);
 }
 
+/* SVG Sweep Stroke — appears after pong game ends */
+.game-complete-stroke {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  overflow: visible;
+}
+
+.stroke-rect {
+  fill: none;
+  stroke: #3b82f6; /* Beautiful electric blue */
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  animation: sweep-streak-svg 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.6)) drop-shadow(0 0 8px rgba(59, 130, 246, 0.3));
+}
+
+@keyframes sweep-streak-svg {
+  0% {
+    stroke-dasharray: 0 1000;
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  40% {
+    stroke-dasharray: 100 1000; /* grows to length 100 */
+    stroke-dashoffset: -80;    /* sweeps forward, front at 180 */
+    opacity: 1;
+  }
+  80% {
+    stroke-dasharray: 100 1000; /* stays at length 100 */
+    stroke-dashoffset: -270;   /* sweeps forward, front at 370 (within 390 perimeter) */
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 0 1000;   /* shrinks back to 0 */
+    stroke-dashoffset: -390;   /* tail reaches the end at 390 */
+    opacity: 0;
+  }
+}
+
+
+
+
 .pong-paddle,
 .pong-ball {
   position: absolute;
@@ -363,7 +416,11 @@
 .word-reveal.word-is-highlighted {
   color: var(--accent-color);
   transform: translate3d(0, -0.04em, 0);
+  transition: 
+    color 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 
 .heading-line {
   display: block;
@@ -507,6 +564,14 @@
 :root.light .home-container.pong-is-active::before {
   border-color: rgba(15, 23, 42, 0.12);
 }
+
+:root.light .stroke-rect {
+  stroke: #2563eb; /* Deeper blue for better visibility on white backgrounds */
+  filter: drop-shadow(0 0 4px rgba(37, 99, 235, 0.4)) drop-shadow(0 0 8px rgba(37, 99, 235, 0.15));
+}
+
+
+
 
 :root.light .pong-paddle {
   background: rgba(15, 23, 42, 0.25);
@@ -662,7 +727,8 @@
   }
 }
 
-@media (max-width: 768px), (pointer: coarse) {
+@media (max-width: 768px),
+(pointer: coarse) {
   .bg-glow {
     display: none;
     animation: none;
@@ -727,5 +793,154 @@
 
   .word-reveal {
     transform: none;
+  }
+}
+
+/* ========================== */
+/* Carousel Page Previews     */
+/* ========================== */
+
+.carousel-preview {
+  position: absolute;
+  top: 50%;
+  transform: perspective(1000px) translateY(-50%);
+  width: 200px;
+  height: 220px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: rgba(18, 18, 22, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  z-index: 3;
+  opacity: 0;
+  filter: blur(6px);
+  animation: carousel-fade-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.carousel-preview-left {
+  left: calc(50% - 632px);
+  transform: perspective(1000px) translateY(-50%) rotateY(12deg);
+}
+
+.carousel-preview-right {
+  right: calc(50% - 632px);
+  transform: perspective(1000px) translateY(-50%) rotateY(-12deg);
+}
+
+.carousel-preview:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.carousel-preview-left:hover {
+  transform: perspective(1000px) translateY(-50%) rotateY(6deg) scale(1.04);
+}
+
+.carousel-preview-right:hover {
+  transform: perspective(1000px) translateY(-50%) rotateY(-6deg) scale(1.04);
+}
+
+.carousel-preview:focus-visible {
+  outline: 2px solid var(--accent-color, #3b82f6);
+  outline-offset: 3px;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.carousel-preview-inner {
+  width: 800px;
+  transform: scale(0.25);
+  transform-origin: top left;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0.55;
+}
+
+.carousel-preview-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.72) 0%,
+      rgba(0, 0, 0, 0.12) 35%,
+      transparent 55%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 1rem;
+  pointer-events: none;
+}
+
+.carousel-preview-label {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  transition: color 0.3s ease;
+}
+
+.carousel-preview:hover .carousel-preview-label {
+  color: rgba(255, 255, 255, 1);
+}
+
+@keyframes carousel-fade-in {
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Light mode overrides for carousel */
+:root.light .carousel-preview {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(15, 23, 42, 0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+:root.light .carousel-preview:hover {
+  border-color: rgba(15, 23, 42, 0.14);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(15, 23, 42, 0.04);
+}
+
+:root.light .carousel-preview-overlay {
+  background: linear-gradient(to top,
+      rgba(255, 255, 255, 0.88) 0%,
+      rgba(255, 255, 255, 0.15) 35%,
+      transparent 55%);
+}
+
+:root.light .carousel-preview-label {
+  color: rgba(15, 23, 42, 0.6);
+}
+
+:root.light .carousel-preview:hover .carousel-preview-label {
+  color: rgba(15, 23, 42, 0.95);
+}
+
+/* Hide on smaller screens and touch devices */
+@media (max-width: 1339px),
+(pointer: coarse) {
+  .carousel-preview {
+    display: none;
+  }
+}
+
+/* Reduced motion — show immediately without animation */
+@media (prefers-reduced-motion: reduce) {
+  .carousel-preview {
+    animation: none;
+    opacity: 1;
+    filter: none;
   }
 }

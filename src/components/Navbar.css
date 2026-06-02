@@ -171,30 +171,55 @@
 }
 
 @media (max-width: 520px) {
-  .navbar-actions {
+  .navbar-wrapper {
+    flex-direction: row;
     gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+  }
+
+  .navbar-container {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  .navbar-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Edge */
+  }
+
+  .navbar-container [role="tablist"] {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: max-content;
+  }
+
+  .navbar-tab-btn {
+    flex-shrink: 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.68rem;
+  }
+
+  .navbar-actions {
+    flex-shrink: 0;
+  }
+
+  .navbar-resume-btn {
+    min-height: 40px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.68rem;
   }
 }
 
 @media (max-width: 480px) {
   .navbar-header {
     padding: 1rem 0.75rem;
-  }
-
-  .navbar-wrapper {
-    gap: 0.5rem;
-    max-width: 100%;
-  }
-
-  .navbar-tab-btn {
-    padding: 0.5rem 0.55rem;
-    font-size: 0.64rem;
-  }
-
-  .navbar-resume-btn {
-    min-height: 40px;
-    padding: 0.5rem 0.65rem;
-    font-size: 0.64rem;
   }
 }
 

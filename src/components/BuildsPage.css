@@ -1,0 +1,237 @@
+/* Builds-specific container and grid — shared item styles in bento.css */
+
+.builds-bento-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 3 / 2;
+  margin: 2rem auto;
+  box-sizing: border-box;
+}
+
+.builds-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Bento Item for Builds Page */
+.builds-bento-item {
+  position: relative;
+  background: rgba(18, 18, 22, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 24px;
+  box-sizing: border-box;
+  contain: layout paint;
+  transition: var(--transition-spring);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem;
+  cursor: pointer;
+}
+
+/* Dim non-interactive placeholder slots */
+.builds-bento-item:not(.is-interactive) {
+  opacity: 0.45;
+}
+
+.builds-bento-item:not(.is-interactive):hover {
+  opacity: 0.75;
+}
+
+/* Outer Border */
+.builds-bento-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  pointer-events: none;
+  transition: border-color 0.3s ease;
+  z-index: 3;
+}
+
+/* Inner Border */
+.builds-bento-item::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  pointer-events: none;
+  transition: border-color 0.3s ease;
+  z-index: 3;
+}
+
+.builds-bento-item:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 4px;
+}
+
+/* Corner Link Button */
+.corner-link-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: var(--transition-smooth);
+  z-index: 10;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.corner-link-btn:hover {
+  background: #27272a;
+  color: var(--text-primary);
+  border-color: #3f3f46;
+}
+
+/* =============================================
+   Light Theme Overrides
+   ============================================= */
+
+:root.light .builds-bento-item {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+:root.light .builds-bento-item::before {
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+:root.light .builds-bento-item::after {
+  border-color: rgba(15, 23, 42, 0.04);
+}
+
+:root.light .builds-bento-item:hover::after {
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+:root.light .builds-bento-item:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+:root.light .corner-link-btn {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: var(--text-secondary);
+}
+
+:root.light .corner-link-btn:hover {
+  background: #e4e4e7;
+  color: var(--text-primary);
+  border-color: #cbd5e1;
+}
+
+/* =============================================
+   Build Card Background Image & Overlay
+   ============================================= */
+
+.build-image-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 1; /* Full bright by default */
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+  border-radius: 24px;
+}
+
+.builds-bento-item:hover .build-image-bg {
+  transform: scale(1.04);
+}
+
+.build-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 10, 12, 0.9) 0%, rgba(10, 10, 12, 0.35) 60%, rgba(10, 10, 12, 0.55) 100%);
+  z-index: 2;
+  border-radius: 24px;
+  opacity: 0; /* Hidden by default */
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.builds-bento-item:hover .build-overlay {
+  opacity: 1; /* Fade in on hover */
+}
+
+/* Light mode overrides */
+:root.light .build-overlay {
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.35) 60%, rgba(255, 255, 255, 0.55) 100%);
+}
+
+.builds-bento-item .bento-placeholder {
+  color: var(--text-primary);
+}
+
+/* Hover reveals for card content (title) when image is present */
+.builds-bento-item.has-image .bento-placeholder {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.builds-bento-item.has-image:hover .bento-placeholder {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =============================================
+   Responsive Layout (Mobile/Tablet)
+   ============================================= */
+
+@media (max-width: 768px) {
+  .builds-bento-container {
+    max-width: 90vw;
+    aspect-ratio: auto;
+  }
+
+  .builds-bento-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 1rem;
+  }
+
+  .builds-bento-item {
+    background: rgba(18, 18, 22, 0.58);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    padding: 2.5rem 1.5rem;
+    border-radius: 20px;
+    min-height: 120px;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  :root.light .builds-bento-item {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .builds-bento-item::before {
+    border-radius: 20px;
+  }
+
+  .builds-bento-item::after {
+    inset: 10px;
+    border-radius: 12px;
+  }
+}
