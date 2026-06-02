@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect, useRef } from 'react';
 import { playClickSound } from '../utils/sound';
 import './Navbar.css';
 
-const TABS = ['Home', 'About', 'Work', 'Contact'];
+const TABS = ['Home', 'About', 'Work', 'Builds', 'Contact'];
 const RESUME_PDF_PATH = '/Jatin%20Davis%20Resume%20JDR%20.pdf';
 const RESUME_DRIVE_URL = 'https://drive.google.com/file/d/1-zqfQ3X3NTgxAEKJag8ebzWExW7-ngC0/view?usp=sharing';
 
@@ -31,6 +31,14 @@ export default function Navbar({ activeTab, setActiveTab }) {
     window.addEventListener('resize', updatePill);
     return () => window.removeEventListener('resize', updatePill);
   }, [updatePill]);
+
+  // Scroll active tab into view on mobile viewports
+  useEffect(() => {
+    const activeEl = tabRefs.current[activeTab];
+    if (activeEl) {
+      activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     // Calculate rotation delta cumulatively to prevent backwards-unwinding animation

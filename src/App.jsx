@@ -6,10 +6,12 @@ import './App.css';
 
 const preloadAboutPage = () => import('./components/AboutPage');
 const preloadWorkPage = () => import('./components/WorkPage');
+const preloadBuildsPage = () => import('./components/BuildsPage');
 const preloadContactPage = () => import('./components/ContactPage');
 
 const AboutPage = lazy(preloadAboutPage);
 const WorkPage = lazy(preloadWorkPage);
+const BuildsPage = lazy(preloadBuildsPage);
 const ContactPage = lazy(preloadContactPage);
 
 const HEADING_LINE_REVEAL_MS = 1450;
@@ -22,6 +24,8 @@ const BALL_MIN_SIZE = 2.5;
 const BALL_SHRINK_FACTOR = 0.88;
 const WALL_MIN_OPACITY = 0.08;
 const MOBILE_PERFORMANCE_QUERY = '(max-width: 768px), (pointer: coarse)';
+const DESKTOP_PREVIEW_QUERY = '(min-width: 1340px) and (pointer: fine)';
+const TABS = ['Home', 'About', 'Work', 'Builds', 'Contact'];
 
 function HomeHero({ headingLines, onViewWork }) {
   const [pongActive, setPongActive] = useState(false);
@@ -344,6 +348,37 @@ export default function App() {
   const [displayTab, setDisplayTab] = useState('Home');
   const [prevTab, setPrevTab] = useState(null);
   const timerRef = useRef(null);
+  const [introCompleted, setIntroCompleted] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_PREVIEW_QUERY).matches);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIntroCompleted(true);
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(DESKTOP_PREVIEW_QUERY);
+
+    const listener = (e) => {
+      setIsDesktop(e.matches);
+    };
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', listener);
+    } else {
+      mediaQuery.addListener(listener);
+    }
+
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', listener);
+      } else {
+        mediaQuery.removeListener(listener);
+      }
+    };
+  }, []);
 
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('theme') || 'dark';
@@ -405,6 +440,7 @@ export default function App() {
     const preloadLazyPages = () => {
       preloadWorkPage();
       preloadAboutPage();
+      preloadBuildsPage();
       preloadContactPage();
     };
 
@@ -503,6 +539,8 @@ export default function App() {
         return <AboutPage />;
       case 'Work':
         return <WorkPage onNavigate={handleTabChange} />;
+      case 'Builds':
+        return <BuildsPage />;
       case 'Contact':
         return <ContactPage />;
       default:
@@ -550,6 +588,10 @@ export default function App() {
     );
   };
 
+  const currentIdx = TABS.indexOf(displayTab);
+  const leftTab = currentIdx !== -1 ? TABS[(currentIdx - 1 + TABS.length) % TABS.length] : null;
+  const rightTab = currentIdx !== -1 ? TABS[(currentIdx + 1) % TABS.length] : null;
+
   return (
     <div className="app-layout">
       {/* Skip to Content — visible only on keyboard focus */}
@@ -560,6 +602,64 @@ export default function App() {
 
       {/* Floating Capsule Navbar */}
       <Navbar activeTab={activeTab} setActiveTab={handleTabChange} />
+
+      {/* Carousel page previews — desktop only, all tabs */}
+      {isDesktop && !prevTab && leftTab && rightTab && (
+        <>
+          <div
+            key={`left-${leftTab}`}
+            className="carousel-preview carousel-preview-left"
+            onClick={() => handleTabChange(leftTab)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleTabChange(leftTab);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={`Preview ${leftTab} page`}
+            style={{
+              animationDelay: displayTab === 'Home' && !introCompleted ? '3.5s' : '0.1s',
+            }}
+          >
+            <div className="carousel-preview-inner" aria-hidden="true">
+              <Suspense fallback={null}>
+                {renderTabContent(leftTab)}
+              </Suspense>
+            </div>
+            <div className="carousel-preview-overlay" aria-hidden="true">
+              <span className="carousel-preview-label">{leftTab}</span>
+            </div>
+          </div>
+          <div
+            key={`right-${rightTab}`}
+            className="carousel-preview carousel-preview-right"
+            onClick={() => handleTabChange(rightTab)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleTabChange(rightTab);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={`Preview ${rightTab} page`}
+            style={{
+              animationDelay: displayTab === 'Home' && !introCompleted ? '3.8s' : '0.2s',
+            }}
+          >
+            <div className="carousel-preview-inner" aria-hidden="true">
+              <Suspense fallback={null}>
+                {renderTabContent(rightTab)}
+              </Suspense>
+            </div>
+            <div className="carousel-preview-overlay" aria-hidden="true">
+              <span className="carousel-preview-label">{rightTab}</span>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Main Content Showcase */}
       <main id="main-content" className="content-container">
