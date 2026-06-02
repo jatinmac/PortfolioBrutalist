@@ -40,12 +40,12 @@ export default function AboutPage() {
         <div className="about-bento-item col-span-1">
           <span className="bento-tag">Approach</span>
           <div className="bento-icon"><Compass size={14} strokeWidth={2.5} /></div>
-          <span className="bento-placeholder">User centered design.</span>
+          <span className="bento-placeholder">User-centered design.</span>
         </div>
         <div className="about-bento-item col-span-2">
           <span className="bento-tag">Experience</span>
           <div className="bento-icon"><Briefcase size={14} strokeWidth={2.5} /></div>
-          <span className="bento-placeholder">Product designer at Double ai, Prev. Maruti Suzuki, colliers Int.</span>
+          <span className="bento-placeholder">Product designer at Double AI, previously at Maruti Suzuki and Colliers International.</span>
         </div>
       </div>
     </div>

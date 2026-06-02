@@ -1,5 +1,5 @@
 import { Fragment, Suspense, lazy, useCallback, useState, useEffect, useRef, useMemo } from 'react';
-import { Sun, Moon, Volume2, VolumeX } from 'lucide-react';
+import { Sun, Moon, Volume2, VolumeX, AArrowUp, AArrowDown, RotateCcw } from 'lucide-react';
 import Navbar from './components/Navbar';
 import { playTabChangeSound, playThemeToggleSound, getSoundEnabled, setSoundEnabled } from './utils/sound';
 import './App.css';
@@ -288,7 +288,7 @@ function HomeHero({ headingLines, onViewWork }) {
         </>
       )}
       <div className="home-hero-text">
-        <span className="home-overheading">Hi, i'm Jatin Davis.</span>
+        <span className="home-overheading">Hi, I'm Jatin Davis.</span>
         <h1
           ref={headingRef}
           className={`home-heading ${headingHit ? 'is-hit' : ''}`}
@@ -320,7 +320,7 @@ function HomeHero({ headingLines, onViewWork }) {
           className="home-subheading"
           style={{ '--sub-delay': `${headingRevealTotalMs + 500}ms` }}
         >
-          Build and launched Quilo chrome ext with 600 users and youtube channel to 1mn+ views.
+          Built and launched the Quilo Chrome extension with 600 users, and grew a YouTube channel to 1M+ views.
         </p>
         <button
           onClick={onViewWork}
@@ -334,6 +334,11 @@ function HomeHero({ headingLines, onViewWork }) {
   );
 }
 
+const FONT_SCALE_MIN = 90;
+const FONT_SCALE_MAX = 110;
+const FONT_SCALE_STEP = 5;
+const FONT_SCALE_DEFAULT = 100;
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('Home');
   const [displayTab, setDisplayTab] = useState('Home');
@@ -346,14 +351,19 @@ export default function App() {
 
   const [soundEnabled, setSoundEnabledState] = useState(() => getSoundEnabled());
 
+  const [fontScale, setFontScale] = useState(() => {
+    const saved = parseInt(localStorage.getItem('fontScale'), 10);
+    return Number.isFinite(saved) ? Math.min(FONT_SCALE_MAX, Math.max(FONT_SCALE_MIN, saved)) : FONT_SCALE_DEFAULT;
+  });
+
   const headingLines = useMemo(() => {
     return [
-      'Product design builder',
-      'with 3+ yrs of experience.',
-      'Using agentic ai and workflows',
+      'Product designer and builder',
+      'with 3+ years of experience.',
+      'Using agentic AI and workflows',
       'to build shippable deliverables and products.',
-      'Worked in b2b and b2c.',
-      'Prev. Maruti Suzuki.',
+      'Worked in B2B and B2C.',
+      'Previously at Maruti Suzuki.',
     ];
   }, []);
 
@@ -362,6 +372,24 @@ export default function App() {
     setSoundEnabledState(nextVal);
     setSoundEnabled(nextVal);
   }, [soundEnabled]);
+
+  // Apply font scale to <html> element
+  useEffect(() => {
+    document.documentElement.style.setProperty('--font-scale', fontScale / 100);
+    localStorage.setItem('fontScale', String(fontScale));
+  }, [fontScale]);
+
+  const handleFontDecrease = useCallback(() => {
+    setFontScale((prev) => Math.max(FONT_SCALE_MIN, prev - FONT_SCALE_STEP));
+  }, []);
+
+  const handleFontIncrease = useCallback(() => {
+    setFontScale((prev) => Math.min(FONT_SCALE_MAX, prev + FONT_SCALE_STEP));
+  }, []);
+
+  const handleFontReset = useCallback(() => {
+    setFontScale(FONT_SCALE_DEFAULT);
+  }, []);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -547,6 +575,32 @@ export default function App() {
             &copy; {new Date().getFullYear()} Jatin Davis &bull;
           </span>
           <div className="footer-controls">
+            <div className="font-size-controls" role="group" aria-label="Font size controls">
+              <button
+                onClick={handleFontDecrease}
+                className={`theme-btn ${fontScale <= FONT_SCALE_MIN ? 'is-disabled' : ''}`}
+                aria-label="Decrease font size"
+                disabled={fontScale <= FONT_SCALE_MIN}
+              >
+                <AArrowDown size={14} strokeWidth={2.5} />
+              </button>
+              <button
+                onClick={handleFontReset}
+                className={`theme-btn ${fontScale === FONT_SCALE_DEFAULT ? 'is-active' : ''}`}
+                aria-label={`Reset font size (currently ${fontScale}%)`}
+                title={`${fontScale}%`}
+              >
+                <RotateCcw size={12} strokeWidth={2.5} />
+              </button>
+              <button
+                onClick={handleFontIncrease}
+                className={`theme-btn ${fontScale >= FONT_SCALE_MAX ? 'is-disabled' : ''}`}
+                aria-label="Increase font size"
+                disabled={fontScale >= FONT_SCALE_MAX}
+              >
+                <AArrowUp size={14} strokeWidth={2.5} />
+              </button>
+            </div>
             <div className="sound-toggle">
               <button
                 onClick={handleToggleSound}
