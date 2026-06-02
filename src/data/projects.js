@@ -13,29 +13,29 @@ export const PROJECTS = [
     context: {
       company: 'Double AI (Early-Stage AI Startup)',
       role: 'Product Designer (Sole Designer)',
-      team: 'Founder, 5 Engineers, ',
+      team: 'Founder, 5 Engineers',
       timeline: '6 months (Q1 2026)',
       constraints: 'Highly volatile API latency, cloned voice training required clean audio inputs from users.'
     },
     problems: {
-      business: 'LinkedIn, websites, portfolios, and bio pages show who you are, but they cannot respond to visitors questions. Chatbots can answer, but they are not grounded in a real person’s voice, knowledge,proof, brand, rules, and workflows.',
+      business: 'LinkedIn, websites, portfolios, and bio pages show who you are, but they cannot respond to visitors’ questions. Chatbots can answer, but they are not grounded in a real person’s voice, knowledge, proof, brand, rules, and workflows.',
       user: 'Founders, sales teams, recruiters, creators, and consultants repeat the same explanations, demos, and qualification conversations.'
     },
     process: {
-      research: 'The founder was an ex head of marketting in Exotel. He identified gaps and oppurtunities in the sales workflows. Identified and benchmarked products offering voice agents. Compared and improved our product in their regards. Identified Agentic Ai as the path forward. ',
-      ideation: 'Quick Ideation on problems identified and path taken based on product stratergy',
-      tradeoff: 'Speed for the best execution, we were and still are looking to raise fundings and need a quick demo product',
-      iteration: 'iterated designs based on the analysis of user recording and feedback.'
+      research: 'The founder was the former Head of Marketing at Exotel. He identified gaps and opportunities in the sales workflows, benchmarked products offering voice agents, compared and improved our product against them, and identified Agentic AI as the path forward.',
+      ideation: 'Quick ideation on problems identified and the path taken based on product strategy.',
+      tradeoff: 'We prioritized speed over perfect execution, as we were (and still are) looking to raise funding and needed a quick demo product.',
+      iteration: 'Iterated designs based on the analysis of user recordings and feedback.'
     },
     impact: {
-      quantitative: 'Campaings are going on as we speak to raise funds and find users.',
-      qualitative: 'Positive feedback from founders and Venture capitalists.'
+      quantitative: 'Campaigns are active as we speak to raise funds and find users.',
+      qualitative: 'Positive feedback from founders and venture capitalists.'
     },
     whatWentWrong: {
-      narrative: 'Our product solved for identity and digital business card but ai models since january 2026 improved massively to the point where our product was threeatened by agents. We pivoted to a more agentic platform as agents were getting popular and useful.'
+      narrative: 'Our product originally solved for identity and digital business card needs, but AI models since January 2026 improved massively to the point where our product was threatened by general agents. We pivoted to a more agentic platform as agents were becoming popular and useful.'
     },
-    description: 'Double AI is a Digital business card & AI twin agent for professional and sales teams',
-    details: 'The product was first built as an identity layer and a digital business card profile for Sales, marketing, and solutions teams. Later on with the updates and advancements in AI the product pivoted to being an AI clone agent first product that can represent a user, speak on their behalf with their cloned voice, and do agentic tasks and generate leads',
+    description: 'Double AI is a digital business card and AI twin agent for professionals and sales teams.',
+    details: 'The product was first built as an identity layer and a digital business card profile for sales, marketing, and solutions teams. Later, with advancements in AI, the product pivoted to an AI clone agent-first product that can represent a user, speak on their behalf with their cloned voice, perform agentic tasks, and generate leads.',
     liveUrl: 'https://thedouble.ai/',
     linkText: 'View Product',
     work: [
@@ -70,33 +70,33 @@ export const PROJECTS = [
     tools: 'Figma, Adobe suite, user research, drawing tablet',
     metric: 'MS Victoris 2025',
     tags: ['10.1 inch', 'Infotainment HMI', 'Automotive UI'],
-    hook: 'Maruti suzuki needed an update to their infotainment system → We designed the 10.1 inch automotive infotainment HMI around new functionality and updated ui and visual overhaul.',
+    hook: 'Maruti Suzuki needed an update to their infotainment system → We designed the 10.1-inch automotive infotainment HMI around new functionality with an updated UI and visual overhaul.',
     context: {
       company: 'Maruti Suzuki (Arena / Nexa Infotainment Program)',
       role: 'UX Designer (HMI)',
       team: '2 designers, 1 engineer, 2 Bosch engineers',
       timeline: '1 year',
-      constraints: 'Automotive grade hardware with low CPU power, car mechanical requirements, strict safety requirements.'
+      constraints: 'Automotive-grade hardware with low CPU power, car mechanical requirements, and strict safety requirements.'
     },
     problems: {
-      business: 'Maruti Suzuki needed to update their infotainment systems to B and C segments cars.',
-      user: 'Drivers found the interface laggy and needed wireless apple carpay/ android auto.'
+      business: 'Maruti Suzuki needed to update their infotainment systems for B and C segment cars.',
+      user: 'Drivers found the interface laggy and needed wireless Apple CarPlay / Android Auto.'
     },
     process: {
-      research: 'Conducted market research and did competitive benchamarking rival brands benchmarks.',
-      ideation: 'Ideated on user flows, visual assets and feedback from senior leadership.',
-      tradeoff: 'Screen size and aspect ratio compared to smartphone and laptops. Processing power compared to smartphones and latop computers. ',
-      iteration: 'Redesigned and iterated on assets and layout based on leader feedback.'
+      research: 'Conducted market research and competitive benchmarking against rival brands.',
+      ideation: 'Ideated on user flows, visual assets, and incorporated feedback from senior leadership.',
+      tradeoff: 'Screen size and aspect ratio limitations compared to smartphones and laptops, and lower processing power compared to smartphone and laptop computers.',
+      iteration: 'Redesigned and iterated on assets and layout based on leadership feedback.'
     },
     impact: {
-      quantitative: 'Shipped in all maruti suzuki victoris cars in India.',
-      qualitative: 'Bigger unit with alexa and wireless carplay and android auto.'
+      quantitative: 'Shipped in all Maruti Suzuki Victoris cars in India.',
+      qualitative: 'Bigger screen unit with Alexa, wireless CarPlay, and Android Auto.'
     },
     whatWentWrong: {
       narrative: 'We designed a beautiful dark theme with subtle neon accents. In daylight road tests, glare made the UI completely illegible. We had to pivot, creating a high-contrast theme and automatically shifting light modes based on the car\'s physical ambient light sensor.'
     },
     description: 'Smartplay Pro X is a next-generation 10.1-inch infotainment system for Maruti Suzuki cars. The work focused on in-vehicle experience design for a system intended to ship to production cars.',
-    details: 'I contributed as a product designer on the infotainment UI experience. The role centered on automotive HMI thinking: structuring interaction flows, clarifying screen behavior, creating hi fidelity UI and assets and supporting engineering handoff, and keeping the interface aligned with the constraints of a production vehicle program.',
+    details: 'I contributed as a product designer on the infotainment UI experience. The role centered on automotive HMI thinking: structuring interaction flows, clarifying screen behavior, creating high-fidelity UI and assets, supporting engineering handoff, and keeping the interface aligned with the constraints of a production vehicle program.',
     liveUrl: 'https://www.marutisuzuki.com/arena/victoris?srsltid=AfmBOorfGeEvkE2CJYJKBH4sn_wOset9bAx0jtsK3AETwzRPmGivdEQ-#technology-block',
     linkText: 'View Product',
     work: [
@@ -161,8 +161,8 @@ export const PROJECTS = [
     year: '2025',
     tools: 'AI, image generation, video generation, Davinci Resolve',
     metric: '1M+ Views',
-    tags: ['youtube channel', 'Fomrmula 1 content'],
-    hook: 'i wanted to use ai to bring classic f1 cars and old cars to life and experiment with livery of F1 cars.',
+    tags: ['YouTube channel', 'Formula 1 content'],
+    hook: 'I wanted to use AI to bring classic and vintage F1 cars to life and experiment with their liveries.',
     context: {
       company: 'Formula 1 Design Channel (Creator Initiative)',
       role: 'Creator & Designer',
@@ -171,23 +171,23 @@ export const PROJECTS = [
       constraints: 'Rapid YouTube algorithm shifts, strict copyright restrictions, and high visual competition.'
     },
     problems: {
-      business: 'Understanding Audience and their likings.',
+      business: 'Understanding the audience and their preferences.',
       user: 'Formula 1 fans loved technical design insights (aerodynamics, liveries) but found standard explanations dry, boring, and academic.'
     },
     process: {
       research: 'Analyzed retention charts of 50 competitor videos. Identified that drop-offs occurred during long explanations of aerodynamic theory without immediate visual examples.',
       ideation: 'Explored three visual strategies: 3D animated CAD models, schematic overlays on real race footage, and interactive comparison sliders. Settled on schematic overlays.',
       tradeoff: 'Creating 3D models for every race took 60 hours per video. I optimized the pipeline by building a custom vector asset library, reducing video production time to 15 hours.',
-      iteration: 'Tested different thumbnail typography scales and colors, proving that high-contrast display fonts increased Click-Through-Rate (CTR) by 4.5%.'
+      iteration: 'Tested different thumbnail typography scales and colors, proving that high-contrast display fonts increased Click-Through Rate (CTR) by 4.5%.'
     },
     impact: {
       quantitative: '1M+ views, 1k subscribers, 8.2% average CTR (industry average is 4%), 68% average video retention rate.',
-      qualitative: 'The animations make complex airflow dynamics click instantly. — Video Comment'
+      qualitative: '“The animations make complex airflow dynamics click instantly.” — Video Comment'
     },
     whatWentWrong: {
       narrative: 'I initially focused on long-form (15+ minute) analytical videos. The completion rate was under 20%. I pivoted to short-form dynamic content and 5-minute focused case studies, which quadrupled engagement and accelerated channel growth.'
     },
-    description: 'I built this channel from scratch around Formula 1 design and visual storytelling. The focus was creating consistent niche content around a subject I care about deeply. It grew past 1 million views, showing my ability to package ideas clearly and build audience interest over time.',
+    description: 'I built this channel from scratch around Formula 1 design and visual storytelling. The focus was on creating consistent niche content around a subject I care about deeply. It grew past 1 million views, showing my ability to package ideas clearly and build audience interest over time.',
     details: 'The challenge was to build attention around a niche subject from zero. Formula 1 design is visually rich, but audience growth required more than interest in the topic; the content had to package ideas clearly, create a recognizable point of view, and make design stories accessible to viewers.',
     liveUrl: 'https://www.youtube.com/@formula1design/shorts',
     linkText: 'View Channel',
@@ -209,13 +209,13 @@ export const PROJECTS = [
     tools: 'Figma, Adobe suite, user research, live market research',
     metric: '< ₹3k Cost',
     tags: ['Redesign', 'Design System'],
-    hook: 'Traditional analog instrument clusters felt cheap and outdated → We designed a segmented digital instrument cluster with premium visual cues while keeping unit costs under Rs 3,000.',
+    hook: 'Traditional analog instrument clusters felt cheap and outdated → We designed a segmented digital instrument cluster with premium visual cues while keeping unit costs under ₹3,000.',
     context: {
       company: 'Maruti Suzuki (U3K Entry Car Program)',
       role: 'UX/UI Designer',
       team: '1 UX Designer, 2 Hardware Engineers, 1 Manufacturing Liaison',
       timeline: '5 months (2024)',
-      constraints: 'Rigid segmented LCD technology, fixed pixel shapes, strict budget cap of Rs 3,000 ($36 USD) per unit.'
+      constraints: 'Rigid segmented LCD technology, fixed pixel shapes, strict budget cap of ₹3,000 ($36 USD) per unit.'
     },
     problems: {
       business: 'Maruti Suzuki needed to modernize the cockpit of its entry-level car program to appeal to younger, first-time car buyers, without changing vehicle price brackets.',
@@ -228,17 +228,17 @@ export const PROJECTS = [
       iteration: 'Optimized display illumination and color filters to ensure absolute readability under direct summer sunlight.'
     },
     impact: {
-      quantitative: 'Adopted across 3 upcoming entry-level car models, kept manufacturing cost at Rs 2,850 (under the Rs 3,000 target), 94% approval rating in clinics.',
+      quantitative: 'Adopted across 3 upcoming entry-level car models, kept manufacturing cost at ₹2,850 (under the ₹3,000 target), 94% approval rating in clinics.',
       qualitative: 'The cluster feels modern and premium. It makes the car interior feel like it belongs in a higher price segment. — Focus Group Participant'
     },
     whatWentWrong: {
       narrative: 'We initially placed the turn signals and headlight indicators inside the digital LCD screen. Testing revealed that if the LCD module failed, these critical safety indicators would go dark. We pivoted to dedicated physical LED tell-tales outside the LCD bezel.'
     },
-    description: 'U3K is a codename for an updated instrument cluster that will be used in upcoming entry-level Maruti Suzuki cars. The instrument cluster will use a segmented display that looks more premium and modern compared to current analog instrument clusters.',
-    details: 'Design a modern instrument cluster incorporating digital segmented display technology for multiple entry-level Maruti Suzuki cars while keeping the cost under Rs 3000',
+    description: 'U3K is the codename for an updated instrument cluster that will be used in upcoming entry-level Maruti Suzuki cars. The instrument cluster will use a segmented display that looks more premium and modern compared to current analog instrument clusters.',
+    details: 'Design a modern instrument cluster incorporating digital segmented display technology for multiple entry-level Maruti Suzuki cars while keeping the cost under ₹3,000.',
     isUnderDevelopment: true,
     work: [
-      'Use segmented digital display behavior to create a more modern instrument-cluster feel while staying within the under Rs 3000 cost target.',
+      'Use segmented digital display behavior to create a more modern instrument-cluster feel while staying within the under ₹3,000 cost target.',
       'Prioritize essential driving information and clarity because an instrument cluster has to communicate quickly.',
       'Work closely with engineers so the design direction could move from concept into first prototype instead of remaining a visual-only exploration.',
       'Keep the public case-study language NDA-safe while still explaining the product-design constraints and contribution.'

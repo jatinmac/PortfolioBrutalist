@@ -413,7 +413,7 @@ export default function WorkPage({ onNavigate }) {
 
                 {/* Case Study Footer CTA */}
                 <div className="modal-case-study-footer">
-                  <span>For more</span>
+                  <span>Want to know more?</span>
                   <button
                     className="live-app-btn-secondary"
                     onClick={handleNavigateToContact}
