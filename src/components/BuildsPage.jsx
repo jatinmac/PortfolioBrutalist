@@ -10,8 +10,7 @@ const BUILDS_DATA = [
     tag: 'BUILD 01',
     colSpan: 'col-span-2',
     link: 'https://jatindavistwin.vercel.app/',
-    image: '/aitwin.png',
-    imageWebp: '/aitwin.webp',
+    image: '/aitwin.webp',
   },
   {
     id: 2,
@@ -19,8 +18,7 @@ const BUILDS_DATA = [
     tag: 'BUILD 02',
     colSpan: 'col-span-1',
     link: 'https://websitedesign-ten.vercel.app/',
-    image: '/aiwebsite.png',
-    imageWebp: '/aiwebsite.webp',
+    image: '/aiwebsite.webp',
   },
   {
     id: 3,
@@ -28,14 +26,15 @@ const BUILDS_DATA = [
     tag: 'BUILD 03',
     colSpan: 'col-span-1',
     link: 'https://agenticui.netlify.app/',
-    image: '/AIui.png',
-    imageWebp: '/AIui.webp',
+    image: '/AIui.webp',
   },
   {
     id: 4,
-    title: 'Coming Soon',
+    title: 'Skills.md',
     tag: 'BUILD 04',
     colSpan: 'col-span-1',
+    link: 'https://aiskillsmd.netlify.app/',
+    image: '/skillsmd.webp',
   },
   {
     id: 5,
