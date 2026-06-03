@@ -24,9 +24,12 @@ const BUILDS_DATA = [
   },
   {
     id: 3,
-    title: 'Coming Soon',
+    title: 'Aiui',
     tag: 'BUILD 03',
     colSpan: 'col-span-1',
+    link: 'https://agenticui.netlify.app/',
+    image: '/AIui.png',
+    imageWebp: '/AIui.webp',
   },
   {
     id: 4,
@@ -83,18 +86,15 @@ export default function BuildsPage() {
               onKeyDown={(e) => handleKeyDown(e, build)}
               tabIndex={0}
               role="button"
-              aria-label={isInteractive ? `${build.tag}: ${build.title} (Opens in new tab)` : `${build.tag}: ${build.title}`}
+              aria-label={isInteractive ? `${build.title} build (Opens in new tab)` : `${build.title}`}
             >
-              {/* Background image & gradient overlay if available */}
+              {/* Background image if available */}
               {build.image && (
-                <>
-                  <div className="build-image-bg" style={{ backgroundImage: getBuildBackgroundImage(build) }} />
-                  <div className="build-overlay" />
-                </>
+                <div className="build-image-bg" style={{ backgroundImage: getBuildBackgroundImage(build) }} />
               )}
 
-              {/* Tag on Top Left */}
-              <span className="bento-tag">{build.tag}</span>
+              {/* Tag on Bottom Left Corner (styled like project card tag) */}
+              <span className="project-card-tag">{build.title}</span>
 
               {/* Corner Button */}
               {isInteractive ? (
@@ -116,9 +116,6 @@ export default function BuildsPage() {
                   <ArrowUpRight size={14} />
                 </div>
               )}
-
-              {/* Centered Placeholder Text */}
-              <span className="bento-placeholder">{build.title}</span>
             </div>
           );
         })}
