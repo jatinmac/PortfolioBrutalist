@@ -157,40 +157,46 @@
   transform: scale(1.04);
 }
 
-.build-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(10, 10, 12, 0.9) 0%, rgba(10, 10, 12, 0.35) 60%, rgba(10, 10, 12, 0.55) 100%);
-  z-index: 2;
-  border-radius: 24px;
-  opacity: 0; /* Hidden by default */
+
+
+/* Build Card Tag (styled similar to project-card-tag on Work page but with opaque background) */
+.builds-bento-item .project-card-tag {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: #18181b !important; /* Opaque dark zinc background */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  z-index: 10;
   pointer-events: none;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: absolute;
+  bottom: 1.25rem;
+  left: 1.25rem;
 }
 
-.builds-bento-item:hover .build-overlay {
-  opacity: 1; /* Fade in on hover */
+:root.light .builds-bento-item .project-card-tag {
+  background: #ffffff !important; /* Opaque white background in light mode */
+  border-color: rgba(15, 23, 42, 0.08);
+  color: var(--text-secondary);
 }
 
-/* Light mode overrides */
-:root.light .build-overlay {
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.35) 60%, rgba(255, 255, 255, 0.55) 100%);
-}
-
-.builds-bento-item .bento-placeholder {
+/* Hover micro-interactions for the tag inside builds page */
+.builds-bento-item.is-interactive:hover .project-card-tag {
+  background: #27272a !important; /* Lighter opaque zinc on hover */
+  border-color: rgba(255, 255, 255, 0.16);
   color: var(--text-primary);
+  transform: translateY(-2px);
 }
 
-/* Hover reveals for card content (title) when image is present */
-.builds-bento-item.has-image .bento-placeholder {
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.builds-bento-item.has-image:hover .bento-placeholder {
-  opacity: 1;
-  transform: translateY(0);
+:root.light .builds-bento-item.is-interactive:hover .project-card-tag {
+  background: #f4f4f5 !important; /* Darker opaque zinc on hover in light mode */
+  border-color: rgba(15, 23, 42, 0.16);
+  color: var(--text-primary);
 }
 
 /* =============================================
