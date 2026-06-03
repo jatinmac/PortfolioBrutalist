@@ -15,9 +15,12 @@ const BUILDS_DATA = [
   },
   {
     id: 2,
-    title: 'Coming Soon',
+    title: 'Website Hero',
     tag: 'BUILD 02',
     colSpan: 'col-span-1',
+    link: 'https://websitedesign-ten.vercel.app/',
+    image: '/aiwebsite.png',
+    imageWebp: '/aiwebsite.webp',
   },
   {
     id: 3,
