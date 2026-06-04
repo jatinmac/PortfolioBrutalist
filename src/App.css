@@ -909,27 +909,49 @@
   pointer-events: none;
   opacity: 1;
   filter: none;
-  will-change: transform, opacity;
+  will-change: transform, opacity, filter;
+}
+
+.carousel-preview.carousel-fly-source {
+  opacity: 0 !important;
+  pointer-events: none;
+  animation: none !important;
 }
 
 .carousel-preview-left.carousel-fly-active {
-  animation: carousel-fly-in-left 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: carousel-fly-in-left 1150ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
 .carousel-preview-right.carousel-fly-active {
-  animation: carousel-fly-in-right 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: carousel-fly-in-right 1150ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
 @keyframes carousel-fly-in-left {
   0% {
     transform: perspective(1000px) translateY(-50%) rotateY(12deg);
+    filter: blur(0px);
     opacity: 1;
   }
-  55% {
+  11% {
+    filter: blur(12px);
     opacity: 1;
+  }
+  28% {
+    filter: blur(16px);
+    opacity: 0.9;
+  }
+  43% {
+    filter: blur(4px);
+    opacity: 0.7;
+  }
+  57% {
+    transform: perspective(1000px) translateX(480px) translateY(-50%) rotateY(0deg) scale(2.8);
+    filter: blur(0px);
+    opacity: 0.2;
   }
   100% {
     transform: perspective(1000px) translateX(480px) translateY(-50%) rotateY(0deg) scale(2.8);
+    filter: blur(0px);
     opacity: 0;
   }
 }
@@ -937,13 +959,29 @@
 @keyframes carousel-fly-in-right {
   0% {
     transform: perspective(1000px) translateY(-50%) rotateY(-12deg);
+    filter: blur(0px);
     opacity: 1;
   }
-  55% {
+  11% {
+    filter: blur(12px);
     opacity: 1;
+  }
+  28% {
+    filter: blur(16px);
+    opacity: 0.9;
+  }
+  43% {
+    filter: blur(4px);
+    opacity: 0.7;
+  }
+  57% {
+    transform: perspective(1000px) translateX(-480px) translateY(-50%) rotateY(0deg) scale(2.8);
+    filter: blur(0px);
+    opacity: 0.2;
   }
   100% {
     transform: perspective(1000px) translateX(-480px) translateY(-50%) rotateY(0deg) scale(2.8);
+    filter: blur(0px);
     opacity: 0;
   }
 }
@@ -969,28 +1007,37 @@
 .content-container.content-flying-out {
   animation: content-fly-out 400ms cubic-bezier(0.4, 0, 1, 1) forwards;
   pointer-events: none;
-  will-change: transform, opacity;
+  will-change: transform, opacity, filter;
 }
 
 @keyframes content-fly-out {
+  30% {
+    filter: blur(4px);
+  }
   to {
     opacity: 0;
+    filter: blur(8px);
     transform: scale(0.97);
   }
 }
 
 .content-container.content-entering-from-preview {
   animation: content-enter-from-preview 500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: transform, opacity;
+  will-change: transform, opacity, filter;
 }
 
 @keyframes content-enter-from-preview {
   from {
     opacity: 0;
+    filter: blur(8px);
     transform: translateY(16px) scale(0.98);
+  }
+  60% {
+    filter: blur(2px);
   }
   to {
     opacity: 1;
+    filter: blur(0);
     transform: translateY(0) scale(1);
   }
 }
