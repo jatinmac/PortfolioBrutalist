@@ -399,11 +399,10 @@ export default function App() {
 
   const headingLines = useMemo(() => {
     return [
-      'Product designer and builder',
-      'with 3+ years of experience.',
-      'Using agentic AI and workflows',
+      'Design builder with product sense, & engineering curiousity.',
+      'Using agentic ai and workflows',
       'to build shippable deliverables and products aligning with business goals.',
-      'Previously, at Maruti Suzuki.',
+      'Prev. at Maruti Suzuki.',
     ];
   }, []);
 
