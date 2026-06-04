@@ -250,6 +250,7 @@
     0 0 0 1px rgba(255, 255, 255, 0.10),
     0 0 16px rgba(255, 255, 255, 0.08);
   opacity: 0;
+  transform: translate3d(24px, 24px, 0);
   will-change: transform, width, height;
   transition:
     width 280ms ease,
@@ -899,6 +900,101 @@
   }
 }
 
+/* ============================== */
+/* Carousel Fly-in Transition     */
+/* ============================== */
+
+.carousel-preview.carousel-fly-active {
+  z-index: 100;
+  pointer-events: none;
+  opacity: 1;
+  filter: none;
+  will-change: transform, opacity;
+}
+
+.carousel-preview-left.carousel-fly-active {
+  animation: carousel-fly-in-left 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+.carousel-preview-right.carousel-fly-active {
+  animation: carousel-fly-in-right 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes carousel-fly-in-left {
+  0% {
+    transform: perspective(1000px) translateY(-50%) rotateY(12deg);
+    opacity: 1;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    transform: perspective(1000px) translateX(480px) translateY(-50%) rotateY(0deg) scale(2.8);
+    opacity: 0;
+  }
+}
+
+@keyframes carousel-fly-in-right {
+  0% {
+    transform: perspective(1000px) translateY(-50%) rotateY(-12deg);
+    opacity: 1;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    transform: perspective(1000px) translateX(-480px) translateY(-50%) rotateY(0deg) scale(2.8);
+    opacity: 0;
+  }
+}
+
+.carousel-preview.carousel-fly-fade {
+  pointer-events: none;
+  opacity: 1;
+  filter: none;
+  animation: carousel-fly-fade-out 350ms ease forwards !important;
+  will-change: opacity;
+}
+
+@keyframes carousel-fly-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Content transition during carousel fly-in */
+.content-container.content-flying-out {
+  animation: content-fly-out 400ms cubic-bezier(0.4, 0, 1, 1) forwards;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+@keyframes content-fly-out {
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+.content-container.content-entering-from-preview {
+  animation: content-enter-from-preview 500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes content-enter-from-preview {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 /* Light mode overrides for carousel */
 :root.light .carousel-preview {
   background: rgba(255, 255, 255, 0.5);
@@ -942,5 +1038,20 @@
     animation: none;
     opacity: 1;
     filter: none;
+  }
+
+  .carousel-preview.carousel-fly-active,
+  .carousel-preview.carousel-fly-fade {
+    animation: none !important;
+    opacity: 1;
+    filter: none;
+  }
+
+  .content-container.content-flying-out,
+  .content-container.content-entering-from-preview {
+    animation: none;
+    opacity: 1;
+    filter: none;
+    transform: none;
   }
 }

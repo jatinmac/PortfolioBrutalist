@@ -29,7 +29,6 @@ const TABS = ['Home', 'About', 'Work', 'Builds', 'Contact'];
 
 function HomeHero({ headingLines, onViewWork }) {
   const [pongActive, setPongActive] = useState(false);
-  const [ballPosition, setBallPosition] = useState({ x: 24, y: 24 });
   const [ballSize, setBallSize] = useState(BALL_INITIAL_SIZE);
   const [ballVisible, setBallVisible] = useState(true);
   const [ballVanishing, setBallVanishing] = useState(false);
@@ -39,6 +38,7 @@ function HomeHero({ headingLines, onViewWork }) {
   const [hitWordIndex, setHitWordIndex] = useState(null);
   const containerRef = useRef(null);
   const headingRef = useRef(null);
+  const ballElementRef = useRef(null);
   const ballRef = useRef({
     x: 24,
     y: 24,
@@ -248,7 +248,10 @@ function HomeHero({ headingLines, onViewWork }) {
       const nextBallSize = ball.size;
       ball.x = Math.max(0, Math.min(nextX, containerRect.width - nextBallSize));
       ball.y = Math.max(0, Math.min(nextY, containerRect.height - nextBallSize));
-      setBallPosition({ x: ball.x, y: ball.y });
+      if (ballElementRef.current) {
+        ballElementRef.current.style.setProperty('--ball-size', `${nextBallSize}px`);
+        ballElementRef.current.style.transform = `translate3d(${ball.x}px, ${ball.y}px, 0)`;
+      }
       animationFrame = window.requestAnimationFrame(tick);
     };
 
@@ -281,11 +284,11 @@ function HomeHero({ headingLines, onViewWork }) {
           <span className="pong-paddle pong-paddle-right" aria-hidden="true" />
           {ballVisible && (
             <span
+              ref={ballElementRef}
               className={`pong-ball ${ballVanishing ? 'is-vanishing' : ''}`}
               aria-hidden="true"
               style={{
                 '--ball-size': `${ballSize}px`,
-                transform: `translate3d(${ballPosition.x}px, ${ballPosition.y}px, 0)`,
               }}
             />
           )}
@@ -348,6 +351,9 @@ export default function App() {
   const [displayTab, setDisplayTab] = useState('Home');
   const [prevTab, setPrevTab] = useState(null);
   const timerRef = useRef(null);
+  const [previewTransition, setPreviewTransition] = useState(null);
+  const [previewEntering, setPreviewEntering] = useState(false);
+  const previewTransitionTimerRef = useRef(null);
   const [introCompleted, setIntroCompleted] = useState(false);
   const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_PREVIEW_QUERY).matches);
 
@@ -396,9 +402,8 @@ export default function App() {
       'Product designer and builder',
       'with 3+ years of experience.',
       'Using agentic AI and workflows',
-      'to build shippable deliverables and products.',
-      'Worked in B2B and B2C.',
-      'Previously at Maruti Suzuki.',
+      'to build shippable deliverables and products aligning with business goals.',
+      'Previously, at Maruti Suzuki.',
     ];
   }, []);
 
@@ -437,6 +442,12 @@ export default function App() {
   }, []); // Run once on mount
 
   useEffect(() => {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const effectiveType = connection?.effectiveType || '';
+    if (connection?.saveData || effectiveType.includes('2g')) {
+      return undefined;
+    }
+
     const preloadLazyPages = () => {
       preloadWorkPage();
       preloadAboutPage();
@@ -509,6 +520,12 @@ export default function App() {
 
   const handleTabChange = useCallback((tabName) => {
     if (tabName !== activeTab) {
+      if (previewTransitionTimerRef.current) {
+        clearTimeout(previewTransitionTimerRef.current);
+        previewTransitionTimerRef.current = null;
+        setPreviewTransition(null);
+        setPreviewEntering(false);
+      }
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
@@ -523,10 +540,40 @@ export default function App() {
     }
   }, [activeTab]);
 
+  const handlePreviewClick = useCallback((side, tabName) => {
+    if (previewTransition || tabName === activeTab) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      handleTabChange(tabName);
+      return;
+    }
+
+    playTabChangeSound();
+    setPreviewEntering(false);
+    setPreviewTransition(side);
+
+    previewTransitionTimerRef.current = setTimeout(() => {
+      setPreviewTransition(null);
+      setPreviewEntering(true);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      setActiveTab(tabName);
+      setDisplayTab(tabName);
+
+      previewTransitionTimerRef.current = setTimeout(() => {
+        setPreviewEntering(false);
+        previewTransitionTimerRef.current = null;
+      }, 500);
+    }, 650);
+  }, [previewTransition, activeTab, handleTabChange]);
+
   useEffect(() => {
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
+      }
+      if (previewTransitionTimerRef.current) {
+        clearTimeout(previewTransitionTimerRef.current);
       }
     };
   }, []);
@@ -608,19 +655,19 @@ export default function App() {
         <>
           <div
             key={`left-${leftTab}`}
-            className="carousel-preview carousel-preview-left"
-            onClick={() => handleTabChange(leftTab)}
+            className={`carousel-preview carousel-preview-left${previewTransition === 'left' ? ' carousel-fly-active' : ''}${previewTransition === 'right' ? ' carousel-fly-fade' : ''}`}
+            onClick={() => handlePreviewClick('left', leftTab)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                handleTabChange(leftTab);
+                handlePreviewClick('left', leftTab);
               }
             }}
             role="button"
-            tabIndex={0}
+            tabIndex={previewTransition ? -1 : 0}
             aria-label={`Preview ${leftTab} page`}
             style={{
-              animationDelay: displayTab === 'Home' && !introCompleted ? '3.5s' : '0.1s',
+              animationDelay: previewTransition ? '0s' : (displayTab === 'Home' && !introCompleted ? '3.5s' : '0.1s'),
             }}
           >
             <div className="carousel-preview-inner" aria-hidden="true">
@@ -634,19 +681,19 @@ export default function App() {
           </div>
           <div
             key={`right-${rightTab}`}
-            className="carousel-preview carousel-preview-right"
-            onClick={() => handleTabChange(rightTab)}
+            className={`carousel-preview carousel-preview-right${previewTransition === 'right' ? ' carousel-fly-active' : ''}${previewTransition === 'left' ? ' carousel-fly-fade' : ''}`}
+            onClick={() => handlePreviewClick('right', rightTab)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                handleTabChange(rightTab);
+                handlePreviewClick('right', rightTab);
               }
             }}
             role="button"
-            tabIndex={0}
+            tabIndex={previewTransition ? -1 : 0}
             aria-label={`Preview ${rightTab} page`}
             style={{
-              animationDelay: displayTab === 'Home' && !introCompleted ? '3.8s' : '0.2s',
+              animationDelay: previewTransition ? '0s' : (displayTab === 'Home' && !introCompleted ? '3.8s' : '0.2s'),
             }}
           >
             <div className="carousel-preview-inner" aria-hidden="true">
@@ -662,7 +709,7 @@ export default function App() {
       )}
 
       {/* Main Content Showcase */}
-      <main id="main-content" className="content-container">
+      <main id="main-content" className={`content-container${previewTransition ? ' content-flying-out' : ''}${previewEntering ? ' content-entering-from-preview' : ''}`}>
         <Suspense fallback={null}>
           {renderContent()}
         </Suspense>
