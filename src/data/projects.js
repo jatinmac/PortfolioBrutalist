@@ -8,7 +8,7 @@ export const PROJECTS = [
     role: 'Product Designer',
     year: '2026',
     tools: 'Figma, AI for research & flow, AI coding agents',
-    tags: ['Ai twin', 'AI saas', 'voice agent', 'identity'],
+    tags: ['AI twin', 'AI SaaS', 'voice agent', 'identity'],
     hook: 'High-intent visitors drop off, conversion suffers, and expensive human time gets spent on repeat conversations → We designed a cloned-voice AI twin agent that handles instant qualification, driving lead generation.',
     context: {
       company: 'Double AI (Early-Stage AI Startup)',

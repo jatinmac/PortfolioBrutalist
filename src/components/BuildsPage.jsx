@@ -22,7 +22,7 @@ const BUILDS_DATA = [
   },
   {
     id: 3,
-    title: 'Aiui',
+    title: 'AI UI',
     tag: 'BUILD 03',
     colSpan: 'col-span-1',
     link: 'https://agenticui.netlify.app/',
