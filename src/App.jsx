@@ -354,6 +354,7 @@ export default function App() {
   const [previewTransition, setPreviewTransition] = useState(null);
   const [previewEntering, setPreviewEntering] = useState(false);
   const previewTransitionTimerRef = useRef(null);
+  const [flyingPreview, setFlyingPreview] = useState(null);
   const [introCompleted, setIntroCompleted] = useState(false);
   const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_PREVIEW_QUERY).matches);
 
@@ -524,6 +525,7 @@ export default function App() {
         previewTransitionTimerRef.current = null;
         setPreviewTransition(null);
         setPreviewEntering(false);
+        setFlyingPreview(null);
       }
       if (timerRef.current) {
         clearTimeout(timerRef.current);
@@ -540,7 +542,7 @@ export default function App() {
   }, [activeTab]);
 
   const handlePreviewClick = useCallback((side, tabName) => {
-    if (previewTransition || tabName === activeTab) return;
+    if (previewTransition || flyingPreview || tabName === activeTab) return;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) {
@@ -551,6 +553,7 @@ export default function App() {
     playTabChangeSound();
     setPreviewEntering(false);
     setPreviewTransition(side);
+    setFlyingPreview({ side, tabName });
 
     previewTransitionTimerRef.current = setTimeout(() => {
       setPreviewTransition(null);
@@ -560,11 +563,12 @@ export default function App() {
       setDisplayTab(tabName);
 
       previewTransitionTimerRef.current = setTimeout(() => {
+        setFlyingPreview(null);
         setPreviewEntering(false);
         previewTransitionTimerRef.current = null;
       }, 500);
     }, 650);
-  }, [previewTransition, activeTab, handleTabChange]);
+  }, [previewTransition, flyingPreview, activeTab, handleTabChange]);
 
   useEffect(() => {
     return () => {
@@ -654,7 +658,7 @@ export default function App() {
         <>
           <div
             key={`left-${leftTab}`}
-            className={`carousel-preview carousel-preview-left${previewTransition === 'left' ? ' carousel-fly-active' : ''}${previewTransition === 'right' ? ' carousel-fly-fade' : ''}`}
+            className={`carousel-preview carousel-preview-left${flyingPreview?.side === 'left' ? ' carousel-fly-source' : ''}${previewTransition === 'right' ? ' carousel-fly-fade' : ''}`}
             onClick={() => handlePreviewClick('left', leftTab)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
@@ -663,7 +667,7 @@ export default function App() {
               }
             }}
             role="button"
-            tabIndex={previewTransition ? -1 : 0}
+            tabIndex={previewTransition || flyingPreview ? -1 : 0}
             aria-label={`Preview ${leftTab} page`}
             style={{
               animationDelay: previewTransition ? '0s' : (displayTab === 'Home' && !introCompleted ? '3.5s' : '0.1s'),
@@ -680,7 +684,7 @@ export default function App() {
           </div>
           <div
             key={`right-${rightTab}`}
-            className={`carousel-preview carousel-preview-right${previewTransition === 'right' ? ' carousel-fly-active' : ''}${previewTransition === 'left' ? ' carousel-fly-fade' : ''}`}
+            className={`carousel-preview carousel-preview-right${flyingPreview?.side === 'right' ? ' carousel-fly-source' : ''}${previewTransition === 'left' ? ' carousel-fly-fade' : ''}`}
             onClick={() => handlePreviewClick('right', rightTab)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
@@ -689,7 +693,7 @@ export default function App() {
               }
             }}
             role="button"
-            tabIndex={previewTransition ? -1 : 0}
+            tabIndex={previewTransition || flyingPreview ? -1 : 0}
             aria-label={`Preview ${rightTab} page`}
             style={{
               animationDelay: previewTransition ? '0s' : (displayTab === 'Home' && !introCompleted ? '3.8s' : '0.2s'),
@@ -704,8 +708,25 @@ export default function App() {
               <span className="carousel-preview-label">{rightTab}</span>
             </div>
           </div>
-        </>
-      )}
+          </>
+        )}
+        {isDesktop && flyingPreview && (
+          <div
+            key={`flying-${flyingPreview.tabName}`}
+            className={`carousel-preview carousel-preview-${flyingPreview.side} carousel-fly-active`}
+            aria-hidden="true"
+            style={{ animationDelay: '0s' }}
+          >
+            <div className="carousel-preview-inner">
+              <Suspense fallback={null}>
+                {renderTabContent(flyingPreview.tabName)}
+              </Suspense>
+            </div>
+            <div className="carousel-preview-overlay">
+              <span className="carousel-preview-label">{flyingPreview.tabName}</span>
+            </div>
+          </div>
+        )}
 
       {/* Main Content Showcase */}
       <main id="main-content" className={`content-container${previewTransition ? ' content-flying-out' : ''}${previewEntering ? ' content-entering-from-preview' : ''}`}>
