@@ -1,6 +1,7 @@
 import { Fragment, Suspense, lazy, useCallback, useState, useEffect, useRef, useMemo } from 'react';
 import { Sun, Moon, Volume2, VolumeX, AArrowUp, AArrowDown, RotateCcw } from 'lucide-react';
 import Navbar from './components/Navbar';
+import CustomCursor from './components/CustomCursor';
 import { playTabChangeSound, playThemeToggleSound, getSoundEnabled, setSoundEnabled } from './utils/sound';
 import './App.css';
 
@@ -644,6 +645,7 @@ export default function App() {
 
   return (
     <div className="app-layout">
+      <CustomCursor />
       {/* Skip to Content — visible only on keyboard focus */}
       <a href="#main-content" className="skip-link">Skip to content</a>
 

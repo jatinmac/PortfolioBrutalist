@@ -1,0 +1,92 @@
+/* ── Custom Cursor ─────────────────────────────────────── */
+
+/* Hide native cursor on fine-pointer devices */
+@media (pointer: fine) {
+  html.custom-cursor,
+  html.custom-cursor *,
+  html.custom-cursor a,
+  html.custom-cursor button,
+  html.custom-cursor input,
+  html.custom-cursor textarea,
+  html.custom-cursor select,
+  html.custom-cursor [role="button"] {
+    cursor: none !important;
+  }
+}
+
+/* ── Cursor colour tokens ── */
+/* Dark mode (default): light cursor on dark bg */
+:root {
+  --cursor-border: rgba(200, 200, 200, 0.5);
+  --cursor-text-fill: rgba(200, 200, 200, 0.85);
+  --cursor-click-border: rgba(220, 220, 220, 0.4);
+  --cursor-click-bg: rgba(200, 200, 200, 0.06);
+}
+
+/* Light mode: dark / black cursor on light bg */
+:root.light {
+  --cursor-border: rgba(20, 20, 20, 0.55);
+  --cursor-text-fill: rgba(10, 10, 10, 0.8);
+  --cursor-click-border: rgba(30, 30, 30, 0.4);
+  --cursor-click-bg: rgba(20, 20, 20, 0.06);
+}
+
+.custom-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 99999;
+  will-change: transform;
+
+  /* Circle shape (default) */
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1.5px solid var(--cursor-border);
+  opacity: 0.8;
+
+  /* Smooth shape morph — long duration + gentle ease-out for buttery feel */
+  transition:
+    width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Text-hover state: morph into a thin vertical line */
+.custom-cursor-dot.is-text {
+  width: 2px;
+  height: 22px;
+  border-radius: 1px;
+  background: var(--cursor-text-fill);
+  border-color: var(--cursor-text-fill);
+  opacity: 1;
+}
+
+/* Clickable-hover state: scale up with soft glow */
+.custom-cursor-dot.is-clickable {
+  width: 32px;
+  height: 32px;
+  border-color: var(--cursor-click-border);
+  opacity: 0.5;
+  background: var(--cursor-click-bg);
+}
+
+/* Hide on touch / mobile devices */
+@media (pointer: coarse), (max-width: 768px) {
+  .custom-cursor-dot {
+    display: none !important;
+  }
+}
+
+/* Respect reduced-motion: disable shape transition */
+@media (prefers-reduced-motion: reduce) {
+  .custom-cursor-dot {
+    transition: none;
+  }
+}
