@@ -644,8 +644,9 @@ export default function App() {
   const rightTab = currentIdx !== -1 ? TABS[(currentIdx + 1) % TABS.length] : null;
 
   return (
+    <>
+    <CustomCursor />
     <div className="app-layout">
-      <CustomCursor />
       {/* Skip to Content — visible only on keyboard focus */}
       <a href="#main-content" className="skip-link">Skip to content</a>
 
@@ -803,5 +804,6 @@ export default function App() {
         </div>
       </footer>
     </div>
+    </>
   );
 }
