@@ -328,7 +328,7 @@ function HomeHero({ headingLines, onViewWork }) {
           className="home-subheading"
           style={{ '--sub-delay': `${headingRevealTotalMs + 500}ms` }}
         >
-          Built and launched the Quilo Chrome extension with 600 users, and grew a YouTube channel to 1M+ views.
+          Product designer@ Cardtree ai. Launched Quilo chrome ext. and youtube channel with 1mn+ views.
         </p>
         <button
           onClick={onViewWork}
@@ -358,6 +358,10 @@ export default function App() {
   const [flyingPreview, setFlyingPreview] = useState(null);
   const [introCompleted, setIntroCompleted] = useState(false);
   const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_PREVIEW_QUERY).matches);
+
+  const lastScrollTimeRef = useRef(0);
+  const lastWheelTimeRef = useRef(0);
+  const scrollInertiaActiveRef = useRef(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -401,9 +405,8 @@ export default function App() {
 
   const headingLines = useMemo(() => {
     return [
-      'Design builder with product sense, & engineering curiousity.',
-      'Using agentic ai and workflows',
-      'to build shippable deliverables and products aligning with business goals.',
+      'Product Designer & Builder.',
+      'Using AI to create prototypes that feel real & solve problems.',
       'Prev. at Maruti Suzuki.',
     ];
   }, []);
@@ -643,74 +646,130 @@ export default function App() {
   const leftTab = currentIdx !== -1 ? TABS[(currentIdx - 1 + TABS.length) % TABS.length] : null;
   const rightTab = currentIdx !== -1 ? TABS[(currentIdx + 1) % TABS.length] : null;
 
+  useEffect(() => {
+    if (!isDesktop) return;
+
+    const handleWheel = (e) => {
+      const now = Date.now();
+      const timeSinceLastWheel = now - lastWheelTimeRef.current;
+      lastWheelTimeRef.current = now;
+
+      // If there's been no scroll events for 150ms, the previous gesture (including inertia) has ended.
+      if (timeSinceLastWheel > 150) {
+        scrollInertiaActiveRef.current = false;
+      }
+
+      // If we've already handled a transition for this gesture and inertia is active, ignore.
+      if (scrollInertiaActiveRef.current) {
+        return;
+      }
+
+      // Ignore horizontal scroll attempts
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+
+      // Ignore small scroll deltas (filters trackpad drift/accidental touch)
+      if (Math.abs(e.deltaY) < 30) return;
+
+      // Ignore if a modal is open
+      if (document.querySelector('.modal-backdrop')) return;
+
+      // Ignore if a transition is in progress
+      if (previewTransition || flyingPreview || prevTab) return;
+
+      // Cooldown between transitions (1200ms matches the total carousel fly animation duration)
+      if (now - lastScrollTimeRef.current < 1200) return;
+
+      if (e.deltaY > 0) {
+        // Scroll down -> Go to next tab (right)
+        if (rightTab) {
+          scrollInertiaActiveRef.current = true;
+          lastScrollTimeRef.current = now;
+          handlePreviewClick('right', rightTab);
+        }
+      } else if (e.deltaY < 0) {
+        // Scroll up -> Go to previous tab (left)
+        if (leftTab) {
+          scrollInertiaActiveRef.current = true;
+          lastScrollTimeRef.current = now;
+          handlePreviewClick('left', leftTab);
+        }
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: true });
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, [isDesktop, leftTab, rightTab, previewTransition, flyingPreview, prevTab, handlePreviewClick]);
+
   return (
     <>
-    <CustomCursor />
-    <div className="app-layout">
-      {/* Skip to Content — visible only on keyboard focus */}
-      <a href="#main-content" className="skip-link">Skip to content</a>
+      <CustomCursor />
+      <div className="app-layout">
+        {/* Skip to Content — visible only on keyboard focus */}
+        <a href="#main-content" className="skip-link">Skip to content</a>
 
-      {/* Premium background radial glow */}
-      <div className="bg-glow" aria-hidden="true" />
+        {/* Premium background radial glow */}
+        <div className="bg-glow" aria-hidden="true" />
 
-      {/* Floating Capsule Navbar */}
-      <Navbar activeTab={activeTab} setActiveTab={handleTabChange} />
+        {/* Floating Capsule Navbar */}
+        <Navbar activeTab={activeTab} setActiveTab={handleTabChange} />
 
-      {/* Carousel page previews — desktop only, all tabs */}
-      {isDesktop && !prevTab && leftTab && rightTab && (
-        <>
-          <div
-            key={`left-${leftTab}`}
-            className={`carousel-preview carousel-preview-left${flyingPreview?.side === 'left' ? ' carousel-fly-source' : ''}${previewTransition === 'right' ? ' carousel-fly-fade' : ''}`}
-            onClick={() => handlePreviewClick('left', leftTab)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handlePreviewClick('left', leftTab);
-              }
-            }}
-            role="button"
-            tabIndex={previewTransition || flyingPreview ? -1 : 0}
-            aria-label={`Preview ${leftTab} page`}
-            style={{
-              animationDelay: previewTransition ? '0s' : (displayTab === 'Home' && !introCompleted ? '3.5s' : '0.1s'),
-            }}
-          >
-            <div className="carousel-preview-inner" aria-hidden="true">
-              <Suspense fallback={null}>
-                {renderTabContent(leftTab)}
-              </Suspense>
+        {/* Carousel page previews — desktop only, all tabs */}
+        {isDesktop && !prevTab && leftTab && rightTab && (
+          <>
+            <div
+              key={`left-${leftTab}`}
+              className={`carousel-preview carousel-preview-left${flyingPreview?.side === 'left' ? ' carousel-fly-source' : ''}${previewTransition === 'right' ? ' carousel-fly-fade' : ''}`}
+              onClick={() => handlePreviewClick('left', leftTab)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handlePreviewClick('left', leftTab);
+                }
+              }}
+              role="button"
+              tabIndex={previewTransition || flyingPreview ? -1 : 0}
+              aria-label={`Preview ${leftTab} page`}
+              style={{
+                animationDelay: previewTransition ? '0s' : (displayTab === 'Home' && !introCompleted ? '3.5s' : '0.1s'),
+              }}
+            >
+              <div className="carousel-preview-inner" aria-hidden="true">
+                <Suspense fallback={null}>
+                  {renderTabContent(leftTab)}
+                </Suspense>
+              </div>
+              <div className="carousel-preview-overlay" aria-hidden="true">
+                <span className="carousel-preview-label">{leftTab}</span>
+              </div>
             </div>
-            <div className="carousel-preview-overlay" aria-hidden="true">
-              <span className="carousel-preview-label">{leftTab}</span>
+            <div
+              key={`right-${rightTab}`}
+              className={`carousel-preview carousel-preview-right${flyingPreview?.side === 'right' ? ' carousel-fly-source' : ''}${previewTransition === 'left' ? ' carousel-fly-fade' : ''}`}
+              onClick={() => handlePreviewClick('right', rightTab)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handlePreviewClick('right', rightTab);
+                }
+              }}
+              role="button"
+              tabIndex={previewTransition || flyingPreview ? -1 : 0}
+              aria-label={`Preview ${rightTab} page`}
+              style={{
+                animationDelay: previewTransition ? '0s' : (displayTab === 'Home' && !introCompleted ? '3.8s' : '0.2s'),
+              }}
+            >
+              <div className="carousel-preview-inner" aria-hidden="true">
+                <Suspense fallback={null}>
+                  {renderTabContent(rightTab)}
+                </Suspense>
+              </div>
+              <div className="carousel-preview-overlay" aria-hidden="true">
+                <span className="carousel-preview-label">{rightTab}</span>
+              </div>
             </div>
-          </div>
-          <div
-            key={`right-${rightTab}`}
-            className={`carousel-preview carousel-preview-right${flyingPreview?.side === 'right' ? ' carousel-fly-source' : ''}${previewTransition === 'left' ? ' carousel-fly-fade' : ''}`}
-            onClick={() => handlePreviewClick('right', rightTab)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handlePreviewClick('right', rightTab);
-              }
-            }}
-            role="button"
-            tabIndex={previewTransition || flyingPreview ? -1 : 0}
-            aria-label={`Preview ${rightTab} page`}
-            style={{
-              animationDelay: previewTransition ? '0s' : (displayTab === 'Home' && !introCompleted ? '3.8s' : '0.2s'),
-            }}
-          >
-            <div className="carousel-preview-inner" aria-hidden="true">
-              <Suspense fallback={null}>
-                {renderTabContent(rightTab)}
-              </Suspense>
-            </div>
-            <div className="carousel-preview-overlay" aria-hidden="true">
-              <span className="carousel-preview-label">{rightTab}</span>
-            </div>
-          </div>
           </>
         )}
         {isDesktop && flyingPreview && (
@@ -731,79 +790,79 @@ export default function App() {
           </div>
         )}
 
-      {/* Main Content Showcase */}
-      <main id="main-content" className={`content-container${previewTransition ? ' content-flying-out' : ''}${previewEntering ? ' content-entering-from-preview' : ''}`}>
-        <Suspense fallback={null}>
-          {renderContent()}
-        </Suspense>
-      </main>
+        {/* Main Content Showcase */}
+        <main id="main-content" className={`content-container${previewTransition ? ' content-flying-out' : ''}${previewEntering ? ' content-entering-from-preview' : ''}`}>
+          <Suspense fallback={null}>
+            {renderContent()}
+          </Suspense>
+        </main>
 
-      {/* Global Footer with Theme Switcher */}
-      <footer className="app-footer" role="contentinfo">
-        <div className="footer-content">
-          <span className="footer-copyright">
-            &copy; {new Date().getFullYear()} Jatin Davis &bull;
-          </span>
-          <div className="footer-controls">
-            <div className="font-size-controls" role="group" aria-label="Font size controls">
-              <button
-                onClick={handleFontDecrease}
-                className={`theme-btn ${fontScale <= FONT_SCALE_MIN ? 'is-disabled' : ''}`}
-                aria-label="Decrease font size"
-                disabled={fontScale <= FONT_SCALE_MIN}
-              >
-                <AArrowDown size={14} strokeWidth={2.5} />
-              </button>
-              <button
-                onClick={handleFontReset}
-                className={`theme-btn ${fontScale === FONT_SCALE_DEFAULT ? 'is-active' : ''}`}
-                aria-label={`Reset font size (currently ${fontScale}%)`}
-                title={`${fontScale}%`}
-              >
-                <RotateCcw size={12} strokeWidth={2.5} />
-              </button>
-              <button
-                onClick={handleFontIncrease}
-                className={`theme-btn ${fontScale >= FONT_SCALE_MAX ? 'is-disabled' : ''}`}
-                aria-label="Increase font size"
-                disabled={fontScale >= FONT_SCALE_MAX}
-              >
-                <AArrowUp size={14} strokeWidth={2.5} />
-              </button>
-            </div>
-            <div className="sound-toggle">
-              <button
-                onClick={handleToggleSound}
-                className={`theme-btn ${soundEnabled ? 'is-active' : ''}`}
-                aria-label={soundEnabled ? "Mute Sounds" : "Unmute Sounds"}
-              >
-                {soundEnabled ? (
-                  <Volume2 size={14} strokeWidth={2.5} />
-                ) : (
-                  <VolumeX size={14} strokeWidth={2.5} />
-                )}
-              </button>
-            </div>
-            <div className="theme-switcher">
-              <button
-                onClick={(e) => toggleTheme(e, 'light')}
-                className={`theme-btn ${theme === 'light' ? 'is-active' : ''}`}
-                aria-label="Light Mode"
-              >
-                <Sun size={14} strokeWidth={2.5} />
-              </button>
-              <button
-                onClick={(e) => toggleTheme(e, 'dark')}
-                className={`theme-btn ${theme === 'dark' ? 'is-active' : ''}`}
-                aria-label="Dark Mode"
-              >
-                <Moon size={14} strokeWidth={2.5} />
-              </button>
+        {/* Global Footer with Theme Switcher */}
+        <footer className="app-footer" role="contentinfo">
+          <div className="footer-content">
+            <span className="footer-copyright">
+              &copy; {new Date().getFullYear()} Jatin Davis &bull;
+            </span>
+            <div className="footer-controls">
+              <div className="font-size-controls" role="group" aria-label="Font size controls">
+                <button
+                  onClick={handleFontDecrease}
+                  className={`theme-btn ${fontScale <= FONT_SCALE_MIN ? 'is-disabled' : ''}`}
+                  aria-label="Decrease font size"
+                  disabled={fontScale <= FONT_SCALE_MIN}
+                >
+                  <AArrowDown size={14} strokeWidth={2.5} />
+                </button>
+                <button
+                  onClick={handleFontReset}
+                  className={`theme-btn ${fontScale === FONT_SCALE_DEFAULT ? 'is-active' : ''}`}
+                  aria-label={`Reset font size (currently ${fontScale}%)`}
+                  title={`${fontScale}%`}
+                >
+                  <RotateCcw size={12} strokeWidth={2.5} />
+                </button>
+                <button
+                  onClick={handleFontIncrease}
+                  className={`theme-btn ${fontScale >= FONT_SCALE_MAX ? 'is-disabled' : ''}`}
+                  aria-label="Increase font size"
+                  disabled={fontScale >= FONT_SCALE_MAX}
+                >
+                  <AArrowUp size={14} strokeWidth={2.5} />
+                </button>
+              </div>
+              <div className="sound-toggle">
+                <button
+                  onClick={handleToggleSound}
+                  className={`theme-btn ${soundEnabled ? 'is-active' : ''}`}
+                  aria-label={soundEnabled ? "Mute Sounds" : "Unmute Sounds"}
+                >
+                  {soundEnabled ? (
+                    <Volume2 size={14} strokeWidth={2.5} />
+                  ) : (
+                    <VolumeX size={14} strokeWidth={2.5} />
+                  )}
+                </button>
+              </div>
+              <div className="theme-switcher">
+                <button
+                  onClick={(e) => toggleTheme(e, 'light')}
+                  className={`theme-btn ${theme === 'light' ? 'is-active' : ''}`}
+                  aria-label="Light Mode"
+                >
+                  <Sun size={14} strokeWidth={2.5} />
+                </button>
+                <button
+                  onClick={(e) => toggleTheme(e, 'dark')}
+                  className={`theme-btn ${theme === 'dark' ? 'is-active' : ''}`}
+                  aria-label="Dark Mode"
+                >
+                  <Moon size={14} strokeWidth={2.5} />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
-    </div>
+        </footer>
+      </div>
     </>
   );
 }
