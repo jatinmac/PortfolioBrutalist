@@ -1,9 +1,19 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" class="light" data-theme="light">
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/jatindavis.png" />
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.remove('light');
+      } else {
+        document.documentElement.classList.add('light');
+      }
+    })();
+  </script>
+  <link rel="icon" type="image/webp" href="/jatindavis.webp" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jatin Davis Design</title>
   <meta name="description"

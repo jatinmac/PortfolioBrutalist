@@ -37,7 +37,7 @@ export default function App() {
   const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_PREVIEW_QUERY).matches);
 
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('theme') || 'dark';
+    return localStorage.getItem('theme') || 'light';
   });
 
   const [soundEnabled, setSoundEnabledState] = useState(() => getSoundEnabled());
@@ -90,7 +90,7 @@ export default function App() {
   }, [fontScale]);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const savedTheme = localStorage.getItem('theme') || 'light';
     const root = document.documentElement;
     if (savedTheme === 'light') {
       root.classList.add('light');
