@@ -91,16 +91,14 @@ export default function ProjectCarousel({ images }) {
           <ChevronLeft size={20} strokeWidth={2} />
         </button>
         
-        <div className="carousel-dots-container" role="tablist" aria-label="Slideshow indicators">
+        <div className="carousel-dots-container" aria-label="Slideshow controls">
           {images.map((_, index) => (
             <button
               key={index}
               className={`carousel-dot-btn ${index === currentIndex ? 'is-active' : ''}`}
               onClick={() => handleDotClick(index)}
               aria-label={`Go to slide ${index + 1}`}
-              role="tab"
-              aria-selected={index === currentIndex ? 'true' : 'false'}
-              tabIndex={0}
+              aria-current={index === currentIndex ? 'true' : undefined}
             />
           ))}
         </div>

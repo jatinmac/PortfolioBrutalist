@@ -193,7 +193,6 @@ a:focus-visible, button:focus-visible {
     animation-delay: 0.2s;
   }
 
-  .pong-paddle,
   .pong-ball,
   .home-heading.is-hit {
     animation-duration: 0.01ms;

@@ -10,31 +10,10 @@ export default function WorkPage({ onNavigate }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [motionDirection, setMotionDirection] = useState('next');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [tiltEnabled, setTiltEnabled] = useState(false);
   const modalRef = useRef(null);
   const triggerRef = useRef(null);
 
   const activeProject = PROJECTS[activeIndex];
-
-  useEffect(() => {
-    const hoverQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
-    const updateTiltMode = () => setTiltEnabled(hoverQuery.matches);
-
-    updateTiltMode();
-    if (hoverQuery.addEventListener) {
-      hoverQuery.addEventListener('change', updateTiltMode);
-    } else {
-      hoverQuery.addListener(updateTiltMode);
-    }
-
-    return () => {
-      if (hoverQuery.removeEventListener) {
-        hoverQuery.removeEventListener('change', updateTiltMode);
-      } else {
-        hoverQuery.removeListener(updateTiltMode);
-      }
-    };
-  }, []);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -135,20 +114,6 @@ export default function WorkPage({ onNavigate }) {
     }
   };
 
-  const handleCardPointerMove = (e) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const pointerX = ((e.clientX - rect.left) / rect.width - 0.5).toFixed(3);
-    const pointerY = ((e.clientY - rect.top) / rect.height - 0.5).toFixed(3);
-
-    card.style.setProperty('--pointer-x', pointerX);
-    card.style.setProperty('--pointer-y', pointerY);
-  };
-
-  const handleCardPointerLeave = (e) => {
-    e.currentTarget.style.setProperty('--pointer-x', '0');
-    e.currentTarget.style.setProperty('--pointer-y', '0');
-  };
 
   return (
     <div className="work-page-container">
@@ -191,8 +156,6 @@ export default function WorkPage({ onNavigate }) {
                   setActiveIndex(index);
                 }
               }}
-              onPointerMove={tiltEnabled ? handleCardPointerMove : undefined}
-              onPointerLeave={tiltEnabled ? handleCardPointerLeave : undefined}
               onKeyDown={!isActive ? (e) => handleCardKeyDown(e, index) : undefined}
               role={isActive ? 'group' : 'button'}
               tabIndex={isActive ? undefined : 0}
