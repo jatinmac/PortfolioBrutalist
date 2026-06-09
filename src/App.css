@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100vh;
   padding: 8rem 2rem 5rem 2rem;
   overflow: hidden;
@@ -42,11 +42,11 @@
 .content-container {
   width: 100%;
   max-width: 800px;
-  margin: 0 auto;
+  margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   z-index: 2;
   contain: layout style paint;
 }
@@ -587,7 +587,7 @@
 
 /* Footer Styles */
 .app-footer {
-  position: absolute;
+  position: fixed;
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
@@ -802,7 +802,7 @@
 /* ========================== */
 
 .carousel-preview {
-  position: absolute;
+  position: fixed;
   top: 50%;
   transform: perspective(1000px) translateY(-50%);
   width: 200px;
@@ -826,11 +826,24 @@
 .carousel-preview-left {
   left: calc(50% - 632px);
   transform: perspective(1000px) translateY(-50%) rotateY(12deg);
+  --fly-translate-x: 480px;
 }
 
 .carousel-preview-right {
   right: calc(50% - 632px);
   transform: perspective(1000px) translateY(-50%) rotateY(-12deg);
+  --fly-translate-x: -480px;
+}
+
+/* Work tab specific page preview positioning overrides (larger distance) */
+.tab-work .carousel-preview-left {
+  left: max(10px, calc(50% - 682px));
+  --fly-translate-x: 530px;
+}
+
+.tab-work .carousel-preview-right {
+  right: max(10px, calc(50% - 682px));
+  --fly-translate-x: -530px;
 }
 
 .carousel-preview:hover {
@@ -945,12 +958,12 @@
     opacity: 0.7;
   }
   57% {
-    transform: perspective(1000px) translateX(480px) translateY(-50%) rotateY(0deg) scale(2.8);
+    transform: perspective(1000px) translateX(var(--fly-translate-x)) translateY(-50%) rotateY(0deg) scale(2.8);
     filter: blur(0px);
     opacity: 0.2;
   }
   100% {
-    transform: perspective(1000px) translateX(480px) translateY(-50%) rotateY(0deg) scale(2.8);
+    transform: perspective(1000px) translateX(var(--fly-translate-x)) translateY(-50%) rotateY(0deg) scale(2.8);
     filter: blur(0px);
     opacity: 0;
   }
@@ -975,12 +988,12 @@
     opacity: 0.7;
   }
   57% {
-    transform: perspective(1000px) translateX(-480px) translateY(-50%) rotateY(0deg) scale(2.8);
+    transform: perspective(1000px) translateX(var(--fly-translate-x)) translateY(-50%) rotateY(0deg) scale(2.8);
     filter: blur(0px);
     opacity: 0.2;
   }
   100% {
-    transform: perspective(1000px) translateX(-480px) translateY(-50%) rotateY(0deg) scale(2.8);
+    transform: perspective(1000px) translateX(var(--fly-translate-x)) translateY(-50%) rotateY(0deg) scale(2.8);
     filter: blur(0px);
     opacity: 0;
   }

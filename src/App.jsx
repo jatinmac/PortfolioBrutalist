@@ -281,8 +281,6 @@ function HomeHero({ headingLines, onViewWork }) {
     >
       {pongActive && (
         <>
-          <span className="pong-paddle pong-paddle-left" aria-hidden="true" />
-          <span className="pong-paddle pong-paddle-right" aria-hidden="true" />
           {ballVisible && (
             <span
               ref={ballElementRef}
@@ -358,10 +356,6 @@ export default function App() {
   const [flyingPreview, setFlyingPreview] = useState(null);
   const [introCompleted, setIntroCompleted] = useState(false);
   const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_PREVIEW_QUERY).matches);
-
-  const lastScrollTimeRef = useRef(0);
-  const lastWheelTimeRef = useRef(0);
-  const scrollInertiaActiveRef = useRef(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -646,66 +640,10 @@ export default function App() {
   const leftTab = currentIdx !== -1 ? TABS[(currentIdx - 1 + TABS.length) % TABS.length] : null;
   const rightTab = currentIdx !== -1 ? TABS[(currentIdx + 1) % TABS.length] : null;
 
-  useEffect(() => {
-    if (!isDesktop) return;
-
-    const handleWheel = (e) => {
-      const now = Date.now();
-      const timeSinceLastWheel = now - lastWheelTimeRef.current;
-      lastWheelTimeRef.current = now;
-
-      // If there's been no scroll events for 150ms, the previous gesture (including inertia) has ended.
-      if (timeSinceLastWheel > 150) {
-        scrollInertiaActiveRef.current = false;
-      }
-
-      // If we've already handled a transition for this gesture and inertia is active, ignore.
-      if (scrollInertiaActiveRef.current) {
-        return;
-      }
-
-      // Ignore horizontal scroll attempts
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-
-      // Ignore small scroll deltas (filters trackpad drift/accidental touch)
-      if (Math.abs(e.deltaY) < 30) return;
-
-      // Ignore if a modal is open
-      if (document.querySelector('.modal-backdrop')) return;
-
-      // Ignore if a transition is in progress
-      if (previewTransition || flyingPreview || prevTab) return;
-
-      // Cooldown between transitions (1200ms matches the total carousel fly animation duration)
-      if (now - lastScrollTimeRef.current < 1200) return;
-
-      if (e.deltaY > 0) {
-        // Scroll down -> Go to next tab (right)
-        if (rightTab) {
-          scrollInertiaActiveRef.current = true;
-          lastScrollTimeRef.current = now;
-          handlePreviewClick('right', rightTab);
-        }
-      } else if (e.deltaY < 0) {
-        // Scroll up -> Go to previous tab (left)
-        if (leftTab) {
-          scrollInertiaActiveRef.current = true;
-          lastScrollTimeRef.current = now;
-          handlePreviewClick('left', leftTab);
-        }
-      }
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: true });
-    return () => {
-      window.removeEventListener('wheel', handleWheel);
-    };
-  }, [isDesktop, leftTab, rightTab, previewTransition, flyingPreview, prevTab, handlePreviewClick]);
-
   return (
     <>
       <CustomCursor />
-      <div className="app-layout">
+      <div className={`app-layout tab-${displayTab.toLowerCase()}`}>
         {/* Skip to Content — visible only on keyboard focus */}
         <a href="#main-content" className="skip-link">Skip to content</a>
 
