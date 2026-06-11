@@ -37,6 +37,8 @@ export default function CustomCursor() {
   const dotRef = useRef(null);
   const position = useRef({ x: -100, y: -100 });
   const rafId = useRef(null);
+  const modeRef = useRef('default');
+  const visibleRef = useRef(false);
   const [mode, setMode] = useState('default'); // 'default' | 'text' | 'clickable'
   const [visible, setVisible] = useState(false);
 
@@ -69,52 +71,68 @@ export default function CustomCursor() {
     return () => document.documentElement.classList.remove('custom-cursor');
   }, [enabled]);
 
-  /* Track mouse and determine what we're hovering */
-  const handleMouseMove = useCallback((e) => {
-    position.current.x = e.clientX;
-    position.current.y = e.clientY;
+  const schedulePositionWrite = useCallback(() => {
+    if (rafId.current) return;
 
-    if (!visible) setVisible(true);
-
-    /* Determine cursor mode from hovered element */
-    const el = document.elementFromPoint(e.clientX, e.clientY);
-    if (isClickableElement(el)) {
-      setMode('clickable');
-    } else if (isTextElement(el)) {
-      setMode('text');
-    } else {
-      setMode('default');
-    }
-  }, [visible]);
-
-  const handleMouseLeave = useCallback(() => {
-    setVisible(false);
-  }, []);
-
-  const handleMouseEnter = useCallback(() => {
-    setVisible(true);
-  }, []);
-
-  /* rAF loop for buttery-smooth positioning */
-  useEffect(() => {
-    if (!enabled) return undefined;
-
-    const tick = () => {
+    rafId.current = requestAnimationFrame(() => {
+      rafId.current = null;
       if (dotRef.current) {
         const { x, y } = position.current;
         dotRef.current.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
       }
-      rafId.current = requestAnimationFrame(tick);
-    };
+    });
+  }, []);
 
-    rafId.current = requestAnimationFrame(tick);
+  const setVisibleState = useCallback((nextVisible) => {
+    if (visibleRef.current === nextVisible) return;
+    visibleRef.current = nextVisible;
+    setVisible(nextVisible);
+  }, []);
+
+  /* Track mouse and determine what we're hovering */
+  const handleMouseMove = useCallback((e) => {
+    position.current.x = e.clientX;
+    position.current.y = e.clientY;
+    schedulePositionWrite();
+
+    setVisibleState(true);
+
+    /* Determine cursor mode from hovered element */
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    let nextMode = 'default';
+    if (isClickableElement(el)) {
+      nextMode = 'clickable';
+    } else if (isTextElement(el)) {
+      nextMode = 'text';
+    }
+
+    if (modeRef.current !== nextMode) {
+      modeRef.current = nextMode;
+      setMode(nextMode);
+    }
+  }, [schedulePositionWrite, setVisibleState]);
+
+  const handleMouseLeave = useCallback(() => {
+    setVisibleState(false);
+  }, [setVisibleState]);
+
+  const handleMouseEnter = useCallback(() => {
+    setVisibleState(true);
+  }, [setVisibleState]);
+
+  /* Position writes are batched into animation frames after pointer movement. */
+  useEffect(() => {
+    if (!enabled) return undefined;
 
     document.addEventListener('mousemove', handleMouseMove, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('mouseenter', handleMouseEnter);
 
     return () => {
-      cancelAnimationFrame(rafId.current);
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+        rafId.current = null;
+      }
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('mouseenter', handleMouseEnter);

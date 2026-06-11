@@ -1,0 +1,23 @@
+.calm-sea-bg-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.calm-sea-bg-container.is-ready {
+  opacity: 1;
+}
+
+.calm-sea-bg-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

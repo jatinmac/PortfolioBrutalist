@@ -709,9 +709,11 @@
   height: 220px;
   overflow: hidden;
   border-radius: 16px;
-  background: rgba(18, 18, 22, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+  background: rgba(18, 18, 22, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: none;
+  box-shadow: none;
   cursor: pointer;
   z-index: 3;
   opacity: 0;
@@ -721,6 +723,10 @@
     transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
     border-color 0.3s ease,
     box-shadow 0.3s ease;
+}
+
+:root.light .carousel-preview {
+  background: rgba(255, 255, 255, 0.45);
 }
 
 .carousel-preview-left {
@@ -746,20 +752,8 @@
   --fly-translate-x: -530px;
 }
 
-.carousel-preview:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.06);
-}
 
-.carousel-preview-left:hover {
-  transform: perspective(1000px) translateY(-50%) rotateY(6deg) scale(1.04);
-}
 
-.carousel-preview-right:hover {
-  transform: perspective(1000px) translateY(-50%) rotateY(-6deg) scale(1.04);
-}
 
 .carousel-preview:focus-visible {
   outline: 2px solid var(--accent-color, #3b82f6);
@@ -783,18 +777,12 @@
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
 }
 
-.carousel-preview:hover .carousel-preview-icon {
-  color: var(--text-primary);
-  transform: translateY(-2px) scale(1.08);
-}
+
 
 .carousel-preview-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top,
-      rgba(0, 0, 0, 0.72) 0%,
-      rgba(0, 0, 0, 0.12) 35%,
-      transparent 55%);
+  background: transparent;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -808,13 +796,11 @@
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--text-secondary);
   transition: color 0.3s ease;
 }
 
-.carousel-preview:hover .carousel-preview-label {
-  color: rgba(255, 255, 255, 1);
-}
+
 
 @keyframes carousel-fade-in {
   to {

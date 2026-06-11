@@ -6,6 +6,19 @@ import { PROJECTS } from '../data/projects';
 import ProjectCarousel from './ProjectCarousel';
 import './WorkPage.css';
 
+const DOUBLE_AI_PITCH_DECK_IMAGES = [
+  '/DoubleAipitchdeck/Double%20ai%201.webp',
+  '/DoubleAipitchdeck/Double%20ai%202.webp',
+  '/DoubleAipitchdeck/Double%20ai%203.webp',
+  '/DoubleAipitchdeck/Double%20ai%204.webp',
+  '/DoubleAipitchdeck/Double%20ai%205.webp',
+  '/DoubleAipitchdeck/Double%20ai%206.webp',
+  '/DoubleAipitchdeck/Double%20ai%207.webp',
+  '/DoubleAipitchdeck/Double%20ai%208.webp',
+  '/DoubleAipitchdeck/Double%20ai%209.webp',
+  '/DoubleAipitchdeck/Double%20ai%2010.webp',
+];
+
 export default function WorkPage({ onNavigate }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [motionDirection, setMotionDirection] = useState('next');
@@ -330,18 +343,7 @@ export default function WorkPage({ onNavigate }) {
                     <div className="modal-divider" />
                     <div className="modal-description-section">
                       <h4>Project Pitch Deck</h4>
-                      <ProjectCarousel images={[
-                        '/DoubleAipitchdeck/Double%20ai%201.webp',
-                        '/DoubleAipitchdeck/Double%20ai%202.webp',
-                        '/DoubleAipitchdeck/Double%20ai%203.webp',
-                        '/DoubleAipitchdeck/Double%20ai%204.webp',
-                        '/DoubleAipitchdeck/Double%20ai%205.webp',
-                        '/DoubleAipitchdeck/Double%20ai%206.webp',
-                        '/DoubleAipitchdeck/Double%20ai%207.webp',
-                        '/DoubleAipitchdeck/Double%20ai%208.webp',
-                        '/DoubleAipitchdeck/Double%20ai%209.webp',
-                        '/DoubleAipitchdeck/Double%20ai%2010.webp'
-                      ]} />
+                      <ProjectCarousel images={DOUBLE_AI_PITCH_DECK_IMAGES} />
                     </div>
                   </>
                 )}

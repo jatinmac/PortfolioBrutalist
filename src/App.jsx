@@ -4,6 +4,7 @@ import CustomCursor from './components/CustomCursor';
 import DesktopPreviewCarousel from './components/DesktopPreviewCarousel';
 import HomeHero from './components/HomeHero';
 import Navbar from './components/Navbar';
+import CalmSeaBackground from './components/CalmSeaBackground';
 import { DESKTOP_PREVIEW_QUERY, MOBILE_PERFORMANCE_QUERY } from './utils/mediaQueries';
 import { playTabChangeSound, playThemeToggleSound, getSoundEnabled, setSoundEnabled } from './utils/sound';
 import './App.css';
@@ -12,6 +13,13 @@ const preloadAboutPage = () => import('./components/AboutPage');
 const preloadWorkPage = () => import('./components/WorkPage');
 const preloadBuildsPage = () => import('./components/BuildsPage');
 const preloadContactPage = () => import('./components/ContactPage');
+
+const PAGE_PRELOADERS = {
+  About: preloadAboutPage,
+  Work: preloadWorkPage,
+  Builds: preloadBuildsPage,
+  Contact: preloadContactPage,
+};
 
 const AboutPage = lazy(preloadAboutPage);
 const WorkPage = lazy(preloadWorkPage);
@@ -108,9 +116,12 @@ export default function App() {
 
     const preloadLazyPages = () => {
       preloadWorkPage();
-      preloadAboutPage();
-      preloadBuildsPage();
-      preloadContactPage();
+
+      if (!window.matchMedia(MOBILE_PERFORMANCE_QUERY).matches) {
+        preloadAboutPage();
+        preloadBuildsPage();
+        preloadContactPage();
+      }
     };
 
     if ('requestIdleCallback' in window) {
@@ -149,6 +160,10 @@ export default function App() {
 
   const handleFontReset = useCallback(() => {
     setFontScale(FONT_SCALE_DEFAULT);
+  }, []);
+
+  const handleTabPreload = useCallback((tabName) => {
+    PAGE_PRELOADERS[tabName]?.();
   }, []);
 
   const toggleTheme = useCallback((e, newTheme) => {
@@ -322,10 +337,15 @@ export default function App() {
     <>
       <CustomCursor />
       <div className={`app-layout tab-${displayTab.toLowerCase()}`}>
+        <CalmSeaBackground theme={theme} />
         <a href="#main-content" className="skip-link">Skip to content</a>
         <div className="bg-glow" aria-hidden="true" />
 
-        <Navbar activeTab={activeTab} setActiveTab={handleTabChange} />
+        <Navbar
+          activeTab={activeTab}
+          setActiveTab={handleTabChange}
+          onTabPreload={handleTabPreload}
+        />
 
         <DesktopPreviewCarousel
           isDesktop={isDesktop}
@@ -337,6 +357,7 @@ export default function App() {
           displayTab={displayTab}
           introCompleted={introCompleted}
           onPreviewClick={handlePreviewClick}
+          onPreviewPreload={handleTabPreload}
         />
 
         <main id="main-content" className={`content-container${previewTransition ? ' content-flying-out' : ''}${previewEntering ? ' content-entering-from-preview' : ''}`}>

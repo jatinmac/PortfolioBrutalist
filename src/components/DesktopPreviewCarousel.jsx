@@ -29,6 +29,7 @@ export default function DesktopPreviewCarousel({
   displayTab,
   introCompleted,
   onPreviewClick,
+  onPreviewPreload,
 }) {
   if (!isDesktop) return null;
 
@@ -40,6 +41,8 @@ export default function DesktopPreviewCarousel({
             key={`left-${leftTab}`}
             className={`carousel-preview carousel-preview-left tab-${leftTab.toLowerCase()}${flyingPreview?.side === 'left' ? ' carousel-fly-source' : ''}${previewTransition === 'right' ? ' carousel-fly-fade' : ''}`}
             onClick={() => onPreviewClick('left', leftTab)}
+            onFocus={() => onPreviewPreload?.(leftTab)}
+            onPointerEnter={() => onPreviewPreload?.(leftTab)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -62,6 +65,8 @@ export default function DesktopPreviewCarousel({
             key={`right-${rightTab}`}
             className={`carousel-preview carousel-preview-right tab-${rightTab.toLowerCase()}${flyingPreview?.side === 'right' ? ' carousel-fly-source' : ''}${previewTransition === 'left' ? ' carousel-fly-fade' : ''}`}
             onClick={() => onPreviewClick('right', rightTab)}
+            onFocus={() => onPreviewPreload?.(rightTab)}
+            onPointerEnter={() => onPreviewPreload?.(rightTab)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();

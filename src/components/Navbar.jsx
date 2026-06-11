@@ -6,7 +6,7 @@ const TABS = ['Home', 'About', 'Work', 'Builds', 'Contact'];
 const RESUME_PDF_PATH = '/Jatin%20Davis%20Resume%20JDR%20.pdf';
 const RESUME_DRIVE_URL = 'https://drive.google.com/file/d/1-zqfQ3X3NTgxAEKJag8ebzWExW7-ngC0/view?usp=sharing';
 
-export default function Navbar({ activeTab, setActiveTab }) {
+export default function Navbar({ activeTab, setActiveTab, onTabPreload }) {
   const [pillStyle, setPillStyle] = useState({});
   const [isMoving, setIsMoving] = useState(false);
   const [rotation, setRotation] = useState(0);
@@ -83,8 +83,10 @@ export default function Navbar({ activeTab, setActiveTab }) {
     }
 
     if (newIndex !== undefined) {
-      setActiveTab(TABS[newIndex]);
-      tabRefs.current[TABS[newIndex]]?.focus();
+      const nextTab = TABS[newIndex];
+      onTabPreload?.(nextTab);
+      setActiveTab(nextTab);
+      tabRefs.current[nextTab]?.focus();
     }
   };
 
@@ -114,6 +116,8 @@ export default function Navbar({ activeTab, setActiveTab }) {
                 key={tab}
                 ref={(el) => (tabRefs.current[tab] = el)}
                 onClick={() => setActiveTab(tab)}
+                onFocus={() => onTabPreload?.(tab)}
+                onPointerEnter={() => onTabPreload?.(tab)}
                 className={`navbar-tab-btn ${activeTab === tab ? 'is-active' : ''}`}
                 aria-selected={activeTab === tab}
                 aria-controls={`tabpanel-${tab.toLowerCase()}`}

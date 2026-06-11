@@ -23,6 +23,12 @@ export default function HomeHero({ headingLines, onViewWork }) {
   const containerRef = useRef(null);
   const headingRef = useRef(null);
   const ballElementRef = useRef(null);
+  const collisionLayoutRef = useRef({
+    width: 0,
+    height: 0,
+    headingBox: null,
+    wordBoxes: [],
+  });
   const ballRef = useRef({
     x: 24,
     y: 24,
@@ -71,6 +77,37 @@ export default function HomeHero({ headingLines, onViewWork }) {
 
     let animationFrame;
     const ballState = ballRef.current;
+    let resizeObserver;
+
+    const measureCollisionLayout = () => {
+      const container = containerRef.current;
+      const heading = headingRef.current;
+      if (!container || !heading) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const headingRect = heading.getBoundingClientRect();
+      const wordNodes = heading.querySelectorAll('.word-reveal');
+
+      collisionLayoutRef.current = {
+        width: containerRect.width,
+        height: containerRect.height,
+        headingBox: {
+          left: headingRect.left - containerRect.left,
+          right: headingRect.right - containerRect.left,
+          top: headingRect.top - containerRect.top,
+          bottom: headingRect.bottom - containerRect.top,
+        },
+        wordBoxes: Array.from(wordNodes).map((wordNode) => {
+          const wordRect = wordNode.getBoundingClientRect();
+          return {
+            left: wordRect.left - containerRect.left,
+            right: wordRect.right - containerRect.left,
+            top: wordRect.top - containerRect.top,
+            bottom: wordRect.bottom - containerRect.top,
+          };
+        }),
+      };
+    };
 
     const registerBallHit = () => {
       if (!ballState.visible) return;
@@ -110,24 +147,16 @@ export default function HomeHero({ headingLines, onViewWork }) {
       headingHitTimerRef.current = window.setTimeout(() => setHeadingHit(false), 160);
     };
 
-    const fadeHitWord = (ballBox, containerRect) => {
-      const wordNodes = headingRef.current?.querySelectorAll('.word-reveal');
-      if (!wordNodes?.length) return;
+    const fadeHitWord = (ballBox) => {
+      const { wordBoxes } = collisionLayoutRef.current;
+      if (!wordBoxes.length) return;
 
       const ballCenter = {
         x: ballBox.left + ballState.size / 2,
         y: ballBox.top + ballState.size / 2,
       };
 
-      const hitIndex = Array.from(wordNodes).findIndex((wordNode) => {
-        const wordRect = wordNode.getBoundingClientRect();
-        const wordBox = {
-          left: wordRect.left - containerRect.left,
-          right: wordRect.right - containerRect.left,
-          top: wordRect.top - containerRect.top,
-          bottom: wordRect.bottom - containerRect.top,
-        };
-
+      const hitIndex = wordBoxes.findIndex((wordBox) => {
         const centerInsideWord = (
           ballCenter.x >= wordBox.left
           && ballCenter.x <= wordBox.right
@@ -153,10 +182,14 @@ export default function HomeHero({ headingLines, onViewWork }) {
     };
 
     const tick = (time) => {
-      const container = containerRef.current;
-      const heading = headingRef.current;
+      let collisionLayout = collisionLayoutRef.current;
 
-      if (!container || !heading) {
+      if (!collisionLayout.headingBox || !collisionLayout.width || !collisionLayout.height) {
+        measureCollisionLayout();
+        collisionLayout = collisionLayoutRef.current;
+      }
+
+      if (!collisionLayout.headingBox || !collisionLayout.width || !collisionLayout.height) {
         animationFrame = window.requestAnimationFrame(tick);
         return;
       }
@@ -168,28 +201,21 @@ export default function HomeHero({ headingLines, onViewWork }) {
       const delta = ball.lastTime ? Math.min((time - ball.lastTime) / 1000, 0.04) : 0;
       ball.lastTime = time;
 
-      const containerRect = container.getBoundingClientRect();
-      const headingRect = heading.getBoundingClientRect();
-      const headingBox = {
-        left: headingRect.left - containerRect.left,
-        right: headingRect.right - containerRect.left,
-        top: headingRect.top - containerRect.top,
-        bottom: headingRect.bottom - containerRect.top,
-      };
+      const { width, height, headingBox } = collisionLayout;
 
       let nextX = ball.x + ball.vx * delta;
       let nextY = ball.y + ball.vy * delta;
       let hitThisFrame = false;
 
-      if (nextX <= 0 || nextX + currentBallSize >= containerRect.width) {
+      if (nextX <= 0 || nextX + currentBallSize >= width) {
         ball.vx *= -1;
-        nextX = Math.max(0, Math.min(nextX, containerRect.width - currentBallSize));
+        nextX = Math.max(0, Math.min(nextX, width - currentBallSize));
         hitThisFrame = true;
       }
 
-      if (nextY <= 0 || nextY + currentBallSize >= containerRect.height) {
+      if (nextY <= 0 || nextY + currentBallSize >= height) {
         ball.vy *= -1;
-        nextY = Math.max(0, Math.min(nextY, containerRect.height - currentBallSize));
+        nextY = Math.max(0, Math.min(nextY, height - currentBallSize));
         hitThisFrame = true;
       }
 
@@ -222,7 +248,7 @@ export default function HomeHero({ headingLines, onViewWork }) {
 
         hitThisFrame = true;
         pulseHeading();
-        fadeHitWord(ballBox, containerRect);
+        fadeHitWord(ballBox);
       }
 
       if (hitThisFrame) {
@@ -230,8 +256,8 @@ export default function HomeHero({ headingLines, onViewWork }) {
       }
 
       const nextBallSize = ball.size;
-      ball.x = Math.max(0, Math.min(nextX, containerRect.width - nextBallSize));
-      ball.y = Math.max(0, Math.min(nextY, containerRect.height - nextBallSize));
+      ball.x = Math.max(0, Math.min(nextX, width - nextBallSize));
+      ball.y = Math.max(0, Math.min(nextY, height - nextBallSize));
       if (ballElementRef.current) {
         ballElementRef.current.style.setProperty('--ball-size', `${nextBallSize}px`);
         ballElementRef.current.style.transform = `translate3d(${ball.x}px, ${ball.y}px, 0)`;
@@ -239,10 +265,19 @@ export default function HomeHero({ headingLines, onViewWork }) {
       animationFrame = window.requestAnimationFrame(tick);
     };
 
+    measureCollisionLayout();
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(measureCollisionLayout);
+      if (containerRef.current) resizeObserver.observe(containerRef.current);
+      if (headingRef.current) resizeObserver.observe(headingRef.current);
+    }
+    window.addEventListener('resize', measureCollisionLayout);
     animationFrame = window.requestAnimationFrame(tick);
 
     return () => {
       window.cancelAnimationFrame(animationFrame);
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', measureCollisionLayout);
       if (headingHitTimerRef.current) {
         window.clearTimeout(headingHitTimerRef.current);
       }
@@ -253,6 +288,12 @@ export default function HomeHero({ headingLines, onViewWork }) {
         window.clearTimeout(ballVanishTimerRef.current);
       }
       ballState.lastTime = 0;
+      collisionLayoutRef.current = {
+        width: 0,
+        height: 0,
+        headingBox: null,
+        wordBoxes: [],
+      };
     };
   }, [pongActive]);
 

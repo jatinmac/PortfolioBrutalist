@@ -2,7 +2,7 @@
 
 ## Project Structure & Architecture
 
-This is a React 19 + Vite single-page portfolio. `src/App.jsx` owns tab, theme, sound, font scale, page-loading state, and the desktop-only page preview carousel. Page components live in `src/components/` with matching CSS. Portfolio case-study content is in `src/data/projects.js`; the Builds tab currently keeps its build-card data in `src/components/BuildsPage.jsx`. Web Audio helpers are in `src/utils/sound.js`. Assets are served from `public/`. `dist/` is generated output; do not edit it directly.
+This is a React 19 + Vite single-page portfolio. `src/App.jsx` owns tab, theme, sound, font scale, page-loading state, lazy tab preloading, and the desktop-only page preview carousel. Page components live in `src/components/` with matching CSS. `CalmSeaBackground.jsx` owns the desktop WebGL background and must keep `three` behind dynamic import / runtime guards. Portfolio case-study content is in `src/data/projects.js`; the Builds tab currently keeps its build-card data in `src/components/BuildsPage.jsx`. Web Audio helpers are in `src/utils/sound.js`. Shared viewport queries live in `src/utils/mediaQueries.js`. Assets are served from `public/`. `dist/` is generated output; do not edit it directly.
 
 ## Build, Test, and Development Commands
 
@@ -19,9 +19,17 @@ Use React function components with hooks. Component files use PascalCase, for ex
 
 Do not add Tailwind, CSS-in-JS, routing, external state management, or a UI kit unless requested. Use `lucide-react` for new icon buttons. Preserve the dark-first visual language, `:root.light` overrides, CSS variables, `max-width: 768px` mobile breakpoint, and the `min-width: 1340px` / fine-pointer desktop carousel threshold. Prefer explicit transitions and avoid stacked `backdrop-filter`, animated blur, 3D transforms, and persistent `will-change`.
 
+## Performance Guidelines
+
+Keep the UI, transitions, and motion behavior visually stable when optimizing. Heavy desktop-only features must be gated before expensive work starts: the WebGL sea background should not load `three` or create a renderer on mobile/coarse-pointer viewports, and the custom cursor, desktop previews, pong animation, backdrop filters, and animation blur should continue to respect the existing mobile/performance guards.
+
+Keep the initial bundle lean. Avoid static imports of large optional libraries in `App.jsx`; use dynamic imports inside guarded effects or feature-specific components. Lazy tab pages may preload for perceived speed, but mobile preloading should stay selective and connection-aware. Prefer hover/focus/intent preloading for secondary tabs and desktop carousel previews.
+
+Avoid continuous work when nothing is changing. Use refs for transient animation values, batch DOM writes in `requestAnimationFrame`, cache layout reads across frames, and recompute geometry on resize or known content changes. Avoid `transition: all`; list animated properties explicitly.
+
 ## Testing Guidelines
 
-There is no automated test suite yet. For visual or interaction changes, validate desktop and mobile in a browser. Check console errors, tab navigation across Home, About, Work, Builds, and Contact, desktop preview carousel behavior on wide viewports, project wrapping, modal behavior, focus return, scroll lock, theme/sound/font controls, and image loading.
+There is no automated test suite yet. For visual or interaction changes, validate desktop and mobile in a browser. Check console errors, tab navigation across Home, About, Work, Builds, and Contact, desktop preview carousel behavior on wide viewports, project wrapping, modal behavior, focus return, scroll lock, theme/sound/font controls, and image loading. For performance-sensitive changes, inspect the production build output and verify that mobile/coarse-pointer loads do not request desktop-only chunks such as the `three` WebGL chunk.
 
 ## Content, Assets & Accessibility
 
