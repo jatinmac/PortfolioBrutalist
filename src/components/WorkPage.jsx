@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { ChevronLeft, ChevronRight, Maximize2, X } from 'lucide-react';
-import { playClickSound, playModalOpenSound, playModalCloseSound } from '../utils/sound';
+import { useState, useRef } from 'react';
+import { ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { playClickSound, playModalOpenSound } from '../utils/sound';
 import { PROJECTS } from '../data/projects';
 import ProjectCarousel from './ProjectCarousel';
+import { IconButton, Icon, Card, Tag, Modal, ImageBox, Button, MetaGrid, MetaItem, Divider, Section } from '../ds';
 import './WorkPage.css';
 
 const DOUBLE_AI_PITCH_DECK_IMAGES = [
@@ -23,74 +23,9 @@ export default function WorkPage({ onNavigate }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [motionDirection, setMotionDirection] = useState('next');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const modalRef = useRef(null);
   const triggerRef = useRef(null);
 
   const activeProject = PROJECTS[activeIndex];
-
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isModalOpen]);
-
-  // Focus trap, Escape key, and focus management for modal
-  useEffect(() => {
-    if (!isModalOpen) return;
-
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        playModalCloseSound();
-        setIsModalOpen(false);
-        return;
-      }
-
-      if (e.key === 'Tab') {
-        const modal = modalRef.current;
-        if (!modal) return;
-
-        const focusableEls = modal.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusableEls.length === 0) return;
-
-        const firstEl = focusableEls[0];
-        const lastEl = focusableEls[focusableEls.length - 1];
-
-        if (e.shiftKey) {
-          if (document.activeElement === firstEl) {
-            e.preventDefault();
-            lastEl.focus();
-          }
-        } else {
-          if (document.activeElement === lastEl) {
-            e.preventDefault();
-            firstEl.focus();
-          }
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    // Focus the close button when modal opens
-    const focusTimer = setTimeout(() => {
-      modalRef.current?.querySelector('.modal-close-btn')?.focus();
-    }, 50);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      clearTimeout(focusTimer);
-      // Return focus to the element that opened the modal
-      triggerRef.current?.focus();
-    };
-  }, [isModalOpen]);
 
   const handlePrev = () => {
     playClickSound();
@@ -105,7 +40,6 @@ export default function WorkPage({ onNavigate }) {
   };
 
   const handleCloseModal = () => {
-    playModalCloseSound();
     setIsModalOpen(false);
   };
 
@@ -127,28 +61,25 @@ export default function WorkPage({ onNavigate }) {
     }
   };
 
-
   return (
     <div className="work-page-container">
-      <h2 className="sr-only">Selected Projects</h2>
+      <h2 className="ds-sr-only">Selected Projects</h2>
 
       {/* Top Header Row with Navigation Buttons */}
       <div className="work-header">
         <div className="work-nav-buttons">
-          <button
-            className="nav-btn prev-btn"
+          <IconButton
             onClick={handlePrev}
             aria-label="Previous Project"
           >
-            <ChevronLeft size={20} strokeWidth={2} />
-          </button>
-          <button
-            className="nav-btn next-btn"
+            <Icon icon={ChevronLeft} size="md" />
+          </IconButton>
+          <IconButton
             onClick={handleNext}
             aria-label="Next Project"
           >
-            <ChevronRight size={20} strokeWidth={2} />
-          </button>
+            <Icon icon={ChevronRight} size="md" />
+          </IconButton>
         </div>
       </div>
 
@@ -159,9 +90,10 @@ export default function WorkPage({ onNavigate }) {
           const titleId = `project-title-${project.id}`;
 
           return (
-            <div
+            <Card
               key={project.id}
               className={`project-card ${isActive ? 'is-expanded' : 'is-collapsed'}`}
+              interactive={!isActive}
               onClick={() => {
                 if (!isActive) {
                   playClickSound();
@@ -186,8 +118,10 @@ export default function WorkPage({ onNavigate }) {
                       aria-label={`${project.title} project screenshot`}
                     />
                     {/* Expand/Modal trigger */}
-                    <button
-                      className="nav-btn expand-corner-btn"
+                    <IconButton
+                      size="overlay"
+                      placement="corner"
+                      className="expand-corner-btn"
                       onClick={(e) => {
                         e.stopPropagation();
                         triggerRef.current = e.currentTarget;
@@ -196,8 +130,8 @@ export default function WorkPage({ onNavigate }) {
                       }}
                       aria-label={`Expand details for ${project.title}`}
                     >
-                      <Maximize2 size={20} strokeWidth={2} />
-                    </button>
+                      <Icon icon={Maximize2} size="md" />
+                    </IconButton>
                   </div>
                   {/* Project name */}
                   <div className="project-card-footer">
@@ -208,7 +142,7 @@ export default function WorkPage({ onNavigate }) {
                     {project.tags && (
                       <div className="project-card-tags">
                         {project.tags.map((tag) => (
-                          <span key={tag} className="project-card-tag">{tag}</span>
+                          <Tag key={tag} variant="card">{tag}</Tag>
                         ))}
                       </div>
                     )}
@@ -224,197 +158,146 @@ export default function WorkPage({ onNavigate }) {
                   />
                 </div>
               )}
-            </div>
+            </Card>
           );
         })}
       </div>
 
       {/* Detailed Project Modal */}
-      {isModalOpen && createPortal(
-        <div
-          className="modal-backdrop"
-          onClick={handleCloseModal}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
-        >
-          <div
-            className="modal-content glass-panel"
-            onClick={(e) => e.stopPropagation()}
-            ref={modalRef}
-          >
-            {/* Close Button */}
-            <button
-              className="modal-close-btn"
-              onClick={handleCloseModal}
-              aria-label="Close modal"
-            >
-              <X size={18} strokeWidth={2.5} />
-            </button>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        ariaLabelledby="modal-title"
+        triggerRef={triggerRef}
+      >
+        {/* Image box */}
+        <ImageBox
+          src={activeProject.image}
+          alt={`${activeProject.title} project image`}
+          overlay={<span className="modal-number-tag">{activeProject.number}</span>}
+        />
 
-            {/* Modal Scrollable Wrapper */}
-            <div className="modal-scroll-area">
-              {/* Image box */}
-              <div className="modal-image-box">
-                <img
-                  src={activeProject.image}
-                  alt={`${activeProject.title} project image`}
-                  className="modal-image"
-                  decoding="async"
-                />
-                <span className="modal-number-tag">{activeProject.number}</span>
-              </div>
-
-              {/* Modal Body */}
-              <div className="modal-body">
-                <div className="modal-title-row">
-                  <h3 id="modal-title" className="modal-project-title">{activeProject.title}</h3>
-                  {activeProject.isUnderDevelopment ? (
-                    <div className="live-app-btn is-disabled">
-                      <span>Under Development</span>
-                    </div>
-                  ) : activeProject.liveUrl ? (
-                    <a
-                      href={activeProject.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="live-app-btn"
-                      onClick={() => playClickSound()}
-                    >
-                      <span>{activeProject.linkText || 'Visit Live App'}</span>
-                    </a>
-                  ) : null}
-                </div>
-
-                {activeProject.context && (
-                  <>
-                    <div className="modal-meta-grid">
-                      <div className="meta-item">
-                        <span className="meta-label">Company</span>
-                        <span className="meta-val">{activeProject.context.company}</span>
-                      </div>
-                      <div className="meta-item">
-                        <span className="meta-label">Role</span>
-                        <span className="meta-val">{activeProject.context.role || activeProject.role}</span>
-                      </div>
-                      <div className="meta-item">
-                        <span className="meta-label">Timeline</span>
-                        <span className="meta-val">{activeProject.context.timeline || activeProject.year}</span>
-                      </div>
-                      <div className="meta-item">
-                        <span className="meta-label">Team</span>
-                        <span className="meta-val">{activeProject.context.team}</span>
-                      </div>
-                      {activeProject.metric && (
-                        <div className="meta-item">
-                          <span className="meta-label">Outcome</span>
-                          <span className="meta-val">{activeProject.metric}</span>
-                        </div>
-                      )}
-                      {activeProject.context.constraints && (
-                        <div className="meta-item col-span-full">
-                          <span className="meta-label">Constraints</span>
-                          <span className="meta-val">{activeProject.context.constraints}</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="modal-divider" />
-                  </>
-                )}
-
-                {/* The Hook */}
-                <div className="modal-description-section">
-                  <p>{activeProject.hook}</p>
-                </div>
-
-                <div className="modal-divider" />
-
-                {/* Project Overview */}
-                <div className="modal-description-section">
-                  <h4>Project Overview</h4>
-                  <p>{activeProject.description}</p>
-                  {activeProject.details && (
-                    <p className="modal-body-details">{activeProject.details}</p>
-                  )}
-                </div>
-
-                {activeProject.id === 'double-ai' && (
-                  <>
-                    <div className="modal-divider" />
-                    <div className="modal-description-section">
-                      <h4>Project Pitch Deck</h4>
-                      <ProjectCarousel images={DOUBLE_AI_PITCH_DECK_IMAGES} />
-                    </div>
-                  </>
-                )}
-
-                <div className="modal-divider" />
-
-                {/* Problems Section */}
-                <div className="modal-description-section">
-                  <h4>The Challenge</h4>
-                  <p><strong>Business Problem:</strong> {activeProject.problems.business}</p>
-                  <p><strong>User Problem:</strong> {activeProject.problems.user}</p>
-                </div>
-
-                <div className="modal-divider" />
-
-                {/* Worked On Section */}
-                <div className="modal-insights-section">
-                  <h4>Worked On</h4>
-                  <ul>
-                    {activeProject.work.map((item, i) => (
-                      <li key={i}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="modal-divider" />
-
-                {/* Process Section */}
-                <div className="modal-description-section">
-                  <h4>The Process</h4>
-                  <p><strong>Research & Discovery:</strong> {activeProject.process.research}</p>
-                  <p><strong>Ideation & Explorations:</strong> {activeProject.process.ideation}</p>
-                  <p><strong>Decision & Trade-offs:</strong> {activeProject.process.tradeoff}</p>
-                  <p><strong>Testing & Iteration:</strong> {activeProject.process.iteration}</p>
-                </div>
-
-                <div className="modal-divider" />
-
-                {/* Impact Section */}
-                <div className="modal-description-section">
-                  <h4>Impact</h4>
-                  <p><strong>Quantitative Impact:</strong> {activeProject.impact.quantitative}</p>
-                  <p><strong>Qualitative Outcome:</strong> {activeProject.impact.qualitative}</p>
-                </div>
-
-                <div className="modal-divider" />
-
-                {/* What Went Wrong Section */}
-                <div className="modal-description-section">
-                  <h4>What Went Wrong</h4>
-                  <p>{activeProject.whatWentWrong.narrative}</p>
-                </div>
-
-                <div className="modal-divider" />
-
-                {/* Case Study Footer CTA */}
-                <div className="modal-case-study-footer">
-                  <span>Want to know more?</span>
-                  <button
-                    className="live-app-btn-secondary"
-                    onClick={handleNavigateToContact}
-                  >
-                    <span>Get in touch</span>
-                  </button>
-                </div>
-              </div>
-            </div>
+        {/* Modal Body */}
+        <div className="modal-body">
+          <div className="modal-title-row">
+            <h3 id="modal-title" className="modal-project-title">{activeProject.title}</h3>
+            {activeProject.isUnderDevelopment ? (
+              <Button variant="primary" as="span" disabled>
+                Under Development
+              </Button>
+            ) : activeProject.liveUrl ? (
+              <Button
+                variant="primary"
+                href={activeProject.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => playClickSound()}
+              >
+                {activeProject.linkText || 'Visit Live App'}
+              </Button>
+            ) : null}
           </div>
-        </div>,
-        document.body
-      )}
+
+          {activeProject.context && (
+            <>
+              <MetaGrid columns={2}>
+                <MetaItem label="Company" value={activeProject.context.company} />
+                <MetaItem label="Role" value={activeProject.context.role || activeProject.role} />
+                <MetaItem label="Timeline" value={activeProject.context.timeline || activeProject.year} />
+                <MetaItem label="Team" value={activeProject.context.team} />
+                {activeProject.metric && (
+                  <MetaItem label="Outcome" value={activeProject.metric} />
+                )}
+                {activeProject.context.constraints && (
+                  <MetaItem label="Constraints" value={activeProject.context.constraints} fullWidth />
+                )}
+              </MetaGrid>
+              <Divider />
+            </>
+          )}
+
+          {/* The Hook */}
+          <Section variant="description">
+            <p>{activeProject.hook}</p>
+          </Section>
+
+          <Divider />
+
+          {/* Project Overview */}
+          <Section heading="Project Overview" variant="description">
+            <p>{activeProject.description}</p>
+            {activeProject.details && (
+              <p className="ds-section__details">{activeProject.details}</p>
+            )}
+          </Section>
+
+          {activeProject.id === 'double-ai' && (
+            <>
+              <Divider />
+              <Section heading="Project Pitch Deck" variant="description">
+                <ProjectCarousel images={DOUBLE_AI_PITCH_DECK_IMAGES} />
+              </Section>
+            </>
+          )}
+
+          <Divider />
+
+          {/* Problems Section */}
+          <Section heading="The Challenge" variant="description">
+            <p><strong>Business Problem:</strong> {activeProject.problems.business}</p>
+            <p><strong>User Problem:</strong> {activeProject.problems.user}</p>
+          </Section>
+
+          <Divider />
+
+          {/* Worked On Section */}
+          <Section heading="Worked On" variant="insights">
+            <ul>
+              {activeProject.work.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </ul>
+          </Section>
+
+          <Divider />
+
+          {/* Process Section */}
+          <Section heading="The Process" variant="description">
+            <p><strong>Research & Discovery:</strong> {activeProject.process.research}</p>
+            <p><strong>Ideation & Explorations:</strong> {activeProject.process.ideation}</p>
+            <p><strong>Decision & Trade-offs:</strong> {activeProject.process.tradeoff}</p>
+            <p><strong>Testing & Iteration:</strong> {activeProject.process.iteration}</p>
+          </Section>
+
+          <Divider />
+
+          {/* Impact Section */}
+          <Section heading="Impact" variant="description">
+            <p><strong>Quantitative Impact:</strong> {activeProject.impact.quantitative}</p>
+            <p><strong>Qualitative Outcome:</strong> {activeProject.impact.qualitative}</p>
+          </Section>
+
+          <Divider />
+
+          {/* What Went Wrong Section */}
+          <Section heading="What Went Wrong" variant="description">
+            <p>{activeProject.whatWentWrong.narrative}</p>
+          </Section>
+
+          <Divider />
+
+          {/* Case Study Footer CTA */}
+          <div className="modal-case-study-footer">
+            <span className="modal-case-study-footer__text">Want to know more?</span>
+            <Button
+              variant="ghost"
+              onClick={handleNavigateToContact}
+            >
+              Get in touch
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

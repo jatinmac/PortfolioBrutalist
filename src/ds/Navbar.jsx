@@ -1,18 +1,33 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { playClickSound } from '../utils/sound';
-import './Navbar.css';
+import NavTab from './NavTab';
+import Button from './Button';
 
-const TABS = ['Home', 'About', 'Work', 'Builds', 'Contact'];
 const RESUME_PDF_PATH = '/Jatin%20Davis%20Resume%20JDR%20.pdf';
 const RESUME_DRIVE_URL = 'https://drive.google.com/file/d/1-zqfQ3X3NTgxAEKJag8ebzWExW7-ngC0/view?usp=sharing';
+const DEFAULT_TABS = ['Home', 'About', 'Work', 'Builds', 'Contact'];
 
-export default function Navbar({ activeTab, setActiveTab, onTabPreload }) {
+/**
+ * Full navbar with sliding pill, 3D rotation, roving tabindex.
+ *
+ * @param {Object} props
+ * @param {string[]} [props.tabs]
+ * @param {string} props.activeTab
+ * @param {Function} props.onTabChange
+ * @param {Function} [props.onTabPreload]
+ */
+export default function Navbar({
+  tabs = DEFAULT_TABS,
+  activeTab,
+  onTabChange,
+  onTabPreload,
+}) {
   const [pillStyle, setPillStyle] = useState({});
   const [isMoving, setIsMoving] = useState(false);
   const [rotation, setRotation] = useState(0);
 
   const tabRefs = useRef({});
-  const prevTabRef = useRef('Home');
+  const prevTabRef = useRef(activeTab);
 
   const updatePill = useCallback(() => {
     const activeEl = tabRefs.current[activeTab];
@@ -32,7 +47,7 @@ export default function Navbar({ activeTab, setActiveTab, onTabPreload }) {
     return () => window.removeEventListener('resize', updatePill);
   }, [updatePill]);
 
-  // Scroll active tab into view on mobile viewports
+  // Scroll active tab into view on mobile
   useEffect(() => {
     const activeEl = tabRefs.current[activeTab];
     if (activeEl) {
@@ -40,52 +55,52 @@ export default function Navbar({ activeTab, setActiveTab, onTabPreload }) {
     }
   }, [activeTab]);
 
+  // 3D rotation animation
   useEffect(() => {
-    // Calculate rotation delta cumulatively to prevent backwards-unwinding animation
-    const prevIndex = TABS.indexOf(prevTabRef.current);
-    const nextIndex = TABS.indexOf(activeTab);
+    const prevIndex = tabs.indexOf(prevTabRef.current);
+    const nextIndex = tabs.indexOf(activeTab);
 
     if (prevIndex !== nextIndex && prevIndex !== -1 && nextIndex !== -1) {
       const diff = nextIndex - prevIndex;
-      const angleChange = diff * 180; // 180 degrees flip per tab step
+      const angleChange = diff * 180;
 
       setRotation(prev => prev + angleChange);
       setIsMoving(true);
 
       const timer = setTimeout(() => {
         setIsMoving(false);
-      }, 420); // Matches CSS transition duration
+      }, 420);
 
       prevTabRef.current = activeTab;
       return () => clearTimeout(timer);
     } else {
       prevTabRef.current = activeTab;
     }
-  }, [activeTab]);
+  }, [activeTab, tabs]);
 
-  // Arrow key navigation for roving tabindex pattern
+  // Arrow key navigation (roving tabindex)
   const handleKeyDown = (e) => {
-    const currentIndex = TABS.indexOf(activeTab);
+    const currentIndex = tabs.indexOf(activeTab);
     let newIndex;
 
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
       e.preventDefault();
-      newIndex = (currentIndex + 1) % TABS.length;
+      newIndex = (currentIndex + 1) % tabs.length;
     } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
       e.preventDefault();
-      newIndex = (currentIndex - 1 + TABS.length) % TABS.length;
+      newIndex = (currentIndex - 1 + tabs.length) % tabs.length;
     } else if (e.key === 'Home') {
       e.preventDefault();
       newIndex = 0;
     } else if (e.key === 'End') {
       e.preventDefault();
-      newIndex = TABS.length - 1;
+      newIndex = tabs.length - 1;
     }
 
     if (newIndex !== undefined) {
-      const nextTab = TABS[newIndex];
+      const nextTab = tabs[newIndex];
       onTabPreload?.(nextTab);
-      setActiveTab(nextTab);
+      onTabChange(nextTab);
       tabRefs.current[nextTab]?.focus();
     }
   };
@@ -96,52 +111,48 @@ export default function Navbar({ activeTab, setActiveTab, onTabPreload }) {
   };
 
   return (
-    <header className="navbar-header">
-      <div className="navbar-wrapper">
-        <nav className="navbar-container" aria-label="Main Navigation">
-          {/* Sliding Pill Highlight with Cumulative 3D Pivot Rotation */}
+    <header className="ds-navbar-header">
+      <div className="ds-navbar-wrapper">
+        <nav className="ds-navbar-container" aria-label="Main Navigation">
+          {/* Sliding Pill Highlight */}
           <div
-            className={`navbar-pill-highlight ${isMoving ? 'is-moving' : ''}`}
+            className={`ds-navbar-pill ${isMoving ? 'is-moving' : ''}`}
             style={{
               ...pillStyle,
-              transform: `rotateY(${rotation}deg) translateZ(${isMoving ? '12px' : '0px'})`
+              transform: `rotateY(${rotation}deg) translateZ(${isMoving ? '12px' : '0px'})`,
             }}
             aria-hidden="true"
           />
 
-          {/* Navigation Items — tablist with roving tabindex */}
+          {/* Tab buttons */}
           <div role="tablist" aria-label="Site sections" onKeyDown={handleKeyDown}>
-            {TABS.map((tab) => (
-              <button
+            {tabs.map((tab) => (
+              <NavTab
                 key={tab}
                 ref={(el) => (tabRefs.current[tab] = el)}
-                onClick={() => setActiveTab(tab)}
+                label={tab}
+                isActive={activeTab === tab}
+                tabId={`tab-${tab.toLowerCase()}`}
+                panelId={`tabpanel-${tab.toLowerCase()}`}
+                onClick={() => onTabChange(tab)}
                 onFocus={() => onTabPreload?.(tab)}
                 onPointerEnter={() => onTabPreload?.(tab)}
-                className={`navbar-tab-btn ${activeTab === tab ? 'is-active' : ''}`}
-                aria-selected={activeTab === tab}
-                aria-controls={`tabpanel-${tab.toLowerCase()}`}
-                id={`tab-${tab.toLowerCase()}`}
-                role="tab"
-                tabIndex={activeTab === tab ? 0 : -1}
-              >
-                {tab}
-              </button>
+              />
             ))}
           </div>
         </nav>
 
-        {/* Actions (Resume Only) */}
-        <div className="navbar-actions">
-          {/* Resume Button */}
-          <a
+        {/* Actions */}
+        <div className="ds-navbar-actions">
+          <Button
+            variant="primary"
             href={RESUME_PDF_PATH}
             download="Jatin Davis Resume.pdf"
-            className="navbar-resume-btn"
+            playSound={() => playClickSound()}
             onClick={handleResumeClick}
           >
             Resume
-          </a>
+          </Button>
         </div>
       </div>
     </header>

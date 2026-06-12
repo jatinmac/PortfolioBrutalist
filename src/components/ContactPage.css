@@ -19,45 +19,6 @@
   box-sizing: border-box;
 }
 
-/* Corner Link Button — Contact-specific */
-.corner-link-btn {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  width: 28px;
-  height: 28px;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  transition: var(--transition-smooth);
-  z-index: 10;
-  text-decoration: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.corner-link-btn:hover {
-  background: #27272a;
-  color: var(--text-primary);
-  border-color: #3f3f46;
-}
-
-:root.light .corner-link-btn {
-  background: rgba(15, 23, 42, 0.04);
-  border-color: rgba(15, 23, 42, 0.08);
-  color: var(--text-secondary);
-}
-
-:root.light .corner-link-btn:hover {
-  background: #e4e4e7;
-  color: var(--text-primary);
-  border-color: #cbd5e1;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .contact-bento-container {

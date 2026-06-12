@@ -1,4 +1,5 @@
 import { Home, User, Briefcase, Cpu, Mail } from 'lucide-react';
+import Icon from './Icon';
 
 const TAB_ICONS = {
   Home,
@@ -14,7 +15,7 @@ const renderPreviewIcon = (tabName) => {
 
   return (
     <div className="carousel-preview-icon-container" aria-hidden="true">
-      <IconComponent className="carousel-preview-icon" size={24} strokeWidth={1.5} />
+      <Icon icon={IconComponent} size="lg" className="carousel-preview-icon" />
     </div>
   );
 };

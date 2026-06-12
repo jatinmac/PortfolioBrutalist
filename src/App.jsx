@@ -1,9 +1,7 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import AppFooter from './components/AppFooter';
+import { Navbar, Footer, SkipLink, DesktopPreviewCarousel } from './ds';
 import CustomCursor from './components/CustomCursor';
-import DesktopPreviewCarousel from './components/DesktopPreviewCarousel';
 import HomeHero from './components/HomeHero';
-import Navbar from './components/Navbar';
 import CalmSeaBackground from './components/CalmSeaBackground';
 import { DESKTOP_PREVIEW_QUERY, MOBILE_PERFORMANCE_QUERY } from './utils/mediaQueries';
 import { playTabChangeSound, playThemeToggleSound, getSoundEnabled, setSoundEnabled } from './utils/sound';
@@ -66,7 +64,7 @@ export default function App() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIntroCompleted(true);
-    }, 4000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -166,58 +164,18 @@ export default function App() {
     PAGE_PRELOADERS[tabName]?.();
   }, []);
 
-  const toggleTheme = useCallback((e, newTheme) => {
+  const toggleTheme = useCallback((newTheme) => {
     if (theme === newTheme) return;
     playThemeToggleSound();
 
-    const changeThemeDOM = () => {
-      setTheme(newTheme);
-      const root = document.documentElement;
-      if (newTheme === 'light') {
-        root.classList.add('light');
-      } else {
-        root.classList.remove('light');
-      }
-      localStorage.setItem('theme', newTheme);
-    };
-
-    const isAppearanceTransition = document.startViewTransition
-      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      && !window.matchMedia(MOBILE_PERFORMANCE_QUERY).matches;
-
-    if (!isAppearanceTransition) {
-      changeThemeDOM();
-      return;
+    setTheme(newTheme);
+    const root = document.documentElement;
+    if (newTheme === 'light') {
+      root.classList.add('light');
+    } else {
+      root.classList.remove('light');
     }
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-
-    const endRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
-
-    const transition = document.startViewTransition(() => {
-      changeThemeDOM();
-    });
-
-    transition.ready.then(() => {
-      document.documentElement.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`,
-          ],
-        },
-        {
-          duration: 1000,
-          easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-          pseudoElement: '::view-transition-new(root)',
-        }
-      );
-    });
+    localStorage.setItem('theme', newTheme);
   }, [theme]);
 
   const handleTabChange = useCallback((tabName) => {
@@ -338,12 +296,13 @@ export default function App() {
       <CustomCursor />
       <div className={`app-layout tab-${displayTab.toLowerCase()}`}>
         <CalmSeaBackground theme={theme} />
-        <a href="#main-content" className="skip-link">Skip to content</a>
+        <SkipLink />
         <div className="bg-glow" aria-hidden="true" />
 
         <Navbar
+          tabs={TABS}
           activeTab={activeTab}
-          setActiveTab={handleTabChange}
+          onTabChange={handleTabChange}
           onTabPreload={handleTabPreload}
         />
 
@@ -366,7 +325,7 @@ export default function App() {
           </Suspense>
         </main>
 
-        <AppFooter
+        <Footer
           fontScale={fontScale}
           fontScaleMin={FONT_SCALE_MIN}
           fontScaleMax={FONT_SCALE_MAX}

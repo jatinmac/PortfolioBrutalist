@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Copy, Check, ArrowUpRight } from 'lucide-react';
 import { playClickSound } from '../utils/sound';
-import './bento.css';
+import { VisuallyHidden, BentoGrid, BentoItem, IconButton, Icon } from '../ds';
 import './ContactPage.css';
 
 export default function ContactPage() {
@@ -23,62 +23,70 @@ export default function ContactPage() {
 
   return (
     <div className="contact-bento-container">
-      <h2 className="sr-only">Contact Information</h2>
-      <div className="contact-bento-grid">
+      <VisuallyHidden as="h2">Contact Information</VisuallyHidden>
+      <BentoGrid columns="repeat(3, 1fr)" className="contact-bento-grid">
         {/* Row 1 */}
-        <div className="contact-bento-item col-span-2">
-          <span className="bento-tag">Email</span>
-          <button
-            className="corner-link-btn"
+        <BentoItem colSpan={2} tag="Email">
+          <IconButton
+            size="sm"
+            round
+            placement="corner"
             onClick={() => copyToClipboard('jatindavis5@gmail.com', 'email')}
             aria-label="Copy email address"
           >
-            {copiedEmail ? <Check size={14} /> : <Copy size={14} />}
-          </button>
-          <span className="bento-placeholder">jatindavis5@gmail.com</span>
-        </div>
-        <div className="contact-bento-item col-span-1">
-          <span className="bento-tag">Social</span>
-          <a
+            <Icon icon={copiedEmail ? Check : Copy} size="sm" />
+          </IconButton>
+          jatindavis5@gmail.com
+        </BentoItem>
+
+        <BentoItem colSpan={1} tag="Social">
+          <IconButton
+            as="a"
             href="https://linkedin.com/in/jatindavis"
             target="_blank"
             rel="noopener noreferrer"
-            className="corner-link-btn linkedin-btn"
+            size="sm"
+            round
+            placement="corner"
             aria-label="Visit LinkedIn Profile"
             onClick={() => playClickSound()}
           >
-            <ArrowUpRight size={14} />
-          </a>
-          <span className="bento-placeholder">LinkedIn</span>
-        </div>
+            <Icon icon={ArrowUpRight} size="sm" />
+          </IconButton>
+          LinkedIn
+        </BentoItem>
 
         {/* Row 2 */}
-        <div className="contact-bento-item col-span-2">
-          <span className="bento-tag">Phone</span>
-          <button
-            className="corner-link-btn"
+        <BentoItem colSpan={2} tag="Phone">
+          <IconButton
+            size="sm"
+            round
+            placement="corner"
             onClick={() => copyToClipboard('+91 8920152733', 'phone')}
             aria-label="Copy phone number"
           >
-            {copiedPhone ? <Check size={14} /> : <Copy size={14} />}
-          </button>
-          <span className="bento-placeholder">+91 8920152733</span>
-        </div>
-        <div className="contact-bento-item col-span-1">
-          <span className="bento-tag">Social</span>
-          <a
+            <Icon icon={copiedPhone ? Check : Copy} size="sm" />
+          </IconButton>
+          +91 8920152733
+        </BentoItem>
+
+        <BentoItem colSpan={1} tag="Social">
+          <IconButton
+            as="a"
             href="https://youtube.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="corner-link-btn youtube-btn"
+            size="sm"
+            round
+            placement="corner"
             aria-label="Visit YouTube Channel"
             onClick={() => playClickSound()}
           >
-            <ArrowUpRight size={14} />
-          </a>
-          <span className="bento-placeholder">YouTube</span>
-        </div>
-      </div>
+            <Icon icon={ArrowUpRight} size="sm" />
+          </IconButton>
+          YouTube
+        </BentoItem>
+      </BentoGrid>
     </div>
   );
 }

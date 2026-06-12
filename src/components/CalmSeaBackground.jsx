@@ -2,6 +2,20 @@ import { useEffect, useRef, useState } from 'react';
 import { MOBILE_PERFORMANCE_QUERY } from '../utils/mediaQueries';
 import './CalmSeaBackground.css';
 
+// EDIT THESE HEX CODES TO CHANGE THE SEA COLORS EASILY.
+// Editors like VS Code will show a visual color picker next to these strings!
+const OCEAN_COLORS = {
+  // Dark mode: deep twilight starry ocean (from reference image)
+  darkDeep: '#040b1e',
+  darkShallow: '#101c38',
+
+  // Light mode: vibrant daytime/sunset ocean (from reference image)
+  lightDeep: '#094bb4',
+  lightShallow: '#3b9af8',
+};
+
+const THEME_DIFFUSION_RATE = 0.36;
+
 const vertexShader = `
   varying vec2 vUv;
   void main() {
@@ -14,6 +28,12 @@ const fragmentShader = `
   uniform float u_time;
   uniform vec2 u_resolution;
   uniform float u_theme;
+  
+  uniform vec3 u_darkDeep;
+  uniform vec3 u_darkShallow;
+  
+  uniform vec3 u_lightDeep;
+  uniform vec3 u_lightShallow;
 
   varying vec2 vUv;
 
@@ -40,6 +60,64 @@ const fragmentShader = `
     return 0.0;
   }
 
+  // Helper to compute sky color (used for sky and reflections)
+  // Matches reference image: warm dusk horizon with peach/salmon tones
+  vec3 getSkyColor(vec2 p, float horizon, float theme, float time) {
+    // Dark mode: deep navy sky with twilight purple horizon base
+    vec3 darkZenith = vec3(0.015, 0.045, 0.16);     // Dark indigo/navy
+    vec3 darkHorizon = vec3(0.18, 0.10, 0.24);     // Deep purple-rose base
+    
+    // Light mode sky matching reference image (vibrant blue gradient to yellow-orange sunset)
+    vec3 lightZenith = vec3(0.08, 0.58, 0.98);     // Vibrant azure upper sky
+    vec3 lightHorizon = vec3(0.98, 0.72, 0.44);    // Warm peach-gold at horizon
+    
+    // Vertical gradient factor: 0 at horizon, 1 at top
+    float skyGrad = clamp((p.y - horizon) * 2.2, 0.0, 1.0);
+    float smoothGrad = smoothstep(0.0, 1.0, skyGrad); // Smooth ease-in-out gradient
+    
+    vec3 darkSky = mix(darkHorizon, darkZenith, smoothGrad);
+    vec3 lightSky = mix(lightHorizon, lightZenith, smoothGrad);
+    
+    vec3 color = mix(darkSky, lightSky, theme);
+    
+    // Twinkling stars in dark mode
+    float starsVal = stars(p, time) * (1.0 - theme);
+    color += vec3(starsVal * 0.95);
+    
+    // Smooth mix-based sunset glow (non-additive to ensure a perfectly smooth gradient)
+    float horizonDist = abs(p.y - horizon);
+    
+    // Light mode sunset glow: centered to rise behind the home page container
+    float lightGlowWeight = exp(-horizonDist * 5.5) * theme;
+    float lightHorizontalFactor = 1.0 - smoothstep(0.0, 1.2, abs(p.x)); // Symmetrical fade left & right from center
+    vec3 lightSunsetGlowColor = mix(vec3(0.96, 0.82, 0.70), vec3(0.99, 0.70, 0.35), lightHorizontalFactor);
+    color = mix(color, lightSunsetGlowColor, lightGlowWeight * 0.85);
+    
+    // Light mode sun disc + glow (centered behind the home page container)
+    vec2 sunPos = vec2(0.0, 0.25);
+    float sunDist = length(p - sunPos);
+    float sunDisc = smoothstep(0.025, 0.015, sunDist) * theme;
+    float sunGlow = exp(-sunDist * 3.5) * theme;
+    color = mix(color, vec3(1.0, 0.98, 0.92), sunDisc);
+    color += vec3(0.99, 0.76, 0.44) * sunGlow * 0.55;
+    
+    // Dark mode moon disc + glow (on the left side, higher up, matching the star positioning)
+    vec2 moonPos = vec2(-0.55, 0.35);
+    float moonDist = length(p - moonPos);
+    float moonDisc = smoothstep(0.02, 0.01, moonDist) * (1.0 - theme);
+    float moonGlow = exp(-moonDist * 4.0) * (1.0 - theme);
+    color = mix(color, vec3(0.95, 0.97, 1.0), moonDisc); // Silver moon disc
+    color += vec3(0.65, 0.78, 1.0) * moonGlow * 0.22;    // Soft blue-white moon halo
+    
+    // Dark mode twilight glow: fiery orange-red on the left, fading to deep purple on the right
+    float darkGlowWeight = exp(-horizonDist * 6.5) * (1.0 - theme);
+    float darkHorizontalFactor = smoothstep(0.6, -0.8, p.x); // Fades right, brightens left
+    vec3 darkSunsetGlowColor = mix(vec3(0.16, 0.08, 0.22), vec3(0.95, 0.32, 0.12), darkHorizontalFactor);
+    color = mix(color, darkSunsetGlowColor, darkGlowWeight * 0.72);
+    
+    return color;
+  }
+
   void main() {
     vec2 p = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / u_resolution.y;
     
@@ -47,91 +125,198 @@ const fragmentShader = `
     float horizon = 0.22;
     float dist = horizon - p.y;
     
-    // Core background theme palettes
-    vec3 darkBase = vec3(0.035, 0.035, 0.045); // Deep zinc dark
-    vec3 lightBase = vec3(0.97, 0.98, 0.99); // Soft slate light
-    vec3 baseColor = mix(darkBase, lightBase, u_theme);
-    
-    vec3 finalColor = baseColor;
+    vec3 finalColor;
     
     if (dist > 0.0) {
       // Perspective transform for ground plane projection
       float depth = 1.0 / dist;
       vec2 planeUV = vec2(p.x * depth * 0.45, depth * 0.24);
       
-      float time = u_time * 0.25;
+      float time = u_time * 0.12;
       
-      // Layered waves using layered sine/cosine waves
+      // Calculate layered waves and analytical gradients (slopes)
       float waveVal = 0.0;
-      waveVal += sin(planeUV.x * 2.0 + planeUV.y * 1.5 + time) * 0.45;
-      waveVal += cos(planeUV.x * 4.5 - planeUV.y * 3.0 - time * 1.35) * 0.28;
-      waveVal += sin(planeUV.x * 8.2 + planeUV.y * 6.5 + time * 2.2) * 0.16;
-      waveVal += cos(planeUV.x * 16.0 - planeUV.y * 12.0 - time * 3.4) * 0.07;
+      float dx = 0.0;
+      float dy = 0.0;
       
-      // Normalize wave value to 0..1
+      // Fade factors to prevent aliasing near the horizon (small dist)
+      float fade1 = 1.0;
+      float fade2 = smoothstep(0.015, 0.10, dist);
+      float fade3 = smoothstep(0.04, 0.18, dist);
+      float fade4 = smoothstep(0.08, 0.28, dist);
+      float fade5 = smoothstep(0.12, 0.38, dist);
+      float fade6 = smoothstep(0.16, 0.48, dist);
+      
+      // Pre-declare variables for wave octaves to avoid redeclaration in block scopes
+      vec2 waveDir;
+      vec2 warpedUV;
+      float waveFreq;
+      float waveArg;
+      float waveS;
+      float waveC;
+      float wTemp;
+      float wSq;
+      float dwTemp;
+      
+      // Wave 1: Large swells (slightly diagonal to keep it flowing)
+      waveDir = vec2(0.06, 0.99);
+      waveFreq = 1.6;
+      waveArg = (planeUV.x * waveDir.x + planeUV.y * waveDir.y) * waveFreq + time * 0.4;
+      waveS = sin(waveArg);
+      waveC = cos(waveArg);
+      waveVal += waveS * 0.45 * fade1;
+      dx += waveC * waveDir.x * waveFreq * 0.45 * fade1;
+      dy += waveC * waveDir.y * waveFreq * 0.45 * fade1;
+      
+      // Update warped UV (displace coordinates based on slope of previous waves)
+      warpedUV = planeUV - vec2(dx, dy) * 0.04;
+      
+      // Wave 2: Medium chop (using billowy 1.0 - abs(sin) pattern for sharper crests)
+      waveDir = vec2(-0.08, 0.99);
+      waveFreq = 3.6;
+      waveArg = (warpedUV.x * waveDir.x + warpedUV.y * waveDir.y) * waveFreq - time * 0.6;
+      waveS = sin(waveArg);
+      waveC = cos(waveArg);
+      wTemp = 1.0 - abs(waveS);
+      wSq = wTemp * wTemp;
+      waveVal += wSq * 0.28 * fade2;
+      dwTemp = 2.0 * wTemp * (-sign(waveS)) * waveC;
+      dx += dwTemp * waveDir.x * waveFreq * 0.28 * fade2;
+      dy += dwTemp * waveDir.y * waveFreq * 0.28 * fade2;
+      
+      // Update warped UV
+      warpedUV = planeUV - vec2(dx, dy) * 0.04;
+      
+      // Wave 3: Smaller waves
+      waveDir = vec2(0.04, 0.99);
+      waveFreq = 8.0;
+      waveArg = (warpedUV.x * waveDir.x + warpedUV.y * waveDir.y) * waveFreq + time * 0.9;
+      waveS = sin(waveArg);
+      waveC = cos(waveArg);
+      wTemp = 1.0 - abs(waveS);
+      wSq = wTemp * wTemp;
+      waveVal += wSq * 0.18 * fade3;
+      dwTemp = 2.0 * wTemp * (-sign(waveS)) * waveC;
+      dx += dwTemp * waveDir.x * waveFreq * 0.18 * fade3;
+      dy += dwTemp * waveDir.y * waveFreq * 0.18 * fade3;
+      
+      // Update warped UV
+      warpedUV = planeUV - vec2(dx, dy) * 0.04;
+      
+      // Wave 4: Ripples
+      waveDir = vec2(-0.05, 0.99);
+      waveFreq = 16.0;
+      waveArg = (warpedUV.x * waveDir.x + warpedUV.y * waveDir.y) * waveFreq - time * 1.4;
+      waveS = sin(waveArg);
+      waveC = cos(waveArg);
+      wTemp = 1.0 - abs(waveS);
+      wSq = wTemp * wTemp;
+      waveVal += wSq * 0.09 * fade4;
+      dwTemp = 2.0 * wTemp * (-sign(waveS)) * waveC;
+      dx += dwTemp * waveDir.x * waveFreq * 0.09 * fade4;
+      dy += dwTemp * waveDir.y * waveFreq * 0.09 * fade4;
+      
+      // Update warped UV
+      warpedUV = planeUV - vec2(dx, dy) * 0.04;
+      
+      // Wave 5: Fine wind ripples
+      waveDir = vec2(0.03, 0.99);
+      waveFreq = 32.0;
+      waveArg = (warpedUV.x * waveDir.x + warpedUV.y * waveDir.y) * waveFreq + time * 2.1;
+      waveS = sin(waveArg);
+      waveC = cos(waveArg);
+      wTemp = 1.0 - abs(waveS);
+      wSq = wTemp * wTemp;
+      waveVal += wSq * 0.05 * fade5;
+      dwTemp = 2.0 * wTemp * (-sign(waveS)) * waveC;
+      dx += dwTemp * waveDir.x * waveFreq * 0.05 * fade5;
+      dy += dwTemp * waveDir.y * waveFreq * 0.05 * fade5;
+      
+      // Update warped UV
+      warpedUV = planeUV - vec2(dx, dy) * 0.04;
+
+      // Wave 6: Micro-ripples
+      waveDir = vec2(-0.02, 0.99);
+      waveFreq = 64.0;
+      waveArg = (warpedUV.x * waveDir.x + warpedUV.y * waveDir.y) * waveFreq - time * 3.2;
+      waveS = sin(waveArg);
+      waveC = cos(waveArg);
+      wTemp = 1.0 - abs(waveS);
+      wSq = wTemp * wTemp;
+      waveVal += wSq * 0.02 * fade6;
+      dwTemp = 2.0 * wTemp * (-sign(waveS)) * waveC;
+      dx += dwTemp * waveDir.x * waveFreq * 0.02 * fade6;
+      dy += dwTemp * waveDir.y * waveFreq * 0.02 * fade6;
+
+      // Re-scale waveVal to 0..1 range
       waveVal = waveVal * 0.5 + 0.5;
       
-      // Dark mode palette
-      vec3 darkWaterDeep = vec3(0.015, 0.02, 0.035);
-      vec3 darkWaterShallow = vec3(0.03, 0.10, 0.22);
-      vec3 darkWaterHighlight = vec3(0.12, 0.36, 0.76);
+      // Normal vector in tangent space (perturbation scaled by 0.10 for high waviness)
+      vec3 normal = normalize(vec3(-dx * 0.10, -dy * 0.10, 1.0));
       
-      // Light mode palette (darker sea)
-      vec3 lightWaterDeep = vec3(0.82, 0.86, 0.90);
-      vec3 lightWaterShallow = vec3(0.70, 0.77, 0.84);
-      vec3 lightWaterHighlight = vec3(0.98, 0.99, 1.0);
+      // Dark mode palette (dynamic)
+      vec3 darkWaterDeep = u_darkDeep;
+      vec3 darkWaterShallow = u_darkShallow;
+      
+      // Light mode palette (dynamic)
+      vec3 lightWaterDeep = u_lightDeep;
+      vec3 lightWaterShallow = u_lightShallow;
       
       vec3 deepColor = mix(darkWaterDeep, lightWaterDeep, u_theme);
       vec3 shallowColor = mix(darkWaterShallow, lightWaterShallow, u_theme);
-      vec3 highlightColor = mix(darkWaterHighlight, lightWaterHighlight, u_theme);
       
-      // Blend colors based on virtual depth
-      float depthBlend = clamp(dist * 2.5, 0.0, 1.0);
-      vec3 waterColor = mix(deepColor, shallowColor, depthBlend);
+      // Blend refracted colors based on virtual depth (smooth step gradient)
+      float depthBlend = smoothstep(0.0, 1.0, clamp(dist * 2.2, 0.0, 1.0));
+      vec3 refractedColor = mix(deepColor, shallowColor, depthBlend);
       
-      // Add fine wave highlights
-      float crest = smoothstep(0.66, 0.88, waveVal);
-      waterColor = mix(waterColor, highlightColor, crest * 0.18);
+      // 3D Procedural Reflection of the Sky
+      float skyY = horizon + dist;
+      vec2 reflectUV = vec2(p.x + normal.x * 0.07, skyY + normal.y * 0.03);
+      reflectUV.y = max(horizon + 0.005, reflectUV.y); // Keep reflection in the sky
+      vec3 reflectedColor = getSkyColor(reflectUV, horizon, u_theme, u_time);
       
-      // Sun position (matches the sky rendering)
-      vec2 sunPos = vec2(0.3, 0.35);
+      // Fresnel reflection factor (higher base reflection in dark mode to show waves and star reflection)
+      float minFresnel = mix(0.08, 0.04, u_theme);
+      float perturbedDist = dist + normal.y * 0.03;
+      float fresnel = minFresnel + (1.0 - minFresnel) * pow(1.0 - clamp(perturbedDist * 1.5, 0.0, 1.0), 3.0);
       
-      // Shimmering reflection path (sun road) in light mode
-      float sunRefX = abs(p.x - sunPos.x);
-      float reflectionCol = exp(-sunRefX * sunRefX * 450.0 * dist);
-      float shimmer = smoothstep(0.42, 0.82, waveVal) * waveVal;
-      float sunSpecular = reflectionCol * (0.15 + 0.85 * shimmer) * smoothstep(0.0, 0.2, dist);
-      vec3 sunRefColor = vec3(1.0, 0.88, 0.65) * sunSpecular * u_theme * 0.72;
+      // Combine refracted water and reflected sky
+      vec3 waterColor = mix(refractedColor, reflectedColor, fresnel);
       
-      // Apply reflections
+      // Diffuse warm horizon glow reflection (flat gradient, no wave-modulated shimmer)
+      float horizonProximity = smoothstep(0.35, 0.0, dist);
+      vec3 warmGlowRef = vec3(0.85, 0.55, 0.40) * horizonProximity * u_theme * 0.05;
+      waterColor += warmGlowRef;
+      
+      // Specular sun road reflection in light mode (centered at x = 0.0 behind container)
+      vec2 rSunPos = vec2(0.0, 0.25);
+      float sunRefX = abs((p.x + normal.x * 0.04) - rSunPos.x);
+      float reflectionCol = exp(-sunRefX * sunRefX * 350.0 * dist);
+      float rShimmer = smoothstep(0.42, 0.82, waveVal) * (0.3 + 0.7 * max(0.0, normal.y));
+      float sunSpecular = reflectionCol * (0.15 + 0.85 * rShimmer) * smoothstep(0.0, 0.25, dist);
+      vec3 sunRefColor = vec3(0.99, 0.85, 0.55) * sunSpecular * u_theme * 0.82;
       waterColor += sunRefColor;
       
-      // Subtle ambient specular shading
-      float shade = sin(planeUV.x * 3.5 + time) * cos(planeUV.y * 2.5 + time) * 0.025;
-      waterColor += mix(vec3(shade), vec3(-shade), u_theme * 0.4);
+      // Specular moon road reflection in dark mode (aligned with moon at x = -0.55)
+      vec2 rMoonPos = vec2(-0.55, 0.35);
+      float moonRefX = abs((p.x + normal.x * 0.04) - rMoonPos.x);
+      float moonReflectionCol = exp(-moonRefX * moonRefX * 350.0 * dist);
+      float moonShimmer = smoothstep(0.42, 0.82, waveVal) * (0.3 + 0.7 * max(0.0, normal.y));
+      float moonSpecular = moonReflectionCol * (0.15 + 0.85 * moonShimmer) * smoothstep(0.0, 0.25, dist);
+      vec3 moonRefColor = vec3(0.72, 0.85, 1.0) * moonSpecular * (1.0 - u_theme) * 0.28;
+      waterColor += moonRefColor;
+      
+      // Add subtle film grain / micro-texture to water matching the photo
+      float grain = hash(gl_FragCoord.xy + vec2(u_time * 13.0, u_time * 37.0)) * 0.012;
+      waterColor += mix(vec3(grain), vec3(-grain), u_theme * 0.5);
       
       // Fade out smoothly towards the misty horizon
+      vec3 horizonSkyColor = getSkyColor(vec2(p.x, horizon), horizon, u_theme, u_time);
       float mistFade = smoothstep(0.0, 0.35, dist);
-      finalColor = mix(baseColor, waterColor, mistFade);
+      finalColor = mix(horizonSkyColor, waterColor, mistFade);
     } else {
       // Sky region
-      vec3 color = baseColor;
-      
-      // Twinkling stars in dark mode
-      float starsVal = stars(p, u_time) * (1.0 - u_theme);
-      color += vec3(starsVal * 0.95);
-      
-      // Sun and warm radial glow in light mode
-      vec2 sunPos = vec2(0.3, 0.35);
-      float sunDist = length(p - sunPos);
-      
-      float sunDisc = smoothstep(0.045, 0.035, sunDist);
-      float sunGlow = exp(-sunDist * 3.5);
-      vec3 sunColor = vec3(1.0, 0.98, 0.94) * sunDisc + vec3(1.0, 0.76, 0.42) * sunGlow * 0.45;
-      
-      color += sunColor * u_theme;
-      
-      finalColor = color;
+      finalColor = getSkyColor(p, horizon, u_theme, u_time);
     }
     
     gl_FragColor = vec4(finalColor, 1.0);
@@ -169,7 +354,7 @@ export default function CalmSeaBackground({ theme }) {
   useEffect(() => {
     if (isMobile) return undefined;
 
-    let cleanup = () => {};
+    let cleanup = () => { };
     let cancelled = false;
 
     const initScene = async () => {
@@ -199,6 +384,10 @@ export default function CalmSeaBackground({ theme }) {
         u_time: { value: 0 },
         u_resolution: { value: new THREE.Vector2() },
         u_theme: { value: targetThemeRef.current },
+        u_darkDeep: { value: new THREE.Color(OCEAN_COLORS.darkDeep) },
+        u_darkShallow: { value: new THREE.Color(OCEAN_COLORS.darkShallow) },
+        u_lightDeep: { value: new THREE.Color(OCEAN_COLORS.lightDeep) },
+        u_lightShallow: { value: new THREE.Color(OCEAN_COLORS.lightShallow) },
       };
 
       const material = new THREE.ShaderMaterial({
@@ -237,7 +426,8 @@ export default function CalmSeaBackground({ theme }) {
         lastFrameTime = time;
         uniforms.u_time.value += delta * motionSpeedScale;
 
-        uniforms.u_theme.value += (targetThemeRef.current - uniforms.u_theme.value) * 0.06;
+        const themeBlendStep = 1 - Math.exp(-delta * THEME_DIFFUSION_RATE);
+        uniforms.u_theme.value += (targetThemeRef.current - uniforms.u_theme.value) * themeBlendStep;
 
         renderer.render(scene, camera);
         frameId = requestAnimationFrame(render);
@@ -267,7 +457,14 @@ export default function CalmSeaBackground({ theme }) {
       cancelled = true;
       cleanup();
     };
-  }, [isMobile]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isMobile,
+    OCEAN_COLORS.darkDeep,
+    OCEAN_COLORS.darkShallow,
+    OCEAN_COLORS.lightDeep,
+    OCEAN_COLORS.lightShallow
+  ]);
 
   if (isMobile) {
     return null;

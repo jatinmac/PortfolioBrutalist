@@ -1,6 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import { playClickSound } from '../utils/sound';
-import './bento.css';
+import { VisuallyHidden, BentoGrid, Card, Tag, IconButton, Icon } from '../ds';
 import './BuildsPage.css';
 
 const BUILDS_DATA = [
@@ -8,30 +8,28 @@ const BUILDS_DATA = [
     id: 1,
     title: 'My AI Twin',
     tag: 'BUILD 01',
-    colSpan: 'col-span-2',
+    colSpan: 2,
     link: 'https://jatindavistwin.vercel.app/',
-    image: '/aitwin.webp',
   },
   {
     id: 2,
     title: 'Website Hero',
     tag: 'BUILD 02',
-    colSpan: 'col-span-1',
+    colSpan: 1,
     link: 'https://websitedesign-ten.vercel.app/',
-    image: '/aiwebsite.webp',
   },
   {
     id: 3,
     title: 'AI UI',
     tag: 'BUILD 03',
-    colSpan: 'col-span-1',
+    colSpan: 1,
     link: 'https://agenticui.netlify.app/',
   },
   {
     id: 4,
     title: 'Skills.md',
     tag: 'BUILD 04',
-    colSpan: 'col-span-2',
+    colSpan: 2,
     link: 'https://aiskillsmd.netlify.app/',
   },
 ];
@@ -49,11 +47,12 @@ export default function BuildsPage() {
     <div className="builds-page-wrapper">
       <div className="builds-bento-wrapper">
         <div className="builds-bento-container">
-          <h2 className="sr-only">My Builds</h2>
-          <div className="builds-bento-grid">
+          <VisuallyHidden as="h2">My Builds</VisuallyHidden>
+          <BentoGrid columns="repeat(3, 1fr)" className="builds-bento-grid">
             {BUILDS_DATA.map((build) => {
               const isInteractive = Boolean(build.link);
-              const cardClassName = `builds-bento-item ${build.colSpan} ${isInteractive ? 'is-interactive' : ''} ${build.image ? 'has-image' : ''}`;
+              const cardClassName = `builds-bento-item ds-col-span-${build.colSpan} ${isInteractive ? 'is-interactive' : ''} ${build.image ? 'has-image' : ''}`;
+
               const cardContent = (
                 <>
                   {/* Background image if available */}
@@ -61,19 +60,28 @@ export default function BuildsPage() {
                     <div className="build-image-bg" style={{ backgroundImage: getBuildBackgroundImage(build) }} />
                   )}
 
-                  {/* Tag on Bottom Left Corner (styled like project card tag) */}
-                  <span className="project-card-tag">{build.title}</span>
+                  {/* Tag on bottom-left corner over imagery */}
+                  <Tag variant="card" className="build-card-tag">{build.title}</Tag>
 
                   {/* Corner Button */}
-                  <span className={`corner-link-btn${isInteractive ? '' : ' placeholder-btn'}`} aria-hidden="true">
-                    <ArrowUpRight size={14} />
-                  </span>
+                  <IconButton
+                    as="span"
+                    size="sm"
+                    round
+                    placement="corner"
+                    className={isInteractive ? '' : 'placeholder-btn'}
+                    aria-hidden="true"
+                  >
+                    <Icon icon={ArrowUpRight} size="sm" />
+                  </IconButton>
                 </>
               );
 
               return isInteractive ? (
-                <a
+                <Card
                   key={build.id}
+                  as="a"
+                  interactive
                   className={cardClassName}
                   href={build.link}
                   target="_blank"
@@ -82,14 +90,14 @@ export default function BuildsPage() {
                   aria-label={`${build.title} build (Opens in new tab)`}
                 >
                   {cardContent}
-                </a>
+                </Card>
               ) : (
-                <div key={build.id} className={cardClassName}>
+                <Card key={build.id} className={cardClassName}>
                   {cardContent}
-                </div>
+                </Card>
               );
             })}
-          </div>
+          </BentoGrid>
         </div>
       </div>
     </div>

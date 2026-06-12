@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { playClickSound } from '../utils/sound';
+import { IconButton, DotButton, Icon } from '../ds';
 import './ProjectCarousel.css';
 
 export default function ProjectCarousel({ images }) {
@@ -81,35 +82,32 @@ export default function ProjectCarousel({ images }) {
           ))}
         </div>
       </div>
-      
+
       <div className="project-carousel-controls">
-        <button 
-          className="carousel-nav-btn prev-btn" 
+        <IconButton
           onClick={handlePrev}
           aria-label="Previous slide"
         >
-          <ChevronLeft size={20} strokeWidth={2} />
-        </button>
-        
+          <Icon icon={ChevronLeft} size="md" />
+        </IconButton>
+
         <div className="carousel-dots-container" aria-label="Slideshow controls">
           {images.map((_, index) => (
-            <button
+            <DotButton
               key={index}
-              className={`carousel-dot-btn ${index === currentIndex ? 'is-active' : ''}`}
+              isActive={index === currentIndex}
+              index={index}
               onClick={() => handleDotClick(index)}
-              aria-label={`Go to slide ${index + 1}`}
-              aria-current={index === currentIndex ? 'true' : undefined}
             />
           ))}
         </div>
-        
-        <button 
-          className="carousel-nav-btn next-btn" 
+
+        <IconButton
           onClick={handleNext}
           aria-label="Next slide"
         >
-          <ChevronRight size={20} strokeWidth={2} />
-        </button>
+          <Icon icon={ChevronRight} size="md" />
+        </IconButton>
       </div>
     </div>
   );

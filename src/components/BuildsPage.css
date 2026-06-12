@@ -65,7 +65,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: none;
   border-radius: 24px;
   pointer-events: none;
   transition: border-color 0.3s ease;
@@ -77,43 +77,11 @@
   content: '';
   position: absolute;
   inset: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: none;
   border-radius: 16px;
   pointer-events: none;
   transition: border-color 0.3s ease;
   z-index: 3;
-}
-
-.builds-bento-item:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 4px;
-}
-
-/* Corner Link Button */
-.corner-link-btn {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  width: 28px;
-  height: 28px;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  transition: var(--transition-smooth);
-  z-index: 10;
-  text-decoration: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.corner-link-btn:hover {
-  background: #27272a;
-  color: var(--text-primary);
-  border-color: #3f3f46;
 }
 
 /* =============================================
@@ -140,18 +108,6 @@
   background: rgba(255, 255, 255, 0.55);
 }
 
-:root.light .corner-link-btn {
-  background: rgba(15, 23, 42, 0.04);
-  border-color: rgba(15, 23, 42, 0.08);
-  color: var(--text-secondary);
-}
-
-:root.light .corner-link-btn:hover {
-  background: #e4e4e7;
-  color: var(--text-primary);
-  border-color: #cbd5e1;
-}
-
 /* =============================================
    Build Card Background Image & Overlay
    ============================================= */
@@ -173,8 +129,8 @@
 
 
 
-/* Build Card Tag (styled similar to project-card-tag on Work page but with opaque background) */
-.builds-bento-item .project-card-tag {
+/* Build card tag with opaque background over imagery */
+.builds-bento-item .build-card-tag {
   font-family: var(--font-sans);
   font-size: 0.65rem;
   font-weight: 500;
@@ -196,28 +152,28 @@
   left: 1.25rem;
 }
 
-.builds-bento-item:not(.has-image) .project-card-tag {
+.builds-bento-item:not(.has-image) .build-card-tag {
   position: relative;
   bottom: auto;
   left: auto;
   transform: translateY(0);
 }
 
-:root.light .builds-bento-item .project-card-tag {
+:root.light .builds-bento-item .build-card-tag {
   background: #ffffff !important; /* Opaque white background in light mode */
   border-color: rgba(15, 23, 42, 0.08);
   color: var(--text-secondary);
 }
 
 /* Hover micro-interactions for the tag inside builds page */
-.builds-bento-item.is-interactive:hover .project-card-tag {
+.builds-bento-item.is-interactive:hover .build-card-tag {
   background: #27272a !important; /* Lighter opaque zinc on hover */
   border-color: rgba(255, 255, 255, 0.16);
   color: var(--text-primary);
   transform: translateY(-2px);
 }
 
-:root.light .builds-bento-item.is-interactive:hover .project-card-tag {
+:root.light .builds-bento-item.is-interactive:hover .build-card-tag {
   background: #f4f4f5 !important; /* Darker opaque zinc on hover in light mode */
   border-color: rgba(15, 23, 42, 0.16);
   color: var(--text-primary);
