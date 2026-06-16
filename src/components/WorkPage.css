@@ -82,12 +82,8 @@
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: none;
   background: #000000;
-}
-
-:root.light .project-image-container {
-  border-color: rgba(15, 23, 42, 0.08);
 }
 
 
@@ -195,7 +191,7 @@
   position: absolute;
   top: 1.5rem;
   left: 2rem;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 1.1rem;
   color: var(--text-secondary);
   opacity: 0.5;

@@ -7,15 +7,7 @@ const HEADING_LINE_STAGGER_MS = 220;
 const BASE_DELAY_MS = 500;
 
 export default function HomeHero({ headingLines, onViewWork, onScrollDown }) {
-  const [isHighlighted, setIsHighlighted] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsHighlighted(true);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,7 +63,7 @@ export default function HomeHero({ headingLines, onViewWork, onScrollDown }) {
                   {words.map(({ globalIndex, key, word }, wordIndex) => (
                     <Fragment key={key}>
                       <span
-                        className={`word-reveal ${isHighlighted && globalIndex % 2 === 0 ? 'word-is-highlighted' : ''}`}
+                        className={`word-reveal ${globalIndex % 2 === 0 ? 'word-is-highlighted' : ''}`}
                       >
                         {word}
                       </span>

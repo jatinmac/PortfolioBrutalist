@@ -49,7 +49,7 @@ export default function App() {
   const headingLines = useMemo(() => {
     return [
       'Product Designer & Builder.',
-      'Using AI to create prototypes that feel real & solve Pain Points.',
+      'Using AI for design workflows, creating shippable prototypes & solving Problems.',
       'Prev. at Maruti Suzuki.',
     ];
   }, []);

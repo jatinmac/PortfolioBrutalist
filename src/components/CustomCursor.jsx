@@ -35,10 +35,13 @@ function isClickableElement(el) {
 /* ── Component ─────────────────────────────────────────── */
 export default function CustomCursor() {
   const dotRef = useRef(null);
-  const position = useRef({ x: -100, y: -100 });
+  const mouse = useRef({ x: -100, y: -100 });
+  const cursor = useRef({ x: -100, y: -100 });
+  const hasMovedRef = useRef(false);
   const rafId = useRef(null);
   const modeRef = useRef('default');
   const visibleRef = useRef(false);
+  const lastTime = useRef(0);
   const [mode, setMode] = useState('default'); // 'default' | 'text' | 'clickable'
   const [visible, setVisible] = useState(false);
 
@@ -74,13 +77,49 @@ export default function CustomCursor() {
   const schedulePositionWrite = useCallback(() => {
     if (rafId.current) return;
 
-    rafId.current = requestAnimationFrame(() => {
-      rafId.current = null;
+    lastTime.current = performance.now();
+
+    const tick = (now) => {
+      const targetX = mouse.current.x;
+      const targetY = mouse.current.y;
+      const currentX = cursor.current.x;
+      const currentY = cursor.current.y;
+
+      /* Calculate time delta in seconds (capped to prevent jumps) */
+      const time = now || performance.now();
+      const dt = Math.min((time - lastTime.current) / 1000, 0.1);
+      lastTime.current = time;
+
+      /* Time-independent lerp: speed factor of 10 for ultra-smooth floating lag */
+      const ease = 1 - Math.exp(-10 * dt);
+      const nextX = currentX + (targetX - currentX) * ease;
+      const nextY = currentY + (targetY - currentY) * ease;
+
+      cursor.current.x = nextX;
+      cursor.current.y = nextY;
+
       if (dotRef.current) {
-        const { x, y } = position.current;
-        dotRef.current.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+        dotRef.current.style.transform = `translate3d(${nextX}px, ${nextY}px, 0) translate(-50%, -50%)`;
       }
-    });
+
+      const dx = targetX - nextX;
+      const dy = targetY - nextY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      /* Stop running loop when close enough */
+      if (distance < 0.1) {
+        cursor.current.x = targetX;
+        cursor.current.y = targetY;
+        if (dotRef.current) {
+          dotRef.current.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) translate(-50%, -50%)`;
+        }
+        rafId.current = null;
+      } else {
+        rafId.current = requestAnimationFrame(tick);
+      }
+    };
+
+    rafId.current = requestAnimationFrame(tick);
   }, []);
 
   const setVisibleState = useCallback((nextVisible) => {
@@ -91,10 +130,19 @@ export default function CustomCursor() {
 
   /* Track mouse and determine what we're hovering */
   const handleMouseMove = useCallback((e) => {
-    position.current.x = e.clientX;
-    position.current.y = e.clientY;
-    schedulePositionWrite();
+    mouse.current.x = e.clientX;
+    mouse.current.y = e.clientY;
 
+    if (!hasMovedRef.current) {
+      cursor.current.x = e.clientX;
+      cursor.current.y = e.clientY;
+      hasMovedRef.current = true;
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+      }
+    }
+
+    schedulePositionWrite();
     setVisibleState(true);
 
     /* Determine cursor mode from hovered element */
@@ -114,6 +162,7 @@ export default function CustomCursor() {
 
   const handleMouseLeave = useCallback(() => {
     setVisibleState(false);
+    hasMovedRef.current = false;
   }, [setVisibleState]);
 
   const handleMouseEnter = useCallback(() => {

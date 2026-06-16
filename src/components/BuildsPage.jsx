@@ -1,6 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import { playClickSound } from '../utils/sound';
-import { VisuallyHidden, BentoGrid, Card, Tag, IconButton, Icon } from '../ds';
+import { VisuallyHidden, Card, Tag, IconButton, Icon } from '../ds';
 import './BuildsPage.css';
 
 const BUILDS_DATA = [
@@ -8,97 +8,102 @@ const BUILDS_DATA = [
     id: 1,
     title: 'My AI Twin',
     tag: 'BUILD 01',
-    colSpan: 2,
+    image: '/aitwin.webp',
     link: 'https://jatindavistwin.vercel.app/',
   },
   {
     id: 2,
     title: 'Website Hero',
     tag: 'BUILD 02',
-    colSpan: 1,
+    image: '/aiwebsite.webp',
     link: 'https://websitedesign-ten.vercel.app/',
   },
   {
     id: 3,
     title: 'AI UI',
     tag: 'BUILD 03',
-    colSpan: 1,
+    image: '/AIui.webp',
     link: 'https://agenticui.netlify.app/',
   },
   {
     id: 4,
     title: 'Skills.md',
     tag: 'BUILD 04',
-    colSpan: 2,
+    image: '/skillsmd.webp',
     link: 'https://aiskillsmd.netlify.app/',
   },
 ];
 
-const getBuildBackgroundImage = (build) => {
-  if (!build.imageWebp) {
-    return `url(${build.image})`;
-  }
-
-  return `image-set(url("${build.imageWebp}") type("image/webp"), url("${build.image}") type("image/png"))`;
-};
-
 export default function BuildsPage() {
   return (
-    <div className="builds-page-wrapper">
-      <div className="builds-bento-wrapper">
-        <div className="builds-bento-container">
-          <VisuallyHidden as="h2">My Builds</VisuallyHidden>
-          <BentoGrid columns="repeat(3, 1fr)" className="builds-bento-grid">
-            {BUILDS_DATA.map((build) => {
-              const isInteractive = Boolean(build.link);
-              const cardClassName = `builds-bento-item ds-col-span-${build.colSpan} ${isInteractive ? 'is-interactive' : ''} ${build.image ? 'has-image' : ''}`;
+    <div className="builds-page-container">
+      <VisuallyHidden as="h2">My Builds</VisuallyHidden>
+      <div className="builds-grid">
+        {BUILDS_DATA.map((build) => {
+          const titleId = `build-title-${build.id}`;
+          const isInteractive = Boolean(build.link);
 
-              const cardContent = (
-                <>
-                  {/* Background image if available */}
-                  {build.image && (
-                    <div className="build-image-bg" style={{ backgroundImage: getBuildBackgroundImage(build) }} />
-                  )}
-
-                  {/* Tag on bottom-left corner over imagery */}
-                  <Tag variant="card" className="build-card-tag">{build.title}</Tag>
-
-                  {/* Corner Button */}
+          const cardContent = (
+            <div className="build-card-content">
+              {/* Image container */}
+              <div className="build-image-container">
+                <div
+                  className="build-image-black-box"
+                  style={{ backgroundImage: `url(${build.image})` }}
+                  role="img"
+                  aria-label={`${build.title} build screenshot`}
+                />
+                {/* Corner link indicator */}
+                {isInteractive && (
                   <IconButton
-                    as="span"
-                    size="sm"
-                    round
+                    size="overlay"
                     placement="corner"
-                    className={isInteractive ? '' : 'placeholder-btn'}
+                    className="build-link-corner-btn"
+                    round
+                    as="span"
                     aria-hidden="true"
                   >
-                    <Icon icon={ArrowUpRight} size="sm" />
+                    <Icon icon={ArrowUpRight} size="md" />
                   </IconButton>
-                </>
-              );
+                )}
+              </div>
+              {/* Build details */}
+              <div className="build-card-footer">
+                <h3 id={titleId} className="build-name-active">{build.title}</h3>
+                {build.tag && (
+                  <div className="build-card-tags">
+                    <Tag variant="card">{build.tag}</Tag>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
 
-              return isInteractive ? (
-                <Card
-                  key={build.id}
-                  as="a"
-                  interactive
-                  className={cardClassName}
-                  href={build.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => playClickSound()}
-                  aria-label={`${build.title} build (Opens in new tab)`}
-                >
-                  {cardContent}
-                </Card>
-              ) : (
-                <Card key={build.id} className={cardClassName}>
-                  {cardContent}
-                </Card>
-              );
-            })}
-          </BentoGrid>
-        </div>
+          return isInteractive ? (
+            <Card
+              key={build.id}
+              as="a"
+              interactive
+              className="build-card"
+              href={build.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => playClickSound()}
+              aria-labelledby={titleId}
+              aria-label={`Open ${build.title} build (Opens in new tab)`}
+            >
+              {cardContent}
+            </Card>
+          ) : (
+            <Card
+              key={build.id}
+              className="build-card"
+              aria-labelledby={titleId}
+            >
+              {cardContent}
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

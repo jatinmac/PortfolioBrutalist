@@ -50,8 +50,8 @@
   --elevation-backdrop: rgba(0, 0, 0, 0.75);
 
   /* ── typography.family ─────────────────────────────────── */
-  --typography-family-sans: 'Outfit', system-ui, -apple-system, sans-serif;
-  --typography-family-display: 'Space Grotesk', system-ui, sans-serif;
+  --typography-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --typography-family-display: 'Nunito', system-ui, sans-serif;
 
   /* ── typography.size ───────────────────────────────────── */
   --typography-size-xs: 0.65rem; /* ~10.4px */

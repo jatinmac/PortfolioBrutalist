@@ -27,7 +27,7 @@
   padding: var(--spacing-2) var(--spacing-4);
   background: var(--color-primary);
   color: var(--color-on-primary);
-  font-family: var(--typography-family-display);
+  font-family: var(--typography-family-sans);
   font-size: var(--typography-size-base);
   font-weight: var(--typography-weight-medium);
   border-radius: var(--radius-md);
@@ -78,7 +78,7 @@
 }
 
 .ds-text--overline {
-  font-family: var(--typography-family-display);
+  font-family: var(--typography-family-sans);
   font-size: var(--typography-size-xs);
   font-weight: var(--typography-weight-semibold);
   text-transform: uppercase;
@@ -87,7 +87,7 @@
 }
 
 .ds-text--label {
-  font-family: var(--typography-family-display);
+  font-family: var(--typography-family-sans);
   font-size: var(--typography-size-sm);
   font-weight: var(--typography-weight-medium);
   text-transform: uppercase;
@@ -96,7 +96,7 @@
 }
 
 .ds-text--caption {
-  font-family: var(--typography-family-display);
+  font-family: var(--typography-family-sans);
   font-size: 0.7rem;
   font-weight: var(--typography-weight-medium);
   text-transform: uppercase;
@@ -116,7 +116,7 @@
   padding: 0 var(--spacing-5);
   border-radius: var(--radius-md);
   text-decoration: none;
-  font-family: var(--typography-family-display);
+  font-family: var(--typography-family-sans);
   cursor: pointer;
   box-sizing: border-box;
   transition:
@@ -249,7 +249,7 @@
 }
 
 /* Shape: round */
-.ds-icon-btn--round {
+.ds-icon-btn.ds-icon-btn--round {
   border-radius: var(--radius-full);
 }
 
@@ -563,7 +563,7 @@
 }
 
 .ds-meta-label {
-  font-family: var(--typography-family-display);
+  font-family: var(--typography-family-sans);
   font-size: var(--typography-size-sm);
   font-weight: var(--typography-weight-medium);
   text-transform: uppercase;
@@ -816,7 +816,7 @@
 
 /* Bento placeholder text */
 .ds-bento-placeholder {
-  font-family: var(--typography-family-display);
+  font-family: var(--typography-family-sans);
   font-size: var(--typography-size-xl);
   font-weight: var(--typography-weight-medium);
   color: var(--color-text-primary);
@@ -932,7 +932,7 @@
   background: none;
   border: none;
   color: var(--color-text-muted);
-  font-family: var(--typography-family-display);
+  font-family: var(--typography-family-sans);
   font-size: var(--typography-size-sm);
   font-weight: var(--typography-weight-semibold);
   text-transform: uppercase;
@@ -1036,19 +1036,19 @@
 }
 
 .ds-footer-copyright {
-  font-family: var(--typography-family-display);
+  font-family: var(--typography-family-sans);
   font-size: 0.7rem;
   font-weight: var(--typography-weight-medium);
   letter-spacing: var(--typography-tracking-ultra);
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: #ffffff;
   transition:
     color 0.2s ease,
     background-color 0.2s ease;
 }
 
 .ds-footer-copyright:hover {
-  color: var(--color-text-secondary);
+  color: #ffffff;
 }
 
 .ds-footer-controls {

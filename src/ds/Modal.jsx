@@ -114,6 +114,7 @@ export default function Modal({ isOpen, onClose, ariaLabelledby, triggerRef, cla
         <IconButton
           size="overlay"
           className="ds-modal-close"
+          round
           onClick={onClose}
           aria-label="Close modal"
         >

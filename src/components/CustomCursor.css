@@ -15,21 +15,24 @@
 }
 
 /* ── Cursor colour tokens ── */
-/* Dark mode (default): light cursor on dark bg */
+/* Dark mode (default): full white cursor */
 :root {
-  --cursor-border: rgba(200, 200, 200, 0.5);
-  --cursor-text-fill: rgba(200, 200, 200, 0.85);
-  --cursor-click-border: rgba(220, 220, 220, 0.4);
-  --cursor-click-bg: rgba(200, 200, 200, 0.06);
+  --cursor-border: #ffffff;
+  --cursor-bg: #ffffff;
+  --cursor-text-fill: #ffffff;
+  --cursor-click-border: #ffffff;
+  --cursor-click-bg: rgba(255, 255, 255, 0.15);
 }
 
-/* Light mode: dark / black cursor on light bg */
+/* Light mode: full black cursor */
 :root.light {
-  --cursor-border: rgba(20, 20, 20, 0.55);
-  --cursor-text-fill: rgba(10, 10, 10, 0.8);
-  --cursor-click-border: rgba(30, 30, 30, 0.4);
-  --cursor-click-bg: rgba(20, 20, 20, 0.06);
+  --cursor-border: #000000;
+  --cursor-bg: #000000;
+  --cursor-text-fill: #000000;
+  --cursor-click-border: #000000;
+  --cursor-click-bg: rgba(0, 0, 0, 0.08);
 }
+
 
 .custom-cursor-dot {
   position: fixed;
@@ -43,19 +46,19 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: transparent;
+  background: var(--cursor-bg);
   border: 1.5px solid var(--cursor-border);
-  opacity: 0.8;
+  opacity: 1;
 
   /* Smooth shape morph — long duration + gentle ease-out for buttery feel */
   transition:
-    width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-radius 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    background 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    border-width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Text-hover state: morph into a thin vertical line */

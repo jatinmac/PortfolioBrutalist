@@ -85,6 +85,7 @@ export default function WorkPage({ onNavigate }) {
                     size="overlay"
                     placement="corner"
                     className="expand-corner-btn"
+                    round
                     onClick={(e) => {
                       e.stopPropagation();
                       triggerRef.current = e.currentTarget;
