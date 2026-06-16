@@ -21,17 +21,14 @@
   gap: 0.5rem;
 }
 
-/* Accordion Grid */
+/* Projects Grid Layout */
 .projects-grid {
-  display: flex;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
   width: 100%;
   box-sizing: border-box;
   --enter-distance: 26px;
-}
-
-.projects-grid.motion-prev {
-  --enter-distance: -26px;
 }
 
 .project-card {
@@ -43,10 +40,11 @@
   box-sizing: border-box;
   overflow: hidden;
   border: none;
+  height: 400px;
   transition:
-    flex 0.86s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.86s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.3s;
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s,
+    border-color 0.3s;
   contain: layout paint;
 }
 
@@ -54,31 +52,14 @@
   background: rgba(255, 255, 255, 0.35);
 }
 
-
-
-/* Collapsed Cards */
-.project-card.is-collapsed {
-  flex: 0.6;
-  min-width: 65px;
-  height: 400px;
-  cursor: pointer;
+.project-card:hover {
+  transform: translateY(-4px);
+  background: rgba(18, 18, 22, 0.3);
 }
 
-
-
-
-
-
-
-
-/* Expanded Card */
-.project-card.is-expanded {
-  flex: 4;
-  height: 400px;
-  cursor: default;
+:root.light .project-card:hover {
+  background: rgba(255, 255, 255, 0.45);
 }
-
-
 
 /* Expanded Content */
 .expanded-card-content {
@@ -128,7 +109,7 @@
   animation: active-image-drift 10s ease-in-out infinite alternate;
 }
 
-.project-card.is-expanded:hover .project-image-black-box {
+.project-card:hover .project-image-black-box {
   transform: scale(1.075);
 }
 
@@ -202,30 +183,7 @@
   width: 100%;
 }
 
-/* Collapsed Content */
-.collapsed-card-content {
-  width: 100%;
-  height: 100%;
-  padding: .75rem .75rem;
-  box-sizing: border-box;
-}
 
-.collapsed-sliver {
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 0;
-  box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.03);
-}
 
 
 
@@ -275,33 +233,12 @@
   }
 
   .projects-grid {
-    flex-direction: column;
-    gap: 1rem;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 
-  .project-card.is-collapsed {
-    flex: none;
-    width: 100%;
-    height: 64px;
-    min-height: 64px;
-  }
-
-  .project-card.is-expanded {
-    flex: none;
-    width: 100%;
+  .project-card {
     height: 320px;
-  }
-
-  /* Collapsed content mobile styling */
-  .collapsed-card-content {
-    padding: 0.5rem;
-  }
-
-  .collapsed-sliver {
-    flex-direction: row;
-    padding: 0 1.25rem;
-    align-items: center;
-    border-radius: 10px;
   }
 
   /* Expanded mobile padding */
@@ -378,15 +315,13 @@
   .project-card,
   .expanded-card-content,
   .project-image-black-box,
-  .project-card-footer,
-  .collapsed-sliver {
+  .project-card-footer {
     animation: none !important;
     transition-duration: 0.01ms !important;
   }
 
   .project-card,
   .project-image-black-box,
-  .collapsed-sliver,
   .project-card-footer,
   .expand-corner-btn {
     transform: none !important;
@@ -436,7 +371,16 @@
     will-change: auto;
   }
 
+  .project-card:hover {
+    transform: none;
+    background: rgba(18, 18, 22, 0.58);
+  }
+
   :root.light .project-card {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  :root.light .project-card:hover {
     background: rgba(255, 255, 255, 0.9);
   }
 
@@ -453,7 +397,7 @@
   }
 
   .project-image-black-box,
-  .project-card.is-expanded:hover .project-image-black-box {
+  .project-card:hover .project-image-black-box {
     transform: none;
     transition: none;
     will-change: auto;

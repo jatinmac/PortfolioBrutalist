@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { MOBILE_PERFORMANCE_QUERY } from '../utils/mediaQueries';
+import { MOBILE_VIEWPORT_QUERY } from '../utils/mediaQueries';
 import './CalmSeaBackground.css';
 
 // EDIT THESE HEX CODES TO CHANGE THE SEA COLORS EASILY.
@@ -330,7 +330,7 @@ export default function CalmSeaBackground({ theme }) {
   const [isReady, setIsReady] = useState(false);
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== 'undefined') {
-      return window.matchMedia(MOBILE_PERFORMANCE_QUERY).matches;
+      return window.matchMedia(MOBILE_VIEWPORT_QUERY).matches;
     }
     return true;
   });
@@ -339,9 +339,9 @@ export default function CalmSeaBackground({ theme }) {
     targetThemeRef.current = theme === 'light' ? 1.0 : 0.0;
   }, [theme]);
 
-  // Check mobile device / performance media query
+  // Check mobile viewport media query
   useEffect(() => {
-    const mediaQuery = window.matchMedia(MOBILE_PERFORMANCE_QUERY);
+    const mediaQuery = window.matchMedia(MOBILE_VIEWPORT_QUERY);
 
     const listener = (e) => {
       setIsMobile(e.matches);

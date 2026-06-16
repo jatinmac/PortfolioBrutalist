@@ -15,7 +15,6 @@ export { default as IconButton } from './IconButton';
 export { default as GlassPanel } from './GlassPanel';
 export { default as Modal } from './Modal';
 export { default as Text } from './Text';
-export { default as DesktopPreviewCarousel } from './DesktopPreviewCarousel';
 
 
 export { BentoGrid, BentoItem } from './BentoGrid';

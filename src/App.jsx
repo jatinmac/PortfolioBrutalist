@@ -1,9 +1,9 @@
-import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Navbar, Footer, SkipLink, DesktopPreviewCarousel } from './ds';
+import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react';
+import { Navbar, Footer, SkipLink } from './ds';
 import CustomCursor from './components/CustomCursor';
 import HomeHero from './components/HomeHero';
 import CalmSeaBackground from './components/CalmSeaBackground';
-import { DESKTOP_PREVIEW_QUERY, MOBILE_PERFORMANCE_QUERY } from './utils/mediaQueries';
+import { MOBILE_PERFORMANCE_QUERY } from './utils/mediaQueries';
 import { playTabChangeSound, playThemeToggleSound, getSoundEnabled, setSoundEnabled } from './utils/sound';
 import './App.css';
 
@@ -32,15 +32,6 @@ const FONT_SCALE_DEFAULT = 100;
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('Home');
-  const [displayTab, setDisplayTab] = useState('Home');
-  const [prevTab, setPrevTab] = useState(null);
-  const timerRef = useRef(null);
-  const [previewTransition, setPreviewTransition] = useState(null);
-  const [previewEntering, setPreviewEntering] = useState(false);
-  const previewTransitionTimerRef = useRef(null);
-  const [flyingPreview, setFlyingPreview] = useState(null);
-  const [introCompleted, setIntroCompleted] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_PREVIEW_QUERY).matches);
 
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('theme') || 'light';
@@ -53,41 +44,14 @@ export default function App() {
     return Number.isFinite(saved) ? Math.min(FONT_SCALE_MAX, Math.max(FONT_SCALE_MIN, saved)) : FONT_SCALE_DEFAULT;
   });
 
+
+
   const headingLines = useMemo(() => {
     return [
       'Product Designer & Builder.',
       'Using AI to create prototypes that feel real & solve Pain Points.',
       'Prev. at Maruti Suzuki.',
     ];
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIntroCompleted(true);
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia(DESKTOP_PREVIEW_QUERY);
-
-    const listener = (e) => {
-      setIsDesktop(e.matches);
-    };
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', listener);
-    } else {
-      mediaQuery.addListener(listener);
-    }
-
-    return () => {
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', listener);
-      } else {
-        mediaQuery.removeListener(listener);
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -131,17 +95,6 @@ export default function App() {
     return () => window.clearTimeout(preloadTimer);
   }, []);
 
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-      if (previewTransitionTimerRef.current) {
-        clearTimeout(previewTransitionTimerRef.current);
-      }
-    };
-  }, []);
-
   const handleToggleSound = useCallback(() => {
     const nextVal = !soundEnabled;
     setSoundEnabledState(nextVal);
@@ -179,125 +132,59 @@ export default function App() {
   }, [theme]);
 
   const handleTabChange = useCallback((tabName) => {
-    if (tabName !== activeTab) {
-      if (previewTransitionTimerRef.current) {
-        clearTimeout(previewTransitionTimerRef.current);
-        previewTransitionTimerRef.current = null;
-        setPreviewTransition(null);
-        setPreviewEntering(false);
-        setFlyingPreview(null);
-      }
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-      playTabChangeSound();
-      setPrevTab(activeTab);
-      setActiveTab(tabName);
-      setDisplayTab(tabName);
-      timerRef.current = setTimeout(() => {
-        setPrevTab(null);
-        timerRef.current = null;
-      }, 500);
-    }
-  }, [activeTab]);
-
-  const handlePreviewClick = useCallback((side, tabName) => {
-    if (previewTransition || flyingPreview || tabName === activeTab) return;
-
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) {
-      handleTabChange(tabName);
-      return;
-    }
-
     playTabChangeSound();
-    setPreviewEntering(false);
-    setPreviewTransition(side);
-    setFlyingPreview({ side, tabName });
-
-    previewTransitionTimerRef.current = setTimeout(() => {
-      setPreviewTransition(null);
-      setPreviewEntering(true);
-      if (timerRef.current) clearTimeout(timerRef.current);
-      setActiveTab(tabName);
-      setDisplayTab(tabName);
-
-      previewTransitionTimerRef.current = setTimeout(() => {
-        setFlyingPreview(null);
-        setPreviewEntering(false);
-        previewTransitionTimerRef.current = null;
-      }, 500);
-    }, 650);
-  }, [previewTransition, flyingPreview, activeTab, handleTabChange]);
-
-  const renderTabContent = useCallback((tabName) => {
-    switch (tabName) {
-      case 'Home':
-        return <HomeHero headingLines={headingLines} onViewWork={() => handleTabChange('Work')} />;
-      case 'About':
-        return <AboutPage />;
-      case 'Work':
-        return <WorkPage onNavigate={handleTabChange} />;
-      case 'Builds':
-        return <BuildsPage />;
-      case 'Contact':
-        return <ContactPage />;
-      default:
-        return null;
+    setActiveTab(tabName);
+    const id = tabName.toLowerCase();
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [headingLines, handleTabChange]);
+  }, []);
 
-  const renderContent = () => {
-    if (prevTab) {
-      return (
-        <div className="tab-transition-container">
-          <div
-            key={`exit-${prevTab}`}
-            className="tab-pane exit-up"
-            role="tabpanel"
-            id={`tabpanel-${prevTab.toLowerCase()}`}
-            aria-labelledby={`tab-${prevTab.toLowerCase()}`}
-            aria-hidden="true"
-          >
-            {renderTabContent(prevTab)}
-          </div>
-          <div
-            key={`enter-${displayTab}`}
-            className="tab-pane enter-down"
-            role="tabpanel"
-            id={`tabpanel-${displayTab.toLowerCase()}`}
-            aria-labelledby={`tab-${displayTab.toLowerCase()}`}
-          >
-            {renderTabContent(displayTab)}
-          </div>
-        </div>
-      );
-    }
+  useEffect(() => {
+    let ticking = false;
 
-    return (
-      <div
-        key={`active-${displayTab}`}
-        className="tab-pane active"
-        role="tabpanel"
-        id={`tabpanel-${displayTab.toLowerCase()}`}
-        aria-labelledby={`tab-${displayTab.toLowerCase()}`}
-      >
-        {renderTabContent(displayTab)}
-      </div>
-    );
-  };
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const sections = ['home', 'about', 'work', 'builds', 'contact'];
+          const middleOfViewport = window.innerHeight / 2;
 
-  const currentIdx = TABS.indexOf(displayTab);
-  const leftTab = currentIdx !== -1 ? TABS[(currentIdx - 1 + TABS.length) % TABS.length] : null;
-  const rightTab = currentIdx !== -1 ? TABS[(currentIdx + 1) % TABS.length] : null;
+          for (const id of sections) {
+            const el = document.getElementById(id);
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              // Check if middle of viewport is inside the section's bounding rectangle
+              if (rect.top <= middleOfViewport && rect.bottom > middleOfViewport) {
+                const tabName = id.charAt(0).toUpperCase() + id.slice(1);
+                setActiveTab(tabName);
+                break;
+              }
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Run once to set the initial active tab
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
     <>
       <CustomCursor />
-      <div className={`app-layout tab-${displayTab.toLowerCase()}`}>
+      <div className={`app-layout tab-${activeTab.toLowerCase()}`}>
         <CalmSeaBackground theme={theme} />
         <SkipLink />
         <div className="bg-glow" aria-hidden="true" />
+        <div className="ds-navbar-blur-bg" aria-hidden="true" />
 
         <Navbar
           tabs={TABS}
@@ -306,22 +193,27 @@ export default function App() {
           onTabPreload={handleTabPreload}
         />
 
-        <DesktopPreviewCarousel
-          isDesktop={isDesktop}
-          prevTab={prevTab}
-          leftTab={leftTab}
-          rightTab={rightTab}
-          flyingPreview={flyingPreview}
-          previewTransition={previewTransition}
-          displayTab={displayTab}
-          introCompleted={introCompleted}
-          onPreviewClick={handlePreviewClick}
-          onPreviewPreload={handleTabPreload}
-        />
-
-        <main id="main-content" className={`content-container${previewTransition ? ' content-flying-out' : ''}${previewEntering ? ' content-entering-from-preview' : ''}`}>
+        <main id="main-content" className="content-container">
           <Suspense fallback={null}>
-            {renderContent()}
+            <section id="home" className="viewport-section" aria-label="Home">
+              <HomeHero
+                headingLines={headingLines}
+                onViewWork={() => handleTabChange('Work')}
+                onScrollDown={() => handleTabChange('About')}
+              />
+            </section>
+            <section id="about" className="viewport-section" aria-label="About">
+              <AboutPage />
+            </section>
+            <section id="work" className="viewport-section" aria-label="Work">
+              <WorkPage onNavigate={handleTabChange} />
+            </section>
+            <section id="builds" className="viewport-section" aria-label="Builds">
+              <BuildsPage />
+            </section>
+            <section id="contact" className="viewport-section" aria-label="Contact">
+              <ContactPage />
+            </section>
           </Suspense>
         </main>
 

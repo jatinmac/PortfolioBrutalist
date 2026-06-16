@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { Maximize2 } from 'lucide-react';
 import { playClickSound, playModalOpenSound } from '../utils/sound';
 import { PROJECTS } from '../data/projects';
 import ProjectCarousel from './ProjectCarousel';
@@ -21,23 +21,10 @@ const DOUBLE_AI_PITCH_DECK_IMAGES = [
 
 export default function WorkPage({ onNavigate }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [motionDirection, setMotionDirection] = useState('next');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const triggerRef = useRef(null);
 
   const activeProject = PROJECTS[activeIndex];
-
-  const handlePrev = () => {
-    playClickSound();
-    setMotionDirection('prev');
-    setActiveIndex((prev) => (prev === 0 ? PROJECTS.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    playClickSound();
-    setMotionDirection('next');
-    setActiveIndex((prev) => (prev === PROJECTS.length - 1 ? 0 : prev + 1));
-  };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -53,11 +40,9 @@ export default function WorkPage({ onNavigate }) {
   const handleCardKeyDown = (e, index) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      if (index !== activeIndex) {
-        playClickSound();
-        setMotionDirection(index > activeIndex ? 'next' : 'prev');
-        setActiveIndex(index);
-      }
+      playClickSound();
+      setActiveIndex(index);
+      setIsModalOpen(true);
     }
   };
 
@@ -65,99 +50,68 @@ export default function WorkPage({ onNavigate }) {
     <div className="work-page-container">
       <h2 className="ds-sr-only">Selected Projects</h2>
 
-      {/* Top Header Row with Navigation Buttons */}
-      <div className="work-header">
-        <div className="work-nav-buttons">
-          <IconButton
-            onClick={handlePrev}
-            aria-label="Previous Project"
-          >
-            <Icon icon={ChevronLeft} size="md" />
-          </IconButton>
-          <IconButton
-            onClick={handleNext}
-            aria-label="Next Project"
-          >
-            <Icon icon={ChevronRight} size="md" />
-          </IconButton>
-        </div>
-      </div>
-
-      {/* Projects Accordion Grid */}
-      <div className={`projects-grid motion-${motionDirection}`}>
+      {/* Projects Grid */}
+      <div className="projects-grid">
         {PROJECTS.map((project, index) => {
-          const isActive = index === activeIndex;
           const titleId = `project-title-${project.id}`;
 
           return (
             <Card
               key={project.id}
-              className={`project-card ${isActive ? 'is-expanded' : 'is-collapsed'}`}
-              interactive={!isActive}
+              className="project-card"
+              interactive={true}
               onClick={() => {
-                if (!isActive) {
-                  playClickSound();
-                  setMotionDirection(index > activeIndex ? 'next' : 'prev');
-                  setActiveIndex(index);
-                }
+                playClickSound();
+                setActiveIndex(index);
+                setIsModalOpen(true);
               }}
-              onKeyDown={!isActive ? (e) => handleCardKeyDown(e, index) : undefined}
-              role={isActive ? 'group' : 'button'}
-              tabIndex={isActive ? undefined : 0}
-              aria-labelledby={isActive ? titleId : undefined}
-              aria-label={!isActive ? `View ${project.title}` : undefined}
+              onKeyDown={(e) => handleCardKeyDown(e, index)}
+              role="button"
+              tabIndex={0}
+              aria-labelledby={titleId}
+              aria-label={`View ${project.title} details`}
             >
-              {isActive ? (
-                <div className="expanded-card-content" key={`expanded-${project.id}`}>
-                  {/* Image container */}
-                  <div className="project-image-container">
-                    <div
-                      className="project-image-black-box"
-                      style={{ backgroundImage: `url(${project.image})` }}
-                      role="img"
-                      aria-label={`${project.title} project screenshot`}
-                    />
-                    {/* Expand/Modal trigger */}
-                    <IconButton
-                      size="overlay"
-                      placement="corner"
-                      className="expand-corner-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        triggerRef.current = e.currentTarget;
-                        playModalOpenSound();
-                        setIsModalOpen(true);
-                      }}
-                      aria-label={`Expand details for ${project.title}`}
-                    >
-                      <Icon icon={Maximize2} size="md" />
-                    </IconButton>
-                  </div>
-                  {/* Project name */}
-                  <div className="project-card-footer">
-                    <h3 id={titleId} className="project-name-active">{project.title}</h3>
-                    {project.subtitle && (
-                      <p className="project-subtitle-active">{project.subtitle}</p>
-                    )}
-                    {project.tags && (
-                      <div className="project-card-tags">
-                        {project.tags.map((tag) => (
-                          <Tag key={tag} variant="card">{tag}</Tag>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="collapsed-card-content">
+              <div className="expanded-card-content" key={`expanded-${project.id}`}>
+                {/* Image container */}
+                <div className="project-image-container">
                   <div
-                    className="collapsed-sliver"
+                    className="project-image-black-box"
                     style={{ backgroundImage: `url(${project.image})` }}
                     role="img"
-                    aria-label={`${project.title} thumbnail`}
+                    aria-label={`${project.title} project screenshot`}
                   />
+                  {/* Expand/Modal trigger */}
+                  <IconButton
+                    size="overlay"
+                    placement="corner"
+                    className="expand-corner-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerRef.current = e.currentTarget;
+                      playModalOpenSound();
+                      setActiveIndex(index);
+                      setIsModalOpen(true);
+                    }}
+                    aria-label={`Expand details for ${project.title}`}
+                  >
+                    <Icon icon={Maximize2} size="md" />
+                  </IconButton>
                 </div>
-              )}
+                {/* Project name */}
+                <div className="project-card-footer">
+                  <h3 id={titleId} className="project-name-active">{project.title}</h3>
+                  {project.subtitle && (
+                    <p className="project-subtitle-active">{project.subtitle}</p>
+                  )}
+                  {project.tags && (
+                    <div className="project-card-tags">
+                      {project.tags.map((tag) => (
+                        <Tag key={tag} variant="card">{tag}</Tag>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </Card>
           );
         })}
