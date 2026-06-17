@@ -1,22 +1,12 @@
 /**
- * Content section wrapper with heading + body content.
- *
- * @param {Object} props
- * @param {'description'|'insights'} [props.variant='description']
- * @param {string} [props.heading] - Section heading text
- * @param {string} [props.className]
+ * Full-width page section with a constrained content column.
  */
-export default function Section({ variant = 'description', heading, className, children, ...rest }) {
-  const classes = [
-    'ds-section',
-    `ds-section--${variant}`,
-    className,
-  ].filter(Boolean).join(' ');
+export default function Section({ id, label, tone = 'default', className, children, ...rest }) {
+  const classes = ['ds-section', `ds-section--${tone}`, className].filter(Boolean).join(' ');
 
   return (
-    <div className={classes} {...rest}>
-      {heading && <h4>{heading}</h4>}
-      {children}
-    </div>
+    <section id={id} className={classes} aria-label={label} {...rest}>
+      <div className="ds-section__inner">{children}</div>
+    </section>
   );
 }

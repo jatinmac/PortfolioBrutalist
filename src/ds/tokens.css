@@ -1,191 +1,210 @@
-/* ═══════════════════════════════════════════════════════════
-   DESIGN SYSTEM TOKENS
-   Semantic, hierarchical naming: category.subcategory.variant
-   CSS custom property dashes replace dots.
-   ═══════════════════════════════════════════════════════════ */
+/* Design system tokens
+   Layer order: primitives -> semantic aliases -> component aliases. */
 
 :root {
-  /* ── color.primary ─────────────────────────────────────── */
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-rgb: 37, 99, 235;
-  --color-on-primary: #ffffff;
-  --color-primary-glow: rgba(37, 99, 235, 0.2);
+  /* Primitive color scale */
+  --primitive-ink-950: #121214;
+  --primitive-ink-900: #18181b;
+  --primitive-ink-800: #1f252d;
+  --primitive-ink-700: #2e3b54;
+  --primitive-cream-100: #faf1d6;
+  --primitive-cream-150: #f4f1de;
+  --primitive-amber-400: #ffb000;
+  --primitive-amber-300: #ffc43d;
+  --primitive-amber-700: #8a5f00;
+  --primitive-moss-700: #1b2b22;
+  --primitive-mint-500: #61a496;
+  --primitive-mint-400: #80a897;
+  --primitive-terracotta-500: #de7b61;
+  --primitive-terracotta-200: #eab69f;
+  --primitive-sand-300: #f2cc8f;
+  --primitive-white: #ffffff;
 
-  /* ── color.surface ─────────────────────────────────────── */
-  --color-surface-primary: #09090b;
-  --color-surface-secondary: #121216;
+  /* Typography */
+  --typography-family-sans: 'IBM Plex Mono', monospace;
+  --typography-family-display: 'Bitcount Prop Double', system-ui;
+  --typography-family-button: var(--typography-family-sans);
+  --typography-display-variation-settings: "slnt" 0, "CRSV" 0.5, "ELSH" 0, "ELXP" 0;
 
-  /* ── color.text ────────────────────────────────────────── */
-  --color-text-primary: #f4f4f5;
-  --color-text-secondary: #a1a1aa;
-  --color-text-muted: #71717a;
+  --typography-size-xs: 0.7rem;
+  --typography-size-sm: 0.8rem;
+  --typography-size-base: 0.9rem;
+  --typography-size-md: 1rem;
+  --typography-size-lg: 1.15rem;
+  --typography-size-xl: 1.35rem;
+  --typography-size-2xl: 2rem;
+  --typography-size-display: 3.25rem;
 
-  /* ── color.border ──────────────────────────────────────── */
-  --color-border-default: rgba(255, 255, 255, 0.08);
-  --color-border-hover: rgba(255, 255, 255, 0.16);
-  --color-border-subtle: rgba(255, 255, 255, 0.04);
-  --color-border-hover-strong: rgba(255, 255, 255, 0.2);
-
-  /* ── color.nav (navbar-specific) ───────────────────────── */
-  --color-nav-bg: rgba(15, 15, 20, 0.6);
-  --color-nav-border: rgba(255, 255, 255, 0.08);
-  --color-nav-pill-bg: rgba(255, 255, 255, 0.07);
-  --color-nav-pill-border: rgba(255, 255, 255, 0.12);
-  --color-nav-text-shadow: rgba(255, 255, 255, 0.5);
-
-  /* ── elevation.surface ─────────────────────────────────── */
-  --elevation-surface-overlay: rgba(18, 18, 22, 0.75);
-  --elevation-surface-raised: rgba(18, 18, 22, 0.3);
-  --elevation-surface-sunken: rgba(18, 18, 22, 0.6);
-  --elevation-surface-card: rgba(18, 18, 22, 0.2);
-
-  /* ── elevation.shadow ──────────────────────────────────── */
-  --elevation-shadow-overlay: 0 24px 60px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  --elevation-shadow-raised: 0 4px 24px rgba(0, 0, 0, 0.18);
-  --elevation-shadow-subtle: 0 4px 30px rgba(0, 0, 0, 0.4);
-
-  /* ── elevation.backdrop (modal) ────────────────────────── */
-  --elevation-backdrop: rgba(0, 0, 0, 0.75);
-
-  /* ── typography.family ─────────────────────────────────── */
-  --typography-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --typography-family-display: 'Nunito', system-ui, sans-serif;
-
-  /* ── typography.size ───────────────────────────────────── */
-  --typography-size-xs: 0.65rem; /* ~10.4px */
-  --typography-size-sm: 0.75rem; /* 12px */
-  --typography-size-base: 0.85rem; /* ~13.6px */
-  --typography-size-md: 0.92rem; /* ~14.72px */
-  --typography-size-lg: 1rem; /* 16px */
-  --typography-size-xl: 1.15rem; /* 18.4px */
-  --typography-size-2xl: 1.5rem; /* 24px */
-
-  /* ── typography.weight ─────────────────────────────────── */
   --typography-weight-regular: 400;
   --typography-weight-medium: 500;
-  --typography-weight-semibold: 600;
+  --typography-weight-semibold: 700;
 
-  /* ── typography.leading ────────────────────────────────── */
   --typography-leading-tight: 1.15;
   --typography-leading-normal: 1.5;
-  --typography-leading-relaxed: 1.6;
+  --typography-leading-relaxed: 1.65;
 
-  /* ── typography.tracking ───────────────────────────────── */
-  --typography-tracking-tight: 0;
   --typography-tracking-normal: 0;
-  --typography-tracking-wide: 0.03em;
-  --typography-tracking-wider: 0.05em;
+  --typography-tracking-wide: 0.04em;
   --typography-tracking-widest: 0.08em;
   --typography-tracking-ultra: 0.12em;
 
-  /* ── spacing ───────────────────────────────────────────── */
+  /* Spacing */
   --spacing-0: 0;
-  --spacing-1: 0.25rem; /* 4px */
-  --spacing-2: 0.5rem; /* 8px */
-  --spacing-3: 0.75rem; /* 12px */
-  --spacing-4: 1rem; /* 16px */
-  --spacing-5: 1.25rem; /* 20px */
-  --spacing-6: 1.5rem; /* 24px */
-  --spacing-8: 2rem; /* 32px */
-  --spacing-10: 2.5rem; /* 40px */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
 
-  /* ── radius ────────────────────────────────────────────── */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 10px;
-  --radius-xl: 12px;
-  --radius-2xl: 16px;
-  --radius-3xl: 20px;
-  --radius-4xl: 24px;
-  --radius-full: 9999px;
+  /* Radius */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 999px;
 
-  /* ── motion.duration ───────────────────────────────────── */
-  --motion-duration-instant: 0.1s;
-  --motion-duration-fast: 0.2s;
-  --motion-duration-normal: 0.4s;
-  --motion-duration-slow: 0.86s;
-
-  /* ── motion.easing ─────────────────────────────────────── */
+  /* Motion */
+  --motion-duration-instant: 0.05s;
+  --motion-duration-fast: 0.15s;
+  --motion-duration-normal: 0.3s;
+  --motion-duration-slow: 0.5s;
   --motion-easing-spring: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --motion-easing-bounce: cubic-bezier(0.22, 1, 0.36, 1);
-  --motion-easing-pill: cubic-bezier(0.25, 1, 0.5, 1);
+  --motion-easing-pill: ease-in-out;
 
-  /* ── z ─────────────────────────────────────────────────── */
-  --z-base: 1;
-  --z-card: 2;
-  --z-content: 5;
-  --z-sticky: 10;
-  --z-navbar: 100;
-  --z-overlay: 110;
-  --z-modal: 9999;
+  /* Semantic application colors: dark theme default */
+  --color-background: var(--primitive-ink-950);
+  --color-surface: var(--primitive-ink-900);
+  --color-surface-raised: #2a2a22;
+  --color-accent: var(--primitive-amber-400);
+  --color-accent-hover: var(--primitive-amber-300);
+  --color-accent-rgb: 255, 176, 0;
+  --color-on-accent: var(--primitive-ink-950);
+  --color-accent-glow: rgba(255, 176, 0, 0.15);
+  --color-text-strong: var(--primitive-amber-400);
+  --color-text-default: #ffa000;
+  --color-text-muted: #b87c00;
+  --color-border: var(--primitive-amber-400);
+  --color-border-muted: var(--primitive-amber-700);
 
-  /* ── icon ──────────────────────────────────────────────── */
-  --icon-size-sm: 14;
-  --icon-size-md: 20;
-  --icon-size-lg: 24;
-  --icon-stroke-sm: 2.5;
-  --icon-stroke-md: 2;
-  --icon-stroke-lg: 1.5;
+  /* Section semantic colors */
+  --section-home-bg: var(--primitive-ink-950);
+  --section-home-text: var(--primitive-cream-150);
+  --section-about-bg: var(--primitive-moss-700);
+  --section-about-text: var(--primitive-amber-400);
+  --section-work-bg: var(--primitive-ink-700);
+  --section-work-text: var(--primitive-cream-100);
+  --section-builds-bg: var(--primitive-ink-950);
+  --section-builds-text: var(--primitive-amber-400);
+  --section-contacts-bg: var(--primitive-ink-700);
+  --section-contacts-text: var(--primitive-cream-100);
 
-  /* ── component sizing ──────────────────────────────────── */
-  --component-btn-height: 40px;
-  --component-btn-height-sm: 28px;
-  --component-icon-btn-size: 40px;
-  --component-icon-btn-size-sm: 28px;
+  --project-card-work-bg: #d9d9d9;
+  --project-card-work-text: var(--primitive-ink-900);
+  --project-card-builds-bg: var(--primitive-ink-900);
+  --project-card-builds-text: var(--primitive-amber-400);
+  --project-card-hover-bg: var(--primitive-amber-400);
+  --project-card-hover-text: var(--primitive-ink-950);
+
+  --button-accent-bg: var(--primitive-mint-500);
+  --button-accent-text: var(--primitive-ink-900);
+  --button-secondary-bg: var(--primitive-ink-700);
+  --button-secondary-text: var(--primitive-white);
+
+  /* Compatibility aliases used by older DS rules */
+  --color-primary: var(--color-accent);
+  --color-primary-hover: var(--color-accent-hover);
+  --color-primary-rgb: var(--color-accent-rgb);
+  --color-on-primary: var(--color-on-accent);
+  --color-primary-glow: var(--color-accent-glow);
+  --color-surface-primary: var(--color-background);
+  --color-surface-secondary: var(--color-surface);
+  --color-text-primary: var(--color-text-strong);
+  --color-text-secondary: var(--color-text-default);
+  --color-border-default: var(--color-border);
+  --color-border-hover: var(--color-accent-hover);
+  --color-border-subtle: var(--color-border-muted);
+  --color-border-hover-strong: var(--color-border);
+  --color-nav-bg: var(--color-background);
+  --color-nav-border: var(--color-border);
+  --color-nav-pill-bg: var(--color-surface-raised);
+  --color-nav-pill-border: var(--color-border);
+  --color-nav-text-shadow: none;
+
+  --elevation-surface-overlay: var(--color-surface-raised);
+  --elevation-surface-raised: transparent;
+  --elevation-surface-sunken: transparent;
+  --elevation-surface-card: transparent;
+  --elevation-shadow-overlay: none;
+  --elevation-shadow-raised: none;
+  --elevation-shadow-subtle: none;
+  --elevation-backdrop: rgba(0, 0, 0, 0.7);
+
+  /* Component sizing */
+  --component-btn-height: 44px;
+  --component-btn-height-sm: 32px;
+  --component-control-size: 28px;
+  --component-icon-btn-size: 44px;
+  --component-icon-btn-size-sm: 32px;
   --component-icon-btn-size-overlay: 36px;
-  --component-dot-size: 8px;
+  --component-nav-tab-padding-y: 4px;
+  --component-nav-tab-padding-x: 8px;
 
-  /* Navbar Sizing */
-  --component-nav-tab-padding-y: 10px;
-  --component-nav-tab-padding-x: 1rem;
+  --layout-max-width: 760px;
+  --layout-navbar-offset: 7rem;
+  --z-navbar: 100;
+  --z-sticky: 10;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   LIGHT THEME OVERRIDES
-   ═══════════════════════════════════════════════════════════ */
-
 :root.light {
-  /* color.surface */
-  --color-surface-primary: #f8fafc;
-  --color-surface-secondary: #ffffff;
+  --color-background: var(--primitive-terracotta-500);
+  --color-surface: var(--primitive-terracotta-500);
+  --color-surface-raised: var(--primitive-cream-100);
+  --color-accent: var(--primitive-ink-900);
+  --color-accent-hover: #27272a;
+  --color-accent-rgb: 24, 24, 27;
+  --color-on-accent: var(--primitive-cream-100);
+  --color-accent-glow: rgba(24, 24, 27, 0.1);
+  --color-text-strong: var(--primitive-ink-900);
+  --color-text-default: var(--primitive-ink-900);
+  --color-text-muted: #2d2d30;
+  --color-border: var(--primitive-ink-900);
+  --color-border-muted: var(--primitive-ink-900);
 
-  /* color.text */
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-muted: #64748b;
+  --section-home-bg: var(--primitive-terracotta-500);
+  --section-home-text: var(--primitive-cream-150);
+  --section-about-bg: var(--primitive-mint-400);
+  --section-about-text: var(--primitive-ink-900);
+  --section-work-bg: #3f4e68;
+  --section-work-text: var(--primitive-cream-100);
+  --section-builds-bg: var(--primitive-sand-300);
+  --section-builds-text: var(--primitive-ink-900);
+  --section-contacts-bg: var(--primitive-cream-100);
+  --section-contacts-text: var(--primitive-ink-900);
 
-  /* color.border */
-  --color-border-default: rgba(15, 23, 42, 0.08);
-  --color-border-hover: rgba(15, 23, 42, 0.15);
-  --color-border-subtle: rgba(15, 23, 42, 0.04);
-  --color-border-hover-strong: rgba(15, 23, 42, 0.2);
+  --project-card-work-bg: #e5e7eb;
+  --project-card-work-text: var(--primitive-ink-900);
+  --project-card-builds-bg: var(--primitive-white);
+  --project-card-builds-text: var(--primitive-ink-900);
+  --project-card-hover-bg: var(--primitive-cream-100);
+  --project-card-hover-text: var(--primitive-ink-900);
 
-  /* color.primary */
-  --color-primary-glow: rgba(37, 99, 235, 0.15);
+  --button-accent-bg: var(--primitive-mint-500);
+  --button-accent-text: var(--primitive-ink-900);
+  --button-secondary-bg: var(--primitive-ink-700);
+  --button-secondary-text: var(--primitive-white);
+}
 
-  /* color.nav */
-  --color-nav-bg: rgba(255, 255, 255, 0.437);
-  --color-nav-border: rgba(15, 23, 42, 0.08);
-  --color-nav-pill-bg: rgba(15, 23, 42, 0.05);
-  --color-nav-pill-border: rgba(15, 23, 42, 0.08);
-  --color-nav-text-shadow: rgba(15, 23, 42, 0.2);
-
-  /* elevation.surface */
-  --elevation-surface-overlay: rgba(255, 255, 255, 0.85);
-  --elevation-surface-raised: rgba(255, 255, 255, 0.45);
-  --elevation-surface-sunken: rgba(255, 255, 255, 0.88);
-  --elevation-surface-card: rgba(255, 255, 255, 0.35);
-
-  /* elevation.shadow */
-  --elevation-shadow-overlay: 0 24px 60px rgba(15, 23, 42, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  --elevation-shadow-raised: 0 4px 24px rgba(0, 0, 0, 0.06);
-  --elevation-shadow-subtle: 0 4px 30px rgba(0, 0, 0, 0.06);
-
-  /* elevation.backdrop */
-  --elevation-backdrop: rgba(15, 23, 42, 0.35);
+@media (max-width: 768px) {
+  :root {
+    --typography-size-display: 2.35rem;
+    --layout-navbar-offset: 6rem;
+  }
 }

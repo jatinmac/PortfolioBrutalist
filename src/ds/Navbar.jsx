@@ -1,51 +1,81 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
-import { playClickSound } from '../utils/sound';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import NavTab from './NavTab';
-import Button from './Button';
 
-const RESUME_PDF_PATH = '/Jatin%20Davis%20Resume%20JDR%20.pdf';
-const RESUME_DRIVE_URL = 'https://drive.google.com/file/d/1-zqfQ3X3NTgxAEKJag8ebzWExW7-ngC0/view?usp=sharing';
-const DEFAULT_TABS = ['Home', 'About', 'Work', 'Builds', 'Contact'];
+const DEFAULT_TABS = ['HOME', 'ABOUT', 'WORK', 'BUILDS', 'CONTACTS'];
 
 /**
- * Full navbar with sliding pill, 3D rotation, roving tabindex.
+ * Brutalist navbar with logo and section buttons.
  *
  * @param {Object} props
  * @param {string[]} [props.tabs]
  * @param {string} props.activeTab
  * @param {Function} props.onTabChange
- * @param {Function} [props.onTabPreload]
  */
 export default function Navbar({
   tabs = DEFAULT_TABS,
   activeTab,
   onTabChange,
-  onTabPreload,
 }) {
-  const [pillStyle, setPillStyle] = useState({});
-  const [isMoving, setIsMoving] = useState(false);
-  const [rotation, setRotation] = useState(0);
-
   const tabRefs = useRef({});
-  const prevTabRef = useRef(activeTab);
+  const progressBarRef = useRef(null);
+  const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, height: 0, top: 0, opacity: 0 });
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
-  const updatePill = useCallback(() => {
+  useEffect(() => {
+    let ticking = false;
+
+    const updateProgress = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+
+      progressBarRef.current?.style.setProperty('--scroll-progress', progress);
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (ticking) return;
+
+      window.requestAnimationFrame(updateProgress);
+      ticking = true;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    updateProgress();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const updatePillPosition = useCallback(() => {
     const activeEl = tabRefs.current[activeTab];
     if (activeEl) {
       setPillStyle({
-        left: `${activeEl.offsetLeft}px`,
-        top: `${activeEl.offsetTop}px`,
-        width: `${activeEl.offsetWidth}px`,
-        height: `${activeEl.offsetHeight}px`,
+        left: activeEl.offsetLeft,
+        width: activeEl.offsetWidth,
+        height: activeEl.offsetHeight,
+        top: activeEl.offsetTop,
+        opacity: 1,
       });
+    } else {
+      setPillStyle((prev) => ({ ...prev, opacity: 0 }));
     }
   }, [activeTab]);
 
   useEffect(() => {
-    updatePill();
-    window.addEventListener('resize', updatePill);
-    return () => window.removeEventListener('resize', updatePill);
-  }, [updatePill]);
+    updatePillPosition();
+    
+    const timer = setTimeout(() => {
+      setIsFirstRender(false);
+    }, 50);
+
+    window.addEventListener('resize', updatePillPosition);
+    return () => {
+      window.removeEventListener('resize', updatePillPosition);
+      clearTimeout(timer);
+    };
+  }, [updatePillPosition]);
 
   // Scroll active tab into view on mobile
   useEffect(() => {
@@ -54,29 +84,6 @@ export default function Navbar({
       activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
     }
   }, [activeTab]);
-
-  // 3D rotation animation
-  useEffect(() => {
-    const prevIndex = tabs.indexOf(prevTabRef.current);
-    const nextIndex = tabs.indexOf(activeTab);
-
-    if (prevIndex !== nextIndex && prevIndex !== -1 && nextIndex !== -1) {
-      const diff = nextIndex - prevIndex;
-      const angleChange = diff * 180;
-
-      setRotation(prev => prev + angleChange);
-      setIsMoving(true);
-
-      const timer = setTimeout(() => {
-        setIsMoving(false);
-      }, 420);
-
-      prevTabRef.current = activeTab;
-      return () => clearTimeout(timer);
-    } else {
-      prevTabRef.current = activeTab;
-    }
-  }, [activeTab, tabs]);
 
   // Arrow key navigation (roving tabindex)
   const handleKeyDown = (e) => {
@@ -99,61 +106,56 @@ export default function Navbar({
 
     if (newIndex !== undefined) {
       const nextTab = tabs[newIndex];
-      onTabPreload?.(nextTab);
       onTabChange(nextTab);
       tabRefs.current[nextTab]?.focus();
     }
   };
 
-  const handleResumeClick = () => {
-    playClickSound();
-    window.open(RESUME_DRIVE_URL, '_blank', 'noopener,noreferrer');
-  };
-
   return (
     <header className="ds-navbar-header">
       <div className="ds-navbar-wrapper">
-        <nav className="ds-navbar-container" aria-label="Main Navigation">
-          {/* Sliding Pill Highlight */}
-          <div
-            className={`ds-navbar-pill ${isMoving ? 'is-moving' : ''}`}
-            style={{
-              ...pillStyle,
-              transform: `rotateY(${rotation}deg) translateZ(${isMoving ? '12px' : '0px'})`,
-            }}
-            aria-hidden="true"
-          />
+        <button
+          type="button"
+          className="ds-navbar-logo-area"
+          onClick={() => onTabChange(tabs[0])}
+          aria-label="Jatindavis home section"
+        >
+          <span className="ds-navbar-logo-text">Jatindavis</span>
+        </button>
 
-          {/* Tab buttons */}
-          <div role="tablist" aria-label="Site sections" onKeyDown={handleKeyDown}>
+        <nav className="ds-navbar-container" aria-label="Main Navigation">
+          <div className="ds-navbar-tabs-list" aria-label="Site sections" onKeyDown={handleKeyDown}>
+            <div
+              className="ds-navbar-pill"
+              style={{
+                left: `${pillStyle.left}px`,
+                top: `${pillStyle.top}px`,
+                width: `${pillStyle.width}px`,
+                height: `${pillStyle.height}px`,
+                opacity: pillStyle.opacity,
+                transition: isFirstRender 
+                  ? 'none' 
+                  : 'left var(--motion-duration-normal) var(--motion-easing-smooth), top var(--motion-duration-normal) var(--motion-easing-smooth), width var(--motion-duration-normal) var(--motion-easing-smooth), height var(--motion-duration-normal) var(--motion-easing-smooth), opacity var(--motion-duration-normal) var(--motion-easing-smooth)',
+              }}
+            />
             {tabs.map((tab) => (
               <NavTab
                 key={tab}
                 ref={(el) => (tabRefs.current[tab] = el)}
                 label={tab}
                 isActive={activeTab === tab}
-                tabId={`tab-${tab.toLowerCase()}`}
-                panelId={`tabpanel-${tab.toLowerCase()}`}
                 onClick={() => onTabChange(tab)}
-                onFocus={() => onTabPreload?.(tab)}
-                onPointerEnter={() => onTabPreload?.(tab)}
               />
             ))}
           </div>
         </nav>
+      </div>
 
-        {/* Actions */}
-        <div className="ds-navbar-actions">
-          <Button
-            variant="primary"
-            href={RESUME_PDF_PATH}
-            download="Jatin Davis Resume.pdf"
-            playSound={() => playClickSound()}
-            onClick={handleResumeClick}
-          >
-            Resume
-          </Button>
-        </div>
+      <div className="ds-navbar-progress-container" aria-hidden="true">
+        <div 
+          ref={progressBarRef}
+          className="ds-navbar-progress-bar" 
+        />
       </div>
     </header>
   );

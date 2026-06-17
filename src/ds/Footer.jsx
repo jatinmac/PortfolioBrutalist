@@ -1,9 +1,9 @@
-import { Sun, Moon, Volume2, VolumeX, AArrowUp, AArrowDown, RotateCcw } from 'lucide-react';
+import { Sun, Moon, AArrowUp, AArrowDown, RotateCcw } from 'lucide-react';
 import Icon from './Icon';
 import ControlButton from './ControlButton';
 
 /**
- * Full footer with copyright + control groups (font, sound, theme).
+ * Full footer with copyright + control groups (font, theme).
  */
 export default function Footer({
   fontScale,
@@ -13,8 +13,6 @@ export default function Footer({
   onFontDecrease,
   onFontIncrease,
   onFontReset,
-  soundEnabled,
-  onToggleSound,
   theme,
   onToggleTheme,
 }) {
@@ -22,7 +20,7 @@ export default function Footer({
     <footer className="ds-footer" role="contentinfo">
       <div className="ds-footer-content">
         <span className="ds-footer-copyright">
-          &copy; {new Date().getFullYear()} Jatin Davis &bull;
+          Copyright {new Date().getFullYear()} Jatin Davis. All rights reserved.
         </span>
         <div className="ds-footer-controls">
           {/* Font size controls */}
@@ -31,6 +29,7 @@ export default function Footer({
               onClick={onFontDecrease}
               isDisabled={fontScale <= fontScaleMin}
               aria-label="Decrease font size"
+              title="Decrease Font Size"
             >
               <Icon icon={AArrowDown} size="sm" />
             </ControlButton>
@@ -38,40 +37,27 @@ export default function Footer({
               onClick={onFontReset}
               isActive={fontScale === fontScaleDefault}
               aria-label={`Reset font size (currently ${fontScale}%)`}
-              title={`${fontScale}%`}
+              title="Reset Font Size"
             >
-              <RotateCcw size={12} strokeWidth={2.5} />
+              <Icon icon={RotateCcw} size="sm" />
             </ControlButton>
             <ControlButton
               onClick={onFontIncrease}
               isDisabled={fontScale >= fontScaleMax}
               aria-label="Increase font size"
+              title="Increase Font Size"
             >
               <Icon icon={AArrowUp} size="sm" />
             </ControlButton>
           </div>
 
-          {/* Sound toggle */}
-          <div className="ds-footer-control-group">
-            <ControlButton
-              onClick={onToggleSound}
-              isActive={soundEnabled}
-              aria-label={soundEnabled ? 'Mute Sounds' : 'Unmute Sounds'}
-            >
-              {soundEnabled ? (
-                <Icon icon={Volume2} size="sm" />
-              ) : (
-                <Icon icon={VolumeX} size="sm" />
-              )}
-            </ControlButton>
-          </div>
-
           {/* Theme switcher */}
-          <div className="ds-footer-control-group">
+          <div className="ds-footer-control-group" role="group" aria-label="Theme switcher">
             <ControlButton
               onClick={() => onToggleTheme('light')}
               isActive={theme === 'light'}
               aria-label="Light Mode"
+              title="Light Mode"
             >
               <Icon icon={Sun} size="sm" />
             </ControlButton>
@@ -79,6 +65,7 @@ export default function Footer({
               onClick={() => onToggleTheme('dark')}
               isActive={theme === 'dark'}
               aria-label="Dark Mode"
+              title="Dark Mode"
             >
               <Icon icon={Moon} size="sm" />
             </ControlButton>

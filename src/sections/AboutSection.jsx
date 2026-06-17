@@ -1,0 +1,51 @@
+import { Section } from '../ds';
+import { ABOUT } from '../data/siteContent';
+
+import runningImg from '../images/about/I love running.avif';
+import carEnthusiastImg from '../images/about/I am a car enthusiast.avif';
+import f1NerdImg from '../images/about/Formula 1 nerd.jpg';
+import musicImg from '../images/about/Like 80s music.jpg';
+import bikeLoverImg from '../images/about/bike lover.jpg';
+import dragonballZImg from '../images/about/dargonballZ fan.jpg';
+import marvelDcImg from '../images/about/marvel and dc .jpg';
+import motoGpImg from '../images/about/moto gp fan.jpg';
+import watchLoverImg from '../images/about/watch lover.jpg';
+import wweFanImg from '../images/about/wwe fan.jpg';
+
+const TILES = [
+  { label: 'I love running', image: runningImg },
+  { label: 'I am a car enthusiast', image: carEnthusiastImg },
+  { label: 'Formula 1 nerd', image: f1NerdImg },
+  { label: 'Like 80s music', image: musicImg },
+  { label: 'bike lover', image: bikeLoverImg },
+  { label: 'dargonballZ fan', image: dragonballZImg },
+  { label: 'marvel and dc ', image: marvelDcImg },
+  { label: 'moto gp fan', image: motoGpImg },
+  { label: 'watch lover', image: watchLoverImg },
+  { label: 'wwe fan', image: wweFanImg },
+];
+
+export default function AboutSection() {
+  return (
+    <Section id="about" label="About" tone="about">
+      <div className="section-heading">
+        <h2 className="ds-text--display section-title">{ABOUT.title}</h2>
+        <p className="section-summary">{ABOUT.body}</p>
+      </div>
+
+      <div className="about-visual-grid" aria-label="Personal interests">
+        {TILES.map((tile) => (
+          <div key={tile.label} className="about-visual-item">
+            <div className="about-visual-tile">
+              <span className="about-visual-tile__image-container">
+                <img src={tile.image} alt={tile.label} className="about-visual-tile__image" loading="lazy" />
+                <span className="about-visual-tile__overlay" />
+              </span>
+            </div>
+            <span className="about-visual-caption">{tile.label}</span>
+          </div>
+        ))}
+      </div>
+    </Section>
+  );
+}
