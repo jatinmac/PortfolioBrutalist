@@ -1,4 +1,4 @@
-import { ProjectCard, Section } from '../ds';
+import { ProjectCard, Section, VideoTicker } from '../ds';
 import { PROJECT_GROUPS } from '../data/siteContent';
 
 export default function ProjectsSection({ type, onProjectClick }) {
@@ -26,6 +26,8 @@ export default function ProjectsSection({ type, onProjectClick }) {
           />
         ))}
       </div>
+
+      {type === 'builds' && <VideoTicker />}
     </Section>
   );
 }

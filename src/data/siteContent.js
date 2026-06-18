@@ -127,6 +127,19 @@ export const PROJECT_GROUPS = {
   },
 };
 
+export const YOUTUBE_VIDEOS = [
+  { id: 'Q40UL5DsQ2Q', title: 'F1 Livery Design & Animation' },
+  { id: 'ncKi6JwKYfo', title: 'Infotainment Infographics Concept' },
+  { id: 'vJk7V_fACQM', title: 'Infographics Rendering Loop' },
+  { id: 'JZ1oQVoP3F0', title: 'Infotainment UI Infometrics' },
+  { id: 'UhJhaOph0y4', title: 'Vintage F1 Aero Simulation' },
+  { id: 'P8ineV8FnGs', title: 'Smartplay Pro X Motion Test' },
+  { id: 'WWZzCqce5yI', title: 'HMI Infotainment Infographics' },
+  { id: 'FGRbglVqUfo', title: 'Formula 1 Steering Walkthrough' },
+  { id: 'CQaTDPNtn7U', title: 'Double AI Twin Onboarding' },
+  { id: 'LZ9FrISExNc', title: 'Segmented Cluster Infographics' },
+];
+
 export const CONTACT = {
   title: 'Contact',
   links: [

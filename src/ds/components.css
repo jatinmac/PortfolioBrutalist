@@ -683,6 +683,15 @@ html.has-custom-cursor .custom-cursor-trail.is-hidden {
   pointer-events: none;
 }
 
+.hero-dot-shader-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
 /* Project Details Modal Styles */
 .ds-modal-overlay {
   position: fixed;
@@ -1167,3 +1176,257 @@ html.has-custom-cursor .custom-cursor-trail.is-hidden {
     animation: none !important;
   }
 }
+
+/* Video Ticker Section Styles */
+.builds-youtube-layout {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: var(--spacing-12);
+  padding-top: var(--spacing-12);
+  border-top: 1px solid var(--color-border-subtle);
+  overflow: hidden;
+}
+
+/* Horizontal Scrolling Ticker Container */
+.builds-youtube-ticker-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: var(--spacing-4) 0;
+}
+
+.video-ticker-track {
+  display: flex;
+  gap: var(--spacing-2);
+  width: max-content;
+  animation: scrollLeft 28s linear infinite;
+}
+
+/* Animation */
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+/* Pause scroll animation on hover */
+.builds-youtube-ticker-container:hover .video-ticker-track {
+  animation-play-state: paused;
+}
+
+/* Video Cards (Vertically Oriented 9:16 Aspect Ratio) */
+.video-ticker-card {
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+  flex-shrink: 0;
+  aspect-ratio: 9 / 16;
+  background-color: var(--project-card-builds-bg, var(--primitive-ink-900));
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  transition:
+    border-color var(--motion-duration-fast) ease,
+    box-shadow var(--motion-duration-fast) ease,
+    transform var(--motion-duration-fast) ease;
+}
+
+.video-ticker-card:hover,
+.video-ticker-card:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 15px var(--color-accent-glow);
+  transform: translateY(-4px);
+  outline: none;
+}
+
+.video-ticker-card__media {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  overflow: hidden;
+}
+
+.video-ticker-card__media iframe {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  border: 0;
+  display: block;
+  pointer-events: none; /* Prevent iframe from stealing clicks */
+  object-fit: cover;
+}
+
+.video-ticker-card__click-overlay {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+}
+
+.video-ticker-card__hover-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--motion-duration-fast) ease;
+  z-index: 6;
+}
+
+.video-ticker-card:hover .video-ticker-card__hover-overlay,
+.video-ticker-card:focus-within .video-ticker-card__hover-overlay {
+  opacity: 1;
+}
+
+.video-ticker-card__play-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background-color: rgba(0, 0, 0, 0.65);
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition:
+    transform var(--motion-duration-fast) var(--motion-easing-spring),
+    background-color var(--motion-duration-fast) ease,
+    color var(--motion-duration-fast) ease;
+}
+
+.video-ticker-card:hover .video-ticker-card__play-btn {
+  transform: scale(1.12);
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+/* Video Modal Styles */
+.video-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--elevation-backdrop);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: dsModalFadeIn var(--motion-duration-fast) var(--motion-easing-smooth);
+}
+
+.video-modal-container {
+  position: relative;
+  height: min(85vh, 720px);
+  aspect-ratio: 9 / 16;
+  max-width: 90vw;
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.9);
+  animation: dsModalSlideUp var(--motion-duration-normal) var(--motion-easing-spring);
+}
+
+.video-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background-color: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.video-modal__title {
+  font-family: var(--typography-family-sans);
+  font-size: var(--typography-size-xs);
+  font-weight: var(--typography-weight-semibold);
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80%;
+}
+
+.video-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-modal__body {
+  background-color: #000;
+  flex-grow: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.video-modal__video-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.video-modal__video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .builds-youtube-layout {
+    margin-top: var(--spacing-8);
+    padding-top: var(--spacing-8);
+  }
+
+  .video-ticker-card {
+    width: 140px;
+  }
+
+  .builds-youtube-ticker-container {
+    padding: var(--spacing-2) 0;
+  }
+
+  .video-ticker-track {
+    gap: var(--spacing-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-ticker-track {
+    animation: none !important;
+  }
+  .video-modal-overlay,
+  .video-modal-container {
+    animation: none !important;
+  }
+}
+
