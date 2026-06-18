@@ -19,7 +19,7 @@ export const SECTIONS = [
 ];
 
 export const HERO = {
-  title: 'Product designer & builder shipping experiences that create impact.',
+  title: 'Product designer & builder, shipping experiences that create impact.',
   summary:
     'Product designer working on AI twin agent experience @Cardtree AI. Prev. product designer at Maruti Suzuki.',
   actions: [
@@ -47,40 +47,40 @@ export const PROJECT_GROUPS = {
       {
         id: 'double-ai',
         eyebrow: '01',
-        title: 'Double AI',
-        description: 'AI Twin Workspace',
+        title: 'Double AI - AI Twin Agent',
+        description: 'Designed 0-1 features as the product pivoted and features scaled.',
         status: 'Case study coming soon',
         image: doubleAiImg,
       },
       {
-        id: 'quilo',
-        eyebrow: '02',
-        title: 'Quilo AI',
-        description: 'Workflow Builder',
-        status: 'Case study coming soon',
-        image: quiloAiImg,
-      },
-      {
         id: 'maruti-suzuki-smartplay',
-        eyebrow: '03',
+        eyebrow: '02',
         title: 'Maruti Suzuki',
-        description: 'Digital Cockpit UX',
+        description: 'Smartplay Pro X infotainment system',
         status: 'Case study coming soon',
         image: marutiSuzukiImg,
       },
       {
+        id: 'quilo',
+        eyebrow: '03',
+        title: 'Quilo Chrome Extension',
+        description: 'AI prompt library browser extension',
+        status: 'Case study coming soon',
+        image: quiloAiImg,
+      },
+      {
         id: 'formula-1-design',
         eyebrow: '04',
-        title: 'Formula 1 Youtube',
-        description: 'Interactive Race Dashboard',
+        title: 'F1 YouTube Channel',
+        description: 'Visual storytelling & niche content channel',
         status: 'Case study coming soon',
         image: formula1Img,
       },
       {
         id: 'u3k-instrument-cluster',
         eyebrow: '05',
-        title: 'U3K',
-        description: 'Heads-up Display Interface',
+        title: 'U3K IC, Maruti Suzuki',
+        description: 'Next-gen segmented digital instrument cluster',
         status: 'Concept details coming soon',
         image: u3kImg,
       },

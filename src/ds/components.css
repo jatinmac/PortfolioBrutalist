@@ -302,6 +302,7 @@
 .ds-project-card__content {
   flex-direction: column;
   gap: var(--spacing-1);
+  min-width: 0;
 }
 
 .ds-project-card__eyebrow,
@@ -328,6 +329,9 @@
   line-height: 1.4;
   text-transform: uppercase;
   opacity: 0.82;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ds-project-card__icon {
