@@ -11,9 +11,12 @@ export default function HomeSection({ onNavigate }) {
         <div className="hero-actions" aria-label="Primary navigation">
           {HERO.actions.map((action) => (
             <Button
-              key={action.target}
+              key={action.label}
               variant={action.variant}
-              onClick={() => onNavigate(action.target)}
+              href={action.href}
+              download={action.download}
+              external={action.external}
+              onClick={action.href ? undefined : () => onNavigate(action.target)}
             >
               {action.label}
             </Button>

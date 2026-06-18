@@ -6,6 +6,7 @@ export { default as Button } from './Button';
 export { default as ControlButton } from './ControlButton';
 export { default as CustomCursor } from './CustomCursor';
 export { default as ProjectCard } from './ProjectCard';
+export { default as ProjectModal } from './ProjectModal';
 export { default as Section } from './Section';
 export { default as DotShaderBackground } from './DotShaderBackground';
 

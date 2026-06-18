@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Footer, Navbar, SkipLink, CustomCursor, DotShaderBackground } from './ds';
-import { SECTIONS } from './data/siteContent';
+import { Footer, Navbar, SkipLink, CustomCursor, DotShaderBackground, ProjectModal } from './ds';
+import { SECTIONS, PROJECT_GROUPS } from './data/siteContent';
+import { PROJECTS } from './data/projects';
 import { AboutSection, ContactSection, HomeSection, ProjectsSection } from './sections';
 import './App.css';
 
@@ -27,6 +28,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('HOME');
   const [theme, setTheme] = useState(getStoredTheme);
   const [fontScale, setFontScale] = useState(getStoredFontScale);
+  const [activeProjectId, setActiveProjectId] = useState(null);
   const activeTabRef = useRef('HOME');
   const isProgrammaticScroll = useRef(false);
   const scrollTimeout = useRef(null);
@@ -121,6 +123,13 @@ export default function App() {
     };
   }, [setActiveTabIfChanged]);
 
+  const handleProjectClick = useCallback((projectCard) => {
+    setActiveProjectId(projectCard.id);
+  }, []);
+
+  const activeProjectDetails = activeProjectId ? PROJECTS.find((p) => p.id === activeProjectId) : null;
+  const activeProjectCard = activeProjectId ? PROJECT_GROUPS.work.projects.find((p) => p.id === activeProjectId) : null;
+
   return (
     <>
       <CustomCursor />
@@ -133,7 +142,7 @@ export default function App() {
         <main id="main-content" className="app-main">
           <HomeSection onNavigate={handleTabChange} />
           <AboutSection />
-          <ProjectsSection type="work" />
+          <ProjectsSection type="work" onProjectClick={handleProjectClick} />
           <ProjectsSection type="builds" />
           <ContactSection onNavigate={handleTabChange} />
         </main>
@@ -149,6 +158,14 @@ export default function App() {
           theme={theme}
           onToggleTheme={setTheme}
         />
+
+        {activeProjectDetails && (
+          <ProjectModal
+            project={activeProjectDetails}
+            cardImage={activeProjectCard?.image}
+            onClose={() => setActiveProjectId(null)}
+          />
+        )}
       </div>
     </>
   );
