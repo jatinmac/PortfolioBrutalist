@@ -15,7 +15,7 @@ const FONT_SCALE_DEFAULT = 100;
 const SCROLL_OFFSET = -72;
 
 function getStoredTheme() {
-  return localStorage.getItem('theme') || 'dark';
+  return localStorage.getItem('theme') || 'light';
 }
 
 function getStoredFontScale() {

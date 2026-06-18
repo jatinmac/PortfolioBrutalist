@@ -18,18 +18,33 @@ export default function HomeSection({ onNavigate }) {
         <p className="hero-summary">{HERO.summary}</p>
 
         <div className="hero-actions" aria-label="Primary navigation">
-          {HERO.actions.map((action) => (
-            <Button
-              key={action.label}
-              variant={action.variant}
-              href={action.href}
-              download={action.download}
-              external={action.external}
-              onClick={action.href ? undefined : () => onNavigate(action.target)}
-            >
-              {action.label}
-            </Button>
-          ))}
+          {HERO.actions.map((action) => {
+            const handleActionClick = () => {
+              if (action.downloadUrl) {
+                const link = document.createElement('a');
+                link.href = action.downloadUrl;
+                link.download = action.downloadName || 'Resume.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }
+              if (!action.href) {
+                onNavigate(action.target);
+              }
+            };
+
+            return (
+              <Button
+                key={action.label}
+                variant={action.variant}
+                href={action.href}
+                external={action.external}
+                onClick={handleActionClick}
+              >
+                {action.label}
+              </Button>
+            );
+          })}
         </div>
       </div>
     </Section>
