@@ -9,7 +9,6 @@ import aiUiImg from '../images/builds/AIUIdesignSystem.png';
 import skillsMdImg from '../images/builds/SKILLSMD.png';
 import resumePdf from './jatindavisresume.pdf';
 
-
 export const SECTIONS = [
   { id: 'home', navLabel: 'HOME', label: 'Home' },
   { id: 'about', navLabel: 'ABOUT', label: 'About' },
@@ -24,7 +23,14 @@ export const HERO = {
     'Product designer working on AI twin agent experience @Cardtree AI. Prev. product designer at Maruti Suzuki.',
   actions: [
     { label: 'Work', target: 'WORK', variant: 'accent' },
-    { label: 'Resume', href: resumePdf, download: 'Jatin Davis Resume.pdf', variant: 'secondary', external: true },
+    {
+      label: 'Resume',
+      href: 'https://drive.google.com/file/d/1wiilPtrVZLxklw0F9rfifDpJ57ZbdZXW/view?usp=sharing',
+      downloadUrl: resumePdf,
+      downloadName: 'Jatin Davis Resume.pdf',
+      variant: 'secondary',
+      external: true,
+    },
   ],
 };
 

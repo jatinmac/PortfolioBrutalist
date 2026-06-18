@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 
 <head>
   <meta charset="UTF-8" />
   <script>
     (function() {
       const savedTheme = localStorage.getItem('theme');
-      const theme = savedTheme === 'light' ? 'light' : 'dark';
+      const theme = savedTheme === 'dark' ? 'dark' : 'light';
 
       document.documentElement.classList.toggle('light', theme === 'light');
       document.documentElement.dataset.theme = theme;
