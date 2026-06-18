@@ -1,11 +1,20 @@
-import { Button, Section } from '../ds';
+import { useRef } from 'react';
+import { Button, Section, HeroDotShader } from '../ds';
 import { HERO } from '../data/siteContent';
 
 export default function HomeSection({ onNavigate }) {
+  const headingRef = useRef(null);
+
   return (
-    <Section id="home" label="Home" tone="home" className="home-section">
+    <Section
+      id="home"
+      label="Home"
+      tone="home"
+      className="home-section"
+      background={<HeroDotShader headingRef={headingRef} />}
+    >
       <div className="hero-stack">
-        <h1 className="ds-text--display hero-title">{HERO.title}</h1>
+        <h1 ref={headingRef} className="ds-text--display hero-title">{HERO.title}</h1>
         <p className="hero-summary">{HERO.summary}</p>
 
         <div className="hero-actions" aria-label="Primary navigation">
