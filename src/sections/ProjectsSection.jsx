@@ -1,7 +1,7 @@
 import { ProjectCard, Section } from '../ds';
 import { PROJECT_GROUPS } from '../data/siteContent';
 
-export default function ProjectsSection({ type }) {
+export default function ProjectsSection({ type, onProjectClick }) {
   const group = PROJECT_GROUPS[type];
 
   if (!group) return null;
@@ -14,7 +14,16 @@ export default function ProjectsSection({ type }) {
 
       <div className="project-grid">
         {group.projects.map((project) => (
-          <ProjectCard key={`${group.id}-${project.eyebrow}`} {...project} />
+          <ProjectCard
+            key={`${group.id}-${project.eyebrow}`}
+            {...project}
+            onClick={(e) => {
+              if (!project.link) {
+                e.preventDefault();
+                onProjectClick?.(project);
+              }
+            }}
+          />
         ))}
       </div>
     </Section>

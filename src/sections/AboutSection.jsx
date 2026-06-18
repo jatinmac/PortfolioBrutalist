@@ -7,7 +7,7 @@ import f1NerdImg from '../images/about/Formula 1 nerd.jpg';
 import musicImg from '../images/about/Like 80s music.jpg';
 import bikeLoverImg from '../images/about/bike lover.jpg';
 import dragonballZImg from '../images/about/dargonballZ fan.jpg';
-import marvelDcImg from '../images/about/marvel and dc .jpg';
+import marvelDcImg from '../images/about/marvel and dc fan.jpg';
 import motoGpImg from '../images/about/moto gp fan.jpg';
 import watchLoverImg from '../images/about/watch lover.jpg';
 import wweFanImg from '../images/about/wwe fan.jpg';
@@ -19,7 +19,7 @@ const TILES = [
   { label: 'Like 80s music', image: musicImg },
   { label: 'bike lover', image: bikeLoverImg },
   { label: 'dargonballZ fan', image: dragonballZImg },
-  { label: 'marvel and dc ', image: marvelDcImg },
+  { label: 'marvel and dc fan', image: marvelDcImg },
   { label: 'moto gp fan', image: motoGpImg },
   { label: 'watch lover', image: watchLoverImg },
   { label: 'wwe fan', image: wweFanImg },
@@ -30,8 +30,18 @@ export default function AboutSection() {
     <Section id="about" label="About" tone="about">
       <div className="section-heading">
         <h2 className="ds-text--display section-title">{ABOUT.title}</h2>
-        <p className="section-summary">{ABOUT.body}</p>
+        {Array.isArray(ABOUT.body) ? (
+          <ul className="about-list">
+            {ABOUT.body.map((item, index) => (
+              <li key={index} className="about-list-item">{item}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="section-summary">{ABOUT.body}</p>
+        )}
       </div>
+
+      <h3 className="about-visual-heading">interests and hobbies</h3>
 
       <div className="about-visual-grid" aria-label="Personal interests">
         {TILES.map((tile) => (
