@@ -18,9 +18,9 @@ export const SECTIONS = [
 ];
 
 export const HERO = {
-  title: 'Product designer & builder, shipping experiences that create impact.',
+  title: 'Optimizing for impact and value. Building production ready experiences that drive business growth.',
   summary:
-    'Product designer working on AI twin agent experience @Cardtree AI. Prev. product designer at Maruti Suzuki.',
+    'Product designer & builder, working on AI twin agent experience @Cardtree AI. Prev. product designer at Maruti Suzuki.',
   actions: [
     { label: 'Work', target: 'WORK', variant: 'accent' },
     {
