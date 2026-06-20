@@ -691,6 +691,12 @@ html.has-custom-cursor .custom-cursor-trail.is-hidden {
   pointer-events: none;
 }
 
+@media (max-width: 768px) {
+  .grain-shader-canvas {
+    display: none;
+  }
+}
+
 .hero-dot-shader-canvas {
   position: absolute;
   inset: 0;
