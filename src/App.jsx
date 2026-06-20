@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Footer, Navbar, SkipLink, CustomCursor, DotShaderBackground, ProjectModal } from './ds';
+import { Footer, Navbar, SkipLink, CustomCursor, DotShaderBackground, GrainShaderBackground, ProjectModal } from './ds';
 import { SECTIONS, PROJECT_GROUPS } from './data/siteContent';
 import { PROJECTS } from './data/projects';
 import { AboutSection, ContactSection, HomeSection, ProjectsSection } from './sections';
@@ -135,6 +135,7 @@ export default function App() {
       <CustomCursor />
       <div className="app-layout">
         <DotShaderBackground />
+        <GrainShaderBackground theme={theme} />
         <SkipLink />
 
         <Navbar tabs={NAV_TABS} activeTab={activeTab} onTabChange={handleTabChange} />
