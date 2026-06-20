@@ -60,8 +60,53 @@ export const PROJECTS = [
 
 
   {
-    id: 'maruti-suzuki-smartplay',
+    id: 'quilo',
     number: '02',
+    title: 'Quilo Chrome Extension',
+    subtitle: 'AI prompt library browser extension',
+    image: '/quilo.webp',
+    role: 'Product Designer',
+    year: '2024',
+    tools: 'Figma, Claude Code',
+    metric: '600+ Users',
+    tags: ['0→1', 'Growth'],
+    hook: 'AI prompt builders suffered from context-switching fatigue → We designed a prompt library extension that lives directly in the browser, serving 600+ active users.',
+    context: {
+      company: 'Quilo (Self-initiated Open Source Utility)',
+      role: 'Product Designer & Builder',
+      team: 'Solo Designer + Claude Code',
+      timeline: '3 months (2024)',
+      constraints: 'Chrome extension viewport size limits (max 800x600px), strict browser security policies.'
+    },
+    problems: {
+      business: 'Provide prompt managers with quick utility value without relying on expensive database infrastructure, keeping it lightweight and scalable.',
+      user: 'Users copied and pasted prompts from separate text documents or notes apps, disrupting their creative focus when chatting with LLMs.'
+    },
+    process: {
+      research: 'Interviewed 12 power prompt users. Discovered that the core problem was retrieval speed: if finding a prompt took more than 5 seconds, users manually re-typed it.',
+      ideation: 'Explored a full web application, a menu-bar app, and a Chrome extension sidebar. Selected the Chrome extension sidebar for its contextual proximity.',
+      tradeoff: 'Instead of building a complex cloud sync system, I leveraged Chrome\'s native local storage, saving development time and eliminating user privacy concerns.',
+      iteration: 'Iterated the search behavior from a traditional submit button to instant fuzzy search as the user types, reducing prompt retrieval time to under 1.5 seconds.'
+    },
+    impact: {
+      quantitative: '600+ active users, 12,000+ prompts saved, 92% week-over-week user retention.',
+      qualitative: 'Quilo became my default companion panel. I no longer have to keep a messy Google Doc of prompt templates. — Product Manager at Colliers'
+    },
+    whatWentWrong: {
+      narrative: 'We built a complex folder nesting system for prompt organization. Users found it tedious and didn\'t use it. We pivoted to a simple search-first structure with custom flat tags, which halved prompt lookup time.'
+    },
+    description: 'Quilo was a self-initiated product built to help people save, organize, and reuse prompts more easily.',
+    details: 'I designed and launched it as a Google Chrome extension, taking it from concept to release in the Chrome Web Store. The product reached more than 600 users and gave me firsthand experience with shipping, positioning, and learning from real usage.',
+    liveUrl: 'https://chromewebstore.google.com/detail/quilo-%E2%80%93-ai-prompt-library/ofdelgfdnchpifecekmlaanebfkboehb',
+    work: [
+      'The process started with a narrow use case: a prompt library that lives close to where people already work in the browser.',
+      'I shaped the extension around quick capture, retrieval, organization, and reuse.',
+      'Because this was a self-initiated product, the design process also included packaging the product for the Chrome Web Store and learning from real usage after launch.'
+    ]
+  },
+  {
+    id: 'maruti-suzuki-smartplay',
+    number: '03',
     title: 'Maruti Suzuki',
     subtitle: 'Smartplay Pro X infotainment system',
     image: '/maruti-suzuki-smartplay-pro-x.webp',
@@ -104,51 +149,6 @@ export const PROJECTS = [
       'Keep design decisions compatible with production engineering realities instead of treating the interface as a static concept mockup.',
       'Use HMI constraints as a design input: information hierarchy, touch targets, visual clarity, and system consistency matter more than decorative complexity.',
       'Frame the work around repeatable product behavior so the infotainment system could scale beyond a single screen exploration.'
-    ]
-  },
-  {
-    id: 'quilo',
-    number: '03',
-    title: 'Quilo Chrome Extension',
-    subtitle: 'AI prompt library browser extension',
-    image: '/quilo.webp',
-    role: 'Product Designer',
-    year: '2024',
-    tools: 'Figma, Claude Code',
-    metric: '600+ Users',
-    tags: ['0→1', 'Growth'],
-    hook: 'AI prompt builders suffered from context-switching fatigue → We designed a prompt library extension that lives directly in the browser, serving 600+ active users.',
-    context: {
-      company: 'Quilo (Self-initiated Open Source Utility)',
-      role: 'Product Designer & Builder',
-      team: 'Solo Designer + Claude Code',
-      timeline: '3 months (2024)',
-      constraints: 'Chrome extension viewport size limits (max 800x600px), strict browser security policies.'
-    },
-    problems: {
-      business: 'Provide prompt managers with quick utility value without relying on expensive database infrastructure, keeping it lightweight and scalable.',
-      user: 'Users copied and pasted prompts from separate text documents or notes apps, disrupting their creative focus when chatting with LLMs.'
-    },
-    process: {
-      research: 'Interviewed 12 power prompt users. Discovered that the core problem was retrieval speed: if finding a prompt took more than 5 seconds, users manually re-typed it.',
-      ideation: 'Explored a full web application, a menu-bar app, and a Chrome extension sidebar. Selected the Chrome extension sidebar for its contextual proximity.',
-      tradeoff: 'Instead of building a complex cloud sync system, I leveraged Chrome\'s native local storage, saving development time and eliminating user privacy concerns.',
-      iteration: 'Iterated the search behavior from a traditional submit button to instant fuzzy search as the user types, reducing prompt retrieval time to under 1.5 seconds.'
-    },
-    impact: {
-      quantitative: '600+ active users, 12,000+ prompts saved, 92% week-over-week user retention.',
-      qualitative: 'Quilo became my default companion panel. I no longer have to keep a messy Google Doc of prompt templates. — Product Manager at Colliers'
-    },
-    whatWentWrong: {
-      narrative: 'We built a complex folder nesting system for prompt organization. Users found it tedious and didn\'t use it. We pivoted to a simple search-first structure with custom flat tags, which halved prompt lookup time.'
-    },
-    description: 'Quilo was a self-initiated product built to help people save, organize, and reuse prompts more easily.',
-    details: 'I designed and launched it as a Google Chrome extension, taking it from concept to release in the Chrome Web Store. The product reached more than 600 users and gave me firsthand experience with shipping, positioning, and learning from real usage.',
-    liveUrl: 'https://chromewebstore.google.com/detail/quilo-%E2%80%93-ai-prompt-library/ofdelgfdnchpifecekmlaanebfkboehb',
-    work: [
-      'The process started with a narrow use case: a prompt library that lives close to where people already work in the browser.',
-      'I shaped the extension around quick capture, retrieval, organization, and reuse.',
-      'Because this was a self-initiated product, the design process also included packaging the product for the Chrome Web Store and learning from real usage after launch.'
     ]
   },
   {

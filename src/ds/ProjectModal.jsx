@@ -315,12 +315,50 @@ export default function ProjectModal({ project, cardImage, onClose }) {
             <section className="ds-modal-section">
               <h3 className="ds-modal-section-title">Key Work & Responsibilities</h3>
               <ul className="ds-modal-work-list">
-                {project.work.map((item, idx) => (
-                  <li key={idx} className="ds-modal-work-item">
-                    <CheckCircle className="ds-modal-work-icon" size={16} />
-                    <span>{item}</span>
-                  </li>
-                ))}
+                {project.work.map((item, idx) => {
+                  const isActionsAndWorkflows = item.toLowerCase().includes('actions and workflow');
+                  return (
+                    <li
+                      key={idx}
+                      className="ds-modal-work-item"
+                      style={
+                        isActionsAndWorkflows
+                          ? {
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              width: '100%',
+                              gap: 'var(--spacing-4)',
+                            }
+                          : undefined
+                      }
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+                        <CheckCircle className="ds-modal-work-icon" style={{ marginTop: 0 }} size={16} />
+                        <span>{item}</span>
+                      </div>
+                      {isActionsAndWorkflows && (
+                        <a
+                          href="https://www.figma.com/proto/NW305Wv5q76thCBMG1XnFj/porfolio?node-id=2115-318&p=f&viewport=290%2C104%2C0.63&t=JWemfKKCvWKEHyvp-1&scaling=min-zoom&content-scaling=fixed&page-id=2030%3A269"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ds-nav-tab"
+                          style={{
+                            fontSize: 'var(--typography-size-xs)',
+                            padding: '2px 8px',
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            flexShrink: 0,
+                            zIndex: 1,
+                          }}
+                        >
+                          View Case Study
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           )}
