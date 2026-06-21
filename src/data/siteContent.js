@@ -1,12 +1,12 @@
-import doubleAiImg from '../images/Double AI.png';
-import formula1Img from '../images/Formula 1 Youtube.png';
-import marutiSuzukiImg from '../images/Maruti Suzuki.png';
-import quiloAiImg from '../images/Quilo AI.png';
-import u3kImg from '../images/U3K.png';
-import aiTwinImg from '../images/builds/AITWIN.png';
-import aiWebsiteImg from '../images/builds/AIWebsite.png';
-import aiUiImg from '../images/builds/AIUIdesignSystem.png';
-import skillsMdImg from '../images/builds/SKILLSMD.png';
+import doubleAiImg from '../images/Double AI.webp';
+import formula1Img from '../images/Formula 1 Youtube.webp';
+import marutiSuzukiImg from '../images/Maruti Suzuki.webp';
+import quiloAiImg from '../images/Quilo AI.webp';
+import u3kImg from '../images/U3K.webp';
+import aiTwinImg from '../images/builds/AITWIN.webp';
+import aiWebsiteImg from '../images/builds/AIWebsite.webp';
+import aiUiImg from '../images/builds/AIUIdesignSystem.webp';
+import skillsMdImg from '../images/builds/SKILLSMD.webp';
 import resumePdf from './jatindavisresume.pdf';
 
 export const SECTIONS = [
@@ -25,7 +25,7 @@ export const HERO = {
     { label: 'Work', target: 'WORK', variant: 'accent' },
     {
       label: 'Resume',
-      href: 'https://drive.google.com/file/d/1wiilPtrVZLxklw0F9rfifDpJ57ZbdZXW/view?usp=sharing',
+      href: 'https://drive.google.com/file/d/1CjV-Aq6BRo0BuXRwWFKJIj3gqVNvMSMY/view?usp=sharing',
       downloadUrl: resumePdf,
       downloadName: 'Jatin Davis Resume.pdf',
       variant: 'secondary',

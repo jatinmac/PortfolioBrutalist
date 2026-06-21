@@ -3,14 +3,14 @@ import { ABOUT } from '../data/siteContent';
 
 import runningImg from '../images/about/I love running.avif';
 import carEnthusiastImg from '../images/about/I am a car enthusiast.avif';
-import f1NerdImg from '../images/about/Formula 1 nerd.jpg';
-import musicImg from '../images/about/Like 80s music.jpg';
-import bikeLoverImg from '../images/about/bike lover.jpg';
-import dragonballZImg from '../images/about/dargonballZ fan.jpg';
-import marvelDcImg from '../images/about/marvel and dc fan.jpg';
-import motoGpImg from '../images/about/moto gp fan.jpg';
-import watchLoverImg from '../images/about/watch lover.jpg';
-import wweFanImg from '../images/about/wwe fan.jpg';
+import f1NerdImg from '../images/about/Formula 1 nerd.webp';
+import musicImg from '../images/about/Like 80s music.webp';
+import bikeLoverImg from '../images/about/bike lover.webp';
+import dragonballZImg from '../images/about/dargonballZ fan.webp';
+import marvelDcImg from '../images/about/marvel and dc fan.webp';
+import motoGpImg from '../images/about/moto gp fan.webp';
+import watchLoverImg from '../images/about/watch lover.webp';
+import wweFanImg from '../images/about/wwe fan.webp';
 
 const TILES = [
   { label: 'I love running', image: runningImg },

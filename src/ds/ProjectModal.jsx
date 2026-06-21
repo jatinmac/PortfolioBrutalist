@@ -4,11 +4,25 @@ import { PROJECT_GROUPS } from '../data/siteContent';
 import Button from './Button';
 import ControlButton from './ControlButton';
 
-import doubleAiImg from '../images/Double AI.png';
-import formula1Img from '../images/Formula 1 Youtube.png';
-import marutiSuzukiImg from '../images/Maruti Suzuki.png';
-import quiloAiImg from '../images/Quilo AI.png';
-import u3kImg from '../images/U3K.png';
+import doubleAiImg from '../images/Double AI.webp';
+import formula1Img from '../images/Formula 1 Youtube.webp';
+import marutiSuzukiImg from '../images/Maruti Suzuki.webp';
+import quiloAiImg from '../images/Quilo AI.webp';
+import u3kImg from '../images/U3K.webp';
+
+// Pitch deck images for Double AI
+import daPd1 from '../images/DoubleAipitchdeck/Double ai 1.webp';
+import daPd2 from '../images/DoubleAipitchdeck/Double ai 2.webp';
+import daPd3 from '../images/DoubleAipitchdeck/Double ai 3.webp';
+import daPd4 from '../images/DoubleAipitchdeck/Double ai 4.webp';
+import daPd5 from '../images/DoubleAipitchdeck/Double ai 5.webp';
+import daPd6 from '../images/DoubleAipitchdeck/Double ai 6.webp';
+import daPd7 from '../images/DoubleAipitchdeck/Double ai 7.webp';
+import daPd8 from '../images/DoubleAipitchdeck/Double ai 8.webp';
+import daPd9 from '../images/DoubleAipitchdeck/Double ai 9.webp';
+import daPd10 from '../images/DoubleAipitchdeck/Double ai 10.webp';
+
+import Carousel from './Carousel';
 
 const IMAGE_MAP = {
   'double-ai': doubleAiImg,
@@ -17,6 +31,20 @@ const IMAGE_MAP = {
   'formula-1-design': formula1Img,
   'u3k-instrument-cluster': u3kImg,
 };
+
+const DOUBLE_AI_PITCH_DECK = [
+  daPd1,
+  daPd2,
+  daPd3,
+  daPd4,
+  daPd5,
+  daPd6,
+  daPd7,
+  daPd8,
+  daPd9,
+  daPd10,
+];
+
 
 /**
  * ProjectModal handles rendering detailed information about work projects in a retro-brutalist overlay.
@@ -206,6 +234,13 @@ export default function ProjectModal({ project, cardImage, onClose }) {
               )}
             </div>
           </section>
+
+          {project.id === 'double-ai' && (
+            <section className="ds-modal-section">
+              <h3 className="ds-modal-section-title">The Product</h3>
+              <Carousel images={DOUBLE_AI_PITCH_DECK} ariaLabel="Double AI Pitch Deck" />
+            </section>
+          )}
 
           {/* Core Problem Narrative */}
           <section className="ds-modal-section">
