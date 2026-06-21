@@ -11,13 +11,14 @@ Primary source areas:
 - `src/sections/`: page sections (`HomeSection`, `AboutSection`, `ProjectsSection`, `ContactSection`).
 - `src/data/siteContent.js`: navigation labels, hero/about/contact copy, project card groups, YouTube ticker data, and resume import.
 - `src/data/projects.js`: detailed work project content used by `ProjectModal`.
-- `src/images/`: imported portfolio imagery. Keep image filenames stable unless all imports are updated.
+- `src/images/`: imported portfolio imagery. Prefer optimized `.webp` assets for portfolio/project imagery, and keep image filenames stable unless all imports are updated.
+- `src/images/DoubleAipitchdeck/`: Double AI modal carousel slides used by `ProjectModal`.
 - `src/data/jatindavisresume.pdf`: bundled resume download asset.
 
 The local design system lives in `src/ds/`:
 
 - **Navigation & Layout**: `Navbar`, `NavTab`, `Footer`, `Section`, `SkipLink`.
-- **Controls & Cards**: `Button`, `ControlButton`, `ProjectCard`, `ProjectModal`.
+- **Controls & Cards**: `Button`, `ControlButton`, `ProjectCard`, `ProjectModal`, `Carousel`.
 - **Visual Effects**: `CustomCursor`, `DotShaderBackground`, `HeroDotShader`, `VideoTicker`, `Icon`.
 - **Exports**: update `src/ds/index.js` when adding or removing design-system components.
 - **Styling**: design tokens live in `src/ds/tokens.css`; shared DS component styles live in `src/ds/components.css`; section/page layout styles live in `src/App.css`; base reset and focus styles live in `src/index.css`.
@@ -42,9 +43,11 @@ Use `lucide-react` for icons. Preserve the existing dark-first token model, `:ro
 
 When changing content, prefer editing `src/data/siteContent.js` or `src/data/projects.js` instead of hard-coding copy in components. When adding project cards, make sure card `id` values align with modal details where a modal should open.
 
+When adding modal media, prefer reusable DS components such as `Carousel` instead of one-off slider markup. Keep carousel images imported explicitly so Vite can bundle and optimize them.
+
 ## Performance Guidelines
 
-Keep the initial bundle lean. Avoid heavy external libraries. Imported images are bundled by Vite, so use appropriately sized assets and keep `loading="lazy"` behavior for non-critical imagery. Be careful with cursor, shader, ticker, and modal changes because they run across the main experience.
+Keep the initial bundle lean. Avoid heavy external libraries. Imported images are bundled by Vite, so use appropriately sized `.webp` assets where possible and keep `loading="lazy"` behavior for non-critical imagery. Be careful with cursor, shader, ticker, carousel, and modal changes because they run across the main experience.
 
 ## Testing Guidelines
 
@@ -57,6 +60,7 @@ Check:
 - Functional dark/light theme toggle and persistence.
 - Footer font size decrease/reset/increase controls and `--font-scale` behavior.
 - Work project modal open/close, ESC key close, focus trap, scroll lock, and focus restoration.
+- Double AI modal carousel next/previous controls, dot navigation, keyboard arrow navigation, and lazy-loaded slide rendering.
 - Build project cards opening external links correctly.
 - Video ticker rendering in the Builds section.
 - Full viewport responsiveness at and below `768px`.
@@ -66,7 +70,7 @@ Check:
 
 Keep the skip link, ARIA labels, dialog attributes, keyboard focus states, and visible focus rings intact. Update `index.html` metadata when the site positioning, title, description, or keywords change.
 
-Project images are imported from `src/images/`; about images are under `src/images/about/`; build images are under `src/images/builds/`. Use descriptive alt text through existing component props and content data. Keep external links marked as external where the existing `Button` or `ProjectCard` APIs support it.
+Project images are imported from `src/images/`; about images are under `src/images/about/`; build images are under `src/images/builds/`; Double AI carousel slides are under `src/images/DoubleAipitchdeck/`. Use descriptive alt text through existing component props and content data. Keep external links marked as external where the existing `Button` or `ProjectCard` APIs support it.
 
 ## Commit & Pull Request Guidelines
 

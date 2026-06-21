@@ -1,0 +1,5 @@
+# Jatin Davis Portfolio
+
+Personal portfolio for Jatin Davis, focused on product design, AI user experiences, automotive HMI work, and shipped independent builds.
+
+- [Portfolio home](/)

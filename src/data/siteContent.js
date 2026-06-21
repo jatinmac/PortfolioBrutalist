@@ -7,7 +7,6 @@ import aiTwinImg from '../images/builds/AITWIN.webp';
 import aiWebsiteImg from '../images/builds/AIWebsite.webp';
 import aiUiImg from '../images/builds/AIUIdesignSystem.webp';
 import skillsMdImg from '../images/builds/SKILLSMD.webp';
-import resumePdf from './jatindavisresume.pdf';
 
 export const SECTIONS = [
   { id: 'home', navLabel: 'HOME', label: 'Home' },
@@ -26,8 +25,6 @@ export const HERO = {
     {
       label: 'Resume',
       href: 'https://drive.google.com/file/d/1CjV-Aq6BRo0BuXRwWFKJIj3gqVNvMSMY/view?usp=sharing',
-      downloadUrl: resumePdf,
-      downloadName: 'Jatin Davis Resume.pdf',
       variant: 'secondary',
       external: true,
     },

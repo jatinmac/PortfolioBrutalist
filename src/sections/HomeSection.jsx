@@ -72,37 +72,13 @@ export default function HomeSection({ onNavigate }) {
 
         <div className="hero-actions" aria-label="Primary navigation">
           {HERO.actions.map((action) => {
-            const isDownloadAndLink = action.href && action.downloadUrl;
-
-            const handleActionClick = () => {
-              if (isDownloadAndLink) {
-                // Open the Google Drive link in a new tab
-                window.open(action.href, '_blank', 'noopener,noreferrer');
-              } else if (action.downloadUrl) {
-                const link = document.createElement('a');
-                link.href = action.downloadUrl;
-                link.download = action.downloadName || 'Resume.pdf';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              }
-              if (!action.href) {
-                onNavigate(action.target);
-              }
-            };
-
-            const buttonHref = isDownloadAndLink ? action.downloadUrl : action.href;
-            const buttonDownload = isDownloadAndLink ? action.downloadName : undefined;
-            const buttonExternal = isDownloadAndLink ? false : action.external;
-
             return (
               <Button
                 key={action.label}
                 variant={action.variant}
-                href={buttonHref}
-                download={buttonDownload}
-                external={buttonExternal}
-                onClick={handleActionClick}
+                href={action.href}
+                external={action.external}
+                onClick={action.href ? undefined : () => onNavigate(action.target)}
               >
                 {action.label}
               </Button>
