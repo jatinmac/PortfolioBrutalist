@@ -14,12 +14,28 @@ const FONT_SCALE_STEP = 5;
 const FONT_SCALE_DEFAULT = 100;
 const SCROLL_OFFSET = -72;
 
+function getStorageItem(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function setStorageItem(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Storage can be disabled or unavailable in private browsing modes.
+  }
+}
+
 function getStoredTheme() {
-  return localStorage.getItem('theme') || 'light';
+  return getStorageItem('theme') === 'dark' ? 'dark' : 'light';
 }
 
 function getStoredFontScale() {
-  const saved = Number.parseInt(localStorage.getItem('fontScale'), 10);
+  const saved = Number.parseInt(getStorageItem('fontScale'), 10);
   if (!Number.isFinite(saved)) return FONT_SCALE_DEFAULT;
   return Math.min(FONT_SCALE_MAX, Math.max(FONT_SCALE_MIN, saved));
 }
@@ -35,13 +51,13 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.style.setProperty('--font-scale', fontScale / 100);
-    localStorage.setItem('fontScale', String(fontScale));
+    setStorageItem('fontScale', String(fontScale));
   }, [fontScale]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('light', theme === 'light');
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem('theme', theme);
+    setStorageItem('theme', theme);
   }, [theme]);
 
   const setActiveTabIfChanged = useCallback((tabName) => {

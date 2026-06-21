@@ -34,6 +34,8 @@ export default function HeroDotShader({ headingRef }) {
 
     let animationFrameId;
     let isDestroyed = false;
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const shouldAnimate = () => !motionQuery.matches && !document.hidden;
 
     // Helper to calculate the origin (center of the heading) relative to the canvas
     const updateOrigin = () => {
@@ -187,14 +189,24 @@ export default function HeroDotShader({ headingRef }) {
           }
         }
 
-        animationFrameId = requestAnimationFrame(draw2D);
+        if (shouldAnimate()) {
+          animationFrameId = requestAnimationFrame(draw2D);
+        }
       };
 
+      const handleAnimationStateChange = () => {
+        cancelAnimationFrame(animationFrameId);
+        draw2D();
+      };
+      motionQuery.addEventListener('change', handleAnimationStateChange);
+      document.addEventListener('visibilitychange', handleAnimationStateChange);
       draw2D();
 
       return () => {
         isDestroyed = true;
         cancelAnimationFrame(animationFrameId);
+        motionQuery.removeEventListener('change', handleAnimationStateChange);
+        document.removeEventListener('visibilitychange', handleAnimationStateChange);
         resizeObserver.disconnect();
       };
     }
@@ -385,14 +397,24 @@ export default function HeroDotShader({ headingRef }) {
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-      animationFrameId = requestAnimationFrame(render);
+      if (shouldAnimate()) {
+        animationFrameId = requestAnimationFrame(render);
+      }
     };
 
+    const handleAnimationStateChange = () => {
+      cancelAnimationFrame(animationFrameId);
+      render();
+    };
+    motionQuery.addEventListener('change', handleAnimationStateChange);
+    document.addEventListener('visibilitychange', handleAnimationStateChange);
     render();
 
     return () => {
       isDestroyed = true;
       cancelAnimationFrame(animationFrameId);
+      motionQuery.removeEventListener('change', handleAnimationStateChange);
+      document.removeEventListener('visibilitychange', handleAnimationStateChange);
       resizeObserver.disconnect();
       
       // GL Cleanup

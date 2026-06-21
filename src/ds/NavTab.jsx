@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 
 /**
- * Navbar section button with roving tabindex support.
+ * Navbar section button.
  *
  * @param {Object} props
  * @param {string} props.label
@@ -24,7 +24,6 @@ const NavTab = forwardRef(function NavTab(
       type="button"
       className={classes}
       aria-current={isActive ? 'page' : undefined}
-      tabIndex={isActive ? 0 : -1}
       {...rest}
     >
       {label}

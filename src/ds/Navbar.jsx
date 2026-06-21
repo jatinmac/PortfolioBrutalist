@@ -85,9 +85,10 @@ export default function Navbar({
     }
   }, [activeTab]);
 
-  // Arrow key navigation (roving tabindex)
+  // Arrow key navigation for the focused section button.
   const handleKeyDown = (e) => {
-    const currentIndex = tabs.indexOf(activeTab);
+    const focusedTab = tabs.find((tab) => tabRefs.current[tab] === e.target);
+    const currentIndex = tabs.indexOf(focusedTab || activeTab);
     let newIndex;
 
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {

@@ -3,9 +3,19 @@ import { Play, X } from 'lucide-react';
 import { YOUTUBE_VIDEOS } from '../data/siteContent';
 import ControlButton from './ControlButton';
 
+function getThumbnailUrl(videoId) {
+  return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+}
+
 export default function VideoTicker() {
   const [activeVideo, setActiveVideo] = useState(null);
   const modalRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
+  const openVideo = (video, triggerElement) => {
+    previousFocusRef.current = triggerElement;
+    setActiveVideo(video);
+  };
 
   // Handle ESC key and focus trapping inside the video modal
   useEffect(() => {
@@ -20,7 +30,7 @@ export default function VideoTicker() {
       if (e.key === 'Tab') {
         if (!modalRef.current) return;
         const focusableElements = modalRef.current.querySelectorAll(
-          'button, iframe, [tabindex="0"]'
+          'a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])'
         );
         if (focusableElements.length === 0) return;
 
@@ -58,6 +68,9 @@ export default function VideoTicker() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = originalStyle;
+      if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
+        previousFocusRef.current.focus();
+      }
     };
   }, [activeVideo]);
 
@@ -77,25 +90,24 @@ export default function VideoTicker() {
               className="video-ticker-card"
             >
               <div className="video-ticker-card__media">
-                <iframe
-                  src={`https://www.youtube.com/embed/${video.id}?autoplay=1&mute=1&loop=1&playlist=${video.id}&playsinline=1&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1&cc_load_policy=0&enablejsapi=1`}
-                  title={video.title}
-                  frameBorder="0"
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
+                <img
+                  src={getThumbnailUrl(video.id)}
+                  alt=""
+                  className="video-ticker-card__thumbnail"
                   loading="lazy"
-                ></iframe>
-                {/* Catch clicks to open modal */}
+                  decoding="async"
+                  aria-hidden="true"
+                />
                 <button
                   className="video-ticker-card__click-overlay"
-                  onClick={() => setActiveVideo(video)}
+                  onClick={(e) => openVideo(video, e.currentTarget)}
                   aria-label={`Open video: ${video.title}`}
                 >
-                  <div className="video-ticker-card__hover-overlay">
-                    <div className="video-ticker-card__play-btn">
+                  <span className="video-ticker-card__hover-overlay">
+                    <span className="video-ticker-card__play-btn">
                       <Play size={20} fill="currentColor" />
-                    </div>
-                  </div>
+                    </span>
+                  </span>
                 </button>
               </div>
             </div>
@@ -137,11 +149,12 @@ export default function VideoTicker() {
             <div className="video-modal__body">
               <div className="video-modal__video-wrapper">
                 <iframe
-                  src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0&modestbranding=1`}
+                  src={`https://www.youtube-nocookie.com/embed/${activeVideo.id}?autoplay=1&rel=0&modestbranding=1`}
                   title={activeVideo.title}
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
                 ></iframe>
               </div>
             </div>

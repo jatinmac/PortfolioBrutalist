@@ -48,11 +48,24 @@ export default function DotShaderBackground() {
             ctx.fill();
           }
         }
-        animationFrameId = requestAnimationFrame(draw2D);
       };
 
+      const scheduleDraw = () => {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(draw2D);
+      };
+      const themeObserver = new MutationObserver(scheduleDraw);
+      themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'data-theme'],
+      });
+      window.addEventListener('resize', scheduleDraw);
       draw2D();
-      return () => cancelAnimationFrame(animationFrameId);
+      return () => {
+        cancelAnimationFrame(animationFrameId);
+        themeObserver.disconnect();
+        window.removeEventListener('resize', scheduleDraw);
+      };
     }
 
     // Vertex Shader Source
@@ -173,14 +186,24 @@ export default function DotShaderBackground() {
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-      animationFrameId = requestAnimationFrame(render);
     };
 
+    const scheduleRender = () => {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = requestAnimationFrame(render);
+    };
+    const themeObserver = new MutationObserver(scheduleRender);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class', 'data-theme'],
+    });
+    window.addEventListener('resize', scheduleRender);
     render();
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      themeObserver.disconnect();
+      window.removeEventListener('resize', scheduleRender);
       gl.deleteProgram(program);
       gl.deleteShader(vs);
       gl.deleteShader(fs);
