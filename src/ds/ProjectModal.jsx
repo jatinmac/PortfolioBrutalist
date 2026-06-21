@@ -352,12 +352,22 @@ export default function ProjectModal({ project, cardImage, onClose }) {
               <ul className="ds-modal-work-list">
                 {project.work.map((item, idx) => {
                   const isActionsAndWorkflows = item.toLowerCase().includes('actions and workflow');
+                  const isAiAgentDemo = item.toLowerCase().includes('ai agent demo');
+                  const hasCaseStudy = isActionsAndWorkflows || isAiAgentDemo;
+                  
+                  let caseStudyUrl = '';
+                  if (isActionsAndWorkflows) {
+                    caseStudyUrl = "https://www.figma.com/proto/NW305Wv5q76thCBMG1XnFj/porfolio?node-id=2115-318&p=f&viewport=290%2C104%2C0.63&t=JWemfKKCvWKEHyvp-1&scaling=min-zoom&content-scaling=fixed&page-id=2030%3A269";
+                  } else if (isAiAgentDemo) {
+                    caseStudyUrl = "https://www.figma.com/proto/NW305Wv5q76thCBMG1XnFj/porfolio?node-id=2158-505&p=f&viewport=506%2C63%2C0.33&t=Li6VgyhtISVDgo5h-1&scaling=min-zoom&content-scaling=fixed&page-id=2030%3A270";
+                  }
+
                   return (
                     <li
                       key={idx}
                       className="ds-modal-work-item"
                       style={
-                        isActionsAndWorkflows
+                        hasCaseStudy
                           ? {
                               display: 'flex',
                               alignItems: 'center',
@@ -372,9 +382,9 @@ export default function ProjectModal({ project, cardImage, onClose }) {
                         <CheckCircle className="ds-modal-work-icon" style={{ marginTop: 0 }} size={16} />
                         <span>{item}</span>
                       </div>
-                      {isActionsAndWorkflows && (
+                      {hasCaseStudy && (
                         <a
-                          href="https://www.figma.com/proto/NW305Wv5q76thCBMG1XnFj/porfolio?node-id=2115-318&p=f&viewport=290%2C104%2C0.63&t=JWemfKKCvWKEHyvp-1&scaling=min-zoom&content-scaling=fixed&page-id=2030%3A269"
+                          href={caseStudyUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="ds-nav-tab"
