@@ -24,7 +24,7 @@ export const HERO = {
     { label: 'Work', target: 'WORK', variant: 'accent' },
     {
       label: 'Resume',
-      href: 'https://drive.google.com/file/d/1CjV-Aq6BRo0BuXRwWFKJIj3gqVNvMSMY/view?usp=sharing',
+      href: 'https://drive.google.com/file/d/18CwZfyq9Qq3Bds5iQPKecdr9nTbWVoqL/view?usp=sharing',
       variant: 'secondary',
       external: true,
     },
