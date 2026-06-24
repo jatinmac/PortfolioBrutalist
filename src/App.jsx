@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Footer, Navbar, SkipLink, CustomCursor, DotShaderBackground, GrainShaderBackground, ProjectModal } from './ds';
+import { Footer, Navbar, SkipLink, CustomCursor, DotShaderBackground, GrainShaderBackground, ProjectModal, FaviconAnimator } from './ds';
 import { SECTIONS, PROJECT_GROUPS } from './data/siteContent';
 import { PROJECTS } from './data/projects';
 import { AboutSection, ContactSection, HomeSection, ProjectsSection } from './sections';
@@ -169,6 +169,7 @@ export default function App() {
   return (
     <>
       <CustomCursor />
+      <FaviconAnimator theme={theme} />
       <div className="app-layout">
         <DotShaderBackground />
         <GrainShaderBackground theme={theme} />

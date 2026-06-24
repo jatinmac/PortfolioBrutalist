@@ -13,6 +13,7 @@ export { default as GrainShaderBackground } from './GrainShaderBackground';
 export { default as HeroDotShader } from './HeroDotShader';
 export { default as Carousel } from './Carousel';
 export { default as VideoTicker } from './VideoTicker';
+export { default as FaviconAnimator } from './FaviconAnimator';
 
 export { SkipLink } from './SkipLink';
 
