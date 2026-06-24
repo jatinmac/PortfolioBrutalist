@@ -83,7 +83,7 @@ export default function VideoTicker() {
     <div className="builds-youtube-layout">
       {/* Ticker Container - Full Width Horizontal */}
       <div className="builds-youtube-ticker-container">
-        <div className="video-ticker-track">
+        <div className={`video-ticker-track ${activeVideo ? 'video-ticker-track--paused' : ''}`}>
           {tickerItems.map((video, idx) => (
             <div
               key={`ticker-${video.id}-${idx}`}

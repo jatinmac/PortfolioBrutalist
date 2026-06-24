@@ -50,7 +50,7 @@ const DOUBLE_AI_PITCH_DECK = [
  * ProjectModal handles rendering detailed information about work projects in a retro-brutalist overlay.
  * Supports scroll locking, focus trapping, ESC key close, and keyboard accessibility.
  */
-export default function ProjectModal({ project, cardImage, onClose }) {
+export default function ProjectModal({ project, cardImage, isClosing, onClose }) {
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -125,7 +125,7 @@ export default function ProjectModal({ project, cardImage, onClose }) {
 
   return (
     <div
-      className="ds-modal-overlay"
+      className={`ds-modal-overlay${isClosing ? ' ds-modal--closing' : ''}`}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -133,7 +133,7 @@ export default function ProjectModal({ project, cardImage, onClose }) {
     >
       <div
         ref={modalRef}
-        className="ds-modal-container"
+        className={`ds-modal-container${isClosing ? ' ds-modal--closing' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
@@ -158,6 +158,7 @@ export default function ProjectModal({ project, cardImage, onClose }) {
 
         {/* Modal Scrollable Content */}
         <div className="ds-modal-body">
+          <div className="ds-modal-body-inner">
           {/* Hero Banner */}
           {displayImage && (
             <div className="ds-modal-hero">
@@ -407,28 +408,28 @@ export default function ProjectModal({ project, cardImage, onClose }) {
               </ul>
             </section>
           )}
+          </div>
         </div>
 
         {/* Modal Footer Actions */}
         <footer className="ds-modal-footer">
-          {project.liveUrl ? (
-            <Button
-              variant="accent"
-              href={project.liveUrl}
-              external
-              className="ds-modal-cta"
-            >
-              <span>{project.linkText || 'View Live'}</span>
-              <ExternalLink size={14} style={{ marginLeft: '6px' }} />
-            </Button>
-          ) : (
-            <div className="ds-modal-nda-notice">
-              <span>Internal / NDA Protected Program</span>
-            </div>
-          )}
-          <Button variant="ghost" onClick={onClose} className="ds-modal-close-footer-btn">
-            Close
-          </Button>
+          <div className="ds-modal-footer-inner">
+            {project.liveUrl ? (
+              <Button
+                variant="accent"
+                href={project.liveUrl}
+                external
+                className="ds-modal-cta"
+              >
+                <span>{project.linkText || 'View Live'}</span>
+                <ExternalLink size={14} style={{ marginLeft: '6px' }} />
+              </Button>
+            ) : (
+              <div className="ds-modal-nda-notice">
+                <span>Internal / NDA Protected Program</span>
+              </div>
+            )}
+          </div>
         </footer>
       </div>
     </div>

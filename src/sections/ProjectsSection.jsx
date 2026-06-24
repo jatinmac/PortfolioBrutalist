@@ -12,7 +12,7 @@ export default function ProjectsSection({ type, onProjectClick }) {
         <h2 className="ds-text--display section-title">{group.title}</h2>
       </div>
 
-      <div className="project-grid">
+      <div className={`project-grid project-grid--${type}`}>
         {group.projects.map((project) => (
           <ProjectCard
             key={`${group.id}-${project.eyebrow}`}

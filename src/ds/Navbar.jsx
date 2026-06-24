@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import NavTab from './NavTab';
 
-const DEFAULT_TABS = ['HOME', 'ABOUT', 'WORK', 'BUILDS', 'CONTACTS'];
+const DEFAULT_TABS = ['HOME', 'WORK', 'ABOUT', 'BUILDS', 'CONTACTS'];
 
 /**
  * Brutalist navbar with logo and section buttons.
