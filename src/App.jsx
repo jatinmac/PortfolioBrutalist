@@ -45,9 +45,11 @@ export default function App() {
   const [theme, setTheme] = useState(getStoredTheme);
   const [fontScale, setFontScale] = useState(getStoredFontScale);
   const [activeProjectId, setActiveProjectId] = useState(null);
+  const [isProjectClosing, setIsProjectClosing] = useState(false);
   const activeTabRef = useRef('HOME');
   const isProgrammaticScroll = useRef(false);
   const scrollTimeout = useRef(null);
+  const closeTimeout = useRef(null);
 
   useEffect(() => {
     document.documentElement.style.setProperty('--font-scale', fontScale / 100);
@@ -140,7 +142,25 @@ export default function App() {
   }, [setActiveTabIfChanged]);
 
   const handleProjectClick = useCallback((projectCard) => {
+    if (closeTimeout.current) clearTimeout(closeTimeout.current);
     setActiveProjectId(projectCard.id);
+    setIsProjectClosing(false);
+  }, []);
+
+  const handleCloseProject = useCallback(() => {
+    setIsProjectClosing(true);
+    if (closeTimeout.current) clearTimeout(closeTimeout.current);
+    closeTimeout.current = setTimeout(() => {
+      setActiveProjectId(null);
+      setIsProjectClosing(false);
+      closeTimeout.current = null;
+    }, 400);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeout.current) clearTimeout(closeTimeout.current);
+    };
   }, []);
 
   const activeProjectDetails = activeProjectId ? PROJECTS.find((p) => p.id === activeProjectId) : null;
@@ -158,8 +178,8 @@ export default function App() {
 
         <main id="main-content" className="app-main">
           <HomeSection onNavigate={handleTabChange} />
-          <AboutSection />
           <ProjectsSection type="work" onProjectClick={handleProjectClick} />
+          <AboutSection />
           <ProjectsSection type="builds" />
           <ContactSection onNavigate={handleTabChange} />
         </main>
@@ -180,7 +200,8 @@ export default function App() {
           <ProjectModal
             project={activeProjectDetails}
             cardImage={activeProjectCard?.image}
-            onClose={() => setActiveProjectId(null)}
+            isClosing={isProjectClosing}
+            onClose={handleCloseProject}
           />
         )}
       </div>

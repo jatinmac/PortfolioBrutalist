@@ -10,8 +10,8 @@ import skillsMdImg from '../images/builds/SKILLSMD.webp';
 
 export const SECTIONS = [
   { id: 'home', navLabel: 'HOME', label: 'Home' },
-  { id: 'about', navLabel: 'ABOUT', label: 'About' },
   { id: 'work', navLabel: 'WORK', label: 'Work' },
+  { id: 'about', navLabel: 'ABOUT', label: 'About' },
   { id: 'builds', navLabel: 'BUILDS', label: 'Builds' },
   { id: 'contacts', navLabel: 'CONTACTS', label: 'Contacts' },
 ];

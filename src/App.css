@@ -227,6 +227,26 @@
   gap: var(--spacing-2);
 }
 
+/* Work & Builds Sections Layout - Stacked cards fitting the image aspect ratio with padding */
+.project-grid--work,
+.project-grid--builds {
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+  width: 100%;
+}
+
+.project-grid--work .ds-project-card,
+.project-grid--builds .ds-project-card {
+  aspect-ratio: 1440 / 1024;
+}
+
+@media (max-width: 768px) {
+  .project-grid--work,
+  .project-grid--builds {
+    gap: var(--spacing-4);
+  }
+}
+
 .contact-list {
   display: flex;
   flex-direction: column;
