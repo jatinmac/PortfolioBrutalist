@@ -14,6 +14,7 @@ export { default as HeroDotShader } from './HeroDotShader';
 export { default as Carousel } from './Carousel';
 export { default as VideoTicker } from './VideoTicker';
 export { default as FaviconAnimator } from './FaviconAnimator';
+export { default as AntiScrape } from './AntiScrape';
 
 export { SkipLink } from './SkipLink';
 

@@ -1651,3 +1651,46 @@ html.has-custom-cursor .custom-cursor-trail.is-hidden {
     transition: none !important;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  Anti-scraping styles                                                */
+/* ------------------------------------------------------------------ */
+
+/* When anti-scrape is active, prevent text selection on content areas */
+.anti-scrape-active .app-main,
+.anti-scrape-active .ds-footer {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* Keep interactive elements selectable for accessibility */
+.anti-scrape-active input,
+.anti-scrape-active textarea,
+.anti-scrape-active [contenteditable] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+}
+
+/* Automated sessions get a blank application surface. */
+.anti-scrape-blocked #root {
+  display: none !important;
+}
+
+/* Honeypot trap elements — invisible to humans, visible to DOM scrapers */
+.anti-scrape-honeypot,
+.anti-scrape-watermark {
+  display: none;
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: -1;
+}

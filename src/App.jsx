@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Footer, Navbar, SkipLink, CustomCursor, DotShaderBackground, GrainShaderBackground, ProjectModal, FaviconAnimator } from './ds';
+import { Footer, Navbar, SkipLink, CustomCursor, DotShaderBackground, GrainShaderBackground, ProjectModal, FaviconAnimator, AntiScrape } from './ds';
 import { SECTIONS, PROJECT_GROUPS } from './data/siteContent';
 import { PROJECTS } from './data/projects';
 import { AboutSection, ContactSection, HomeSection, ProjectsSection } from './sections';
@@ -46,6 +46,7 @@ export default function App() {
   const [fontScale, setFontScale] = useState(getStoredFontScale);
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [isProjectClosing, setIsProjectClosing] = useState(false);
+  const [isScrapeBlocked, setIsScrapeBlocked] = useState(false);
   const activeTabRef = useRef('HOME');
   const isProgrammaticScroll = useRef(false);
   const scrollTimeout = useRef(null);
@@ -79,6 +80,10 @@ export default function App() {
 
   const handleFontReset = useCallback(() => {
     setFontScale(FONT_SCALE_DEFAULT);
+  }, []);
+
+  const handleScrapeBlocked = useCallback(() => {
+    setIsScrapeBlocked(true);
   }, []);
 
   const handleTabChange = useCallback((tabName) => {
@@ -168,44 +173,49 @@ export default function App() {
 
   return (
     <>
-      <CustomCursor />
-      <FaviconAnimator theme={theme} />
-      <div className="app-layout">
-        <DotShaderBackground />
-        <GrainShaderBackground theme={theme} />
-        <SkipLink />
+      <AntiScrape isBlocked={isScrapeBlocked} onBlocked={handleScrapeBlocked} />
+      {!isScrapeBlocked && (
+        <>
+          <CustomCursor />
+          <FaviconAnimator theme={theme} />
+          <div className="app-layout">
+            <DotShaderBackground />
+            <GrainShaderBackground theme={theme} />
+            <SkipLink />
 
-        <Navbar tabs={NAV_TABS} activeTab={activeTab} onTabChange={handleTabChange} />
+            <Navbar tabs={NAV_TABS} activeTab={activeTab} onTabChange={handleTabChange} />
 
-        <main id="main-content" className="app-main">
-          <HomeSection onNavigate={handleTabChange} />
-          <ProjectsSection type="work" onProjectClick={handleProjectClick} />
-          <AboutSection />
-          <ProjectsSection type="builds" />
-          <ContactSection onNavigate={handleTabChange} />
-        </main>
+            <main id="main-content" className="app-main">
+              <HomeSection onNavigate={handleTabChange} />
+              <ProjectsSection type="work" onProjectClick={handleProjectClick} />
+              <AboutSection />
+              <ProjectsSection type="builds" />
+              <ContactSection onNavigate={handleTabChange} />
+            </main>
 
-        <Footer
-          fontScale={fontScale}
-          fontScaleMin={FONT_SCALE_MIN}
-          fontScaleMax={FONT_SCALE_MAX}
-          fontScaleDefault={FONT_SCALE_DEFAULT}
-          onFontDecrease={handleFontDecrease}
-          onFontIncrease={handleFontIncrease}
-          onFontReset={handleFontReset}
-          theme={theme}
-          onToggleTheme={setTheme}
-        />
+            <Footer
+              fontScale={fontScale}
+              fontScaleMin={FONT_SCALE_MIN}
+              fontScaleMax={FONT_SCALE_MAX}
+              fontScaleDefault={FONT_SCALE_DEFAULT}
+              onFontDecrease={handleFontDecrease}
+              onFontIncrease={handleFontIncrease}
+              onFontReset={handleFontReset}
+              theme={theme}
+              onToggleTheme={setTheme}
+            />
 
-        {activeProjectDetails && (
-          <ProjectModal
-            project={activeProjectDetails}
-            cardImage={activeProjectCard?.image}
-            isClosing={isProjectClosing}
-            onClose={handleCloseProject}
-          />
-        )}
-      </div>
+            {activeProjectDetails && (
+              <ProjectModal
+                project={activeProjectDetails}
+                cardImage={activeProjectCard?.image}
+                isClosing={isProjectClosing}
+                onClose={handleCloseProject}
+              />
+            )}
+          </div>
+        </>
+      )}
     </>
   );
 }
