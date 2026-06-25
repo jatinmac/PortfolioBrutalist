@@ -1,0 +1,9 @@
+# ai.txt — AI usage policy for jatindavisdesign.com
+# This file declares AI usage restrictions for this website.
+
+User-Agent: *
+Disallow: Training
+Disallow: Scraping
+Disallow: Summarization
+Disallow: Retrieval
+Disallow: Reproduction
