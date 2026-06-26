@@ -1,5 +1,5 @@
 import { useRef, useMemo } from 'react';
-import { Button, Section, HeroDotShader } from '../ds';
+import { Button, Section, HeroCrossShader } from '../ds';
 import { HERO } from '../data/siteContent';
 
 export default function HomeSection({ onNavigate }) {
@@ -46,7 +46,7 @@ export default function HomeSection({ onNavigate }) {
       label="Home"
       tone="home"
       className="home-section"
-      background={<HeroDotShader headingRef={headingRef} />}
+      background={<HeroCrossShader headingRef={headingRef} />}
     >
       <div className="hero-stack">
         <div className="hero-sigil-row">

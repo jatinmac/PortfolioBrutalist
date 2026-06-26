@@ -11,6 +11,7 @@ export { default as Section } from './Section';
 export { default as DotShaderBackground } from './DotShaderBackground';
 export { default as GrainShaderBackground } from './GrainShaderBackground';
 export { default as HeroDotShader } from './HeroDotShader';
+export { default as HeroCrossShader } from './HeroCrossShader';
 export { default as Carousel } from './Carousel';
 export { default as VideoTicker } from './VideoTicker';
 export { default as FaviconAnimator } from './FaviconAnimator';
