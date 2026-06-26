@@ -14,16 +14,18 @@ Primary source areas:
 - `src/images/`: imported portfolio imagery. Prefer optimized `.webp` assets for portfolio/project imagery, and keep image filenames stable unless all imports are updated.
 - `src/images/DoubleAipitchdeck/`: Double AI modal carousel slides used by `ProjectModal`.
 - `src/data/jatindavisresume.pdf`: bundled resume download asset.
+- `public/robots.txt`, `public/llms.txt`, and `public/ai.txt`: crawler and AI usage policy files. Keep search indexing allowed while preserving explicit AI training/scraping restrictions.
+- `vercel.json`: production response headers, including AI usage and TDM reservation headers.
 
 The local design system lives in `src/ds/`:
 
 - **Navigation & Layout**: `Navbar`, `NavTab`, `Footer`, `Section`, `SkipLink`.
 - **Controls & Cards**: `Button`, `ControlButton`, `ProjectCard`, `ProjectModal`, `Carousel`.
-- **Visual Effects**: `CustomCursor`, `DotShaderBackground`, `HeroDotShader`, `VideoTicker`, `Icon`.
+- **Visual Effects & Protection**: `CustomCursor`, `DotShaderBackground`, `HeroDotShader`, `VideoTicker`, `Icon`, `AntiScrape`.
 - **Exports**: update `src/ds/index.js` when adding or removing design-system components.
 - **Styling**: design tokens live in `src/ds/tokens.css`; shared DS component styles live in `src/ds/components.css`; section/page layout styles live in `src/App.css`; base reset and focus styles live in `src/index.css`.
 
-The production build output is generated in `dist/`; do not edit it directly. There is currently no root `public/` asset workflow in use.
+The production build output is generated in `dist/`; do not edit it directly. Root `public/` files are used for crawler and AI access policy documents and should stay hand-authored.
 
 ## Build, Test, and Development Commands
 
@@ -49,6 +51,8 @@ When adding modal media, prefer reusable DS components such as `Carousel` instea
 
 Keep the initial bundle lean. Avoid heavy external libraries. Imported images are bundled by Vite, so use appropriately sized `.webp` assets where possible and keep `loading="lazy"` behavior for non-critical imagery. Be careful with cursor, shader, ticker, carousel, and modal changes because they run across the main experience.
 
+Production builds use terser minification through `vite.config.js` to drop console/debugger output and mangle top-level symbols. Keep `terser` in dev dependencies if that minifier setting is retained.
+
 ## Testing Guidelines
 
 There is no automated test suite. For visual or interaction changes, validate desktop and mobile in a browser.
@@ -63,12 +67,15 @@ Check:
 - Double AI modal carousel next/previous controls, dot navigation, keyboard arrow navigation, and lazy-loaded slide rendering.
 - Build project cards opening external links correctly.
 - Video ticker rendering in the Builds section.
+- Anti-scrape behavior does not block normal human browsing, keyboard navigation, theme controls, project modals, or mobile use.
 - Full viewport responsiveness at and below `768px`.
 - Keyboard focus states, skip link behavior, and linter compliance.
 
 ## Content, Assets & Accessibility
 
 Keep the skip link, ARIA labels, dialog attributes, keyboard focus states, and visible focus rings intact. Update `index.html` metadata when the site positioning, title, description, or keywords change.
+
+Keep `index.html` robots metadata, `public/robots.txt`, `public/llms.txt`, `public/ai.txt`, and `vercel.json` aligned when changing site crawling, AI usage, or search-indexing policy. Do not add hidden decoy or anti-scrape content that can surface to screen readers or normal users; keep it `aria-hidden`/`data-nosnippet` and visually absent.
 
 Project images are imported from `src/images/`; about images are under `src/images/about/`; build images are under `src/images/builds/`; Double AI carousel slides are under `src/images/DoubleAipitchdeck/`. Use descriptive alt text through existing component props and content data. Keep external links marked as external where the existing `Button` or `ProjectCard` APIs support it.
 

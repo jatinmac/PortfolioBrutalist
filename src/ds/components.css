@@ -697,7 +697,8 @@ html.has-custom-cursor .custom-cursor-trail.is-hidden {
   }
 }
 
-.hero-dot-shader-canvas {
+.hero-dot-shader-canvas,
+.hero-cross-shader-canvas {
   position: absolute;
   inset: 0;
   width: 100%;

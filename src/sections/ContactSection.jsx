@@ -1,11 +1,19 @@
-import { Section } from '../ds';
+import { useRef } from 'react';
+import { Section, HeroCrossShader } from '../ds';
 import { CONTACT, SECTIONS } from '../data/siteContent';
 
 export default function ContactSection({ onNavigate }) {
+  const headingRef = useRef(null);
+
   return (
-    <Section id="contacts" label="Contacts" tone="contacts">
+    <Section
+      id="contacts"
+      label="Contacts"
+      tone="contacts"
+      background={<HeroCrossShader headingRef={headingRef} />}
+    >
       <div className="section-heading">
-        <h2 className="ds-text--display section-title">{CONTACT.title}</h2>
+        <h2 ref={headingRef} className="ds-text--display section-title">{CONTACT.title}</h2>
       </div>
 
       <address className="contact-list">

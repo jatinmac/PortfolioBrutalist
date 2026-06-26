@@ -1,4 +1,5 @@
-import { Section } from '../ds';
+import { useRef } from 'react';
+import { Section, HeroCrossShader } from '../ds';
 import { ABOUT } from '../data/siteContent';
 
 import runningImg from '../images/about/I love running.avif';
@@ -26,10 +27,17 @@ const TILES = [
 ];
 
 export default function AboutSection() {
+  const headingRef = useRef(null);
+
   return (
-    <Section id="about" label="About" tone="about">
+    <Section
+      id="about"
+      label="About"
+      tone="about"
+      background={<HeroCrossShader headingRef={headingRef} />}
+    >
       <div className="section-heading">
-        <h2 className="ds-text--display section-title">{ABOUT.title}</h2>
+        <h2 ref={headingRef} className="ds-text--display section-title">{ABOUT.title}</h2>
         {Array.isArray(ABOUT.body) ? (
           <ul className="about-list">
             {ABOUT.body.map((item, index) => (
