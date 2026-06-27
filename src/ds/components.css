@@ -173,6 +173,14 @@
   --section-text: var(--section-about-text);
 }
 
+.ds-section--about .hero-cross-shader-canvas {
+  --section-text: var(--section-home-text);
+}
+
+.ds-section--contacts .hero-cross-shader-canvas {
+  --section-text: var(--primitive-terracotta-500);
+}
+
 .ds-section--work {
   --section-bg: var(--section-work-bg);
   --section-text: var(--section-work-text);
@@ -185,6 +193,10 @@
   --section-text: var(--section-builds-text);
   --project-card-bg: var(--project-card-work-bg);
   --project-card-text: var(--project-card-work-text);
+}
+
+.ds-section--builds .hero-dot-shader-canvas {
+  --section-text: var(--primitive-orange-800);
 }
 
 .ds-section--contacts {

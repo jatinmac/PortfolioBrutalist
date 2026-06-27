@@ -1,15 +1,24 @@
-import { ProjectCard, Section, VideoTicker } from '../ds';
+import { useRef } from 'react';
+import { ProjectCard, Section, VideoTicker, HeroDotShader } from '../ds';
 import { PROJECT_GROUPS } from '../data/siteContent';
 
 export default function ProjectsSection({ type, onProjectClick }) {
   const group = PROJECT_GROUPS[type];
+  const headingRef = useRef(null);
 
   if (!group) return null;
 
   return (
-    <Section id={group.id} label={group.title} tone={group.tone}>
+    <Section
+      id={group.id}
+      label={group.title}
+      tone={group.tone}
+      background={type === 'builds' ? <HeroDotShader headingRef={headingRef} /> : undefined}
+    >
       <div className="section-heading">
-        <h2 className="ds-text--display section-title">{group.title}</h2>
+        <h2 ref={type === 'builds' ? headingRef : undefined} className="ds-text--display section-title">
+          {group.title}
+        </h2>
       </div>
 
       <div className={`project-grid project-grid--${type}`}>
