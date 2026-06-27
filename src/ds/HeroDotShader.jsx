@@ -118,8 +118,8 @@ export default function HeroDotShader({ headingRef }) {
         const currentTheme = document.documentElement.classList.contains('light') ? 'light' : 'dark';
         if (currentTheme !== prevTheme) {
           prevTheme = currentTheme;
-          const rootStyle = getComputedStyle(document.documentElement);
-          const colorHex = rootStyle.getPropertyValue('--section-home-text') || '#f4f1de';
+          const canvasStyle = getComputedStyle(canvas);
+          const colorHex = canvasStyle.getPropertyValue('--section-text') || '#f4f1de';
           const rgb = parseHexColor(colorHex);
           cachedColorStr = `rgba(${Math.round(rgb[0] * 255)}, ${Math.round(rgb[1] * 255)}, ${Math.round(rgb[2] * 255)}`;
           opacityMult = currentTheme === 'light' ? 0.6 : 1.0;
@@ -377,8 +377,8 @@ export default function HeroDotShader({ headingRef }) {
       const currentTheme = document.documentElement.classList.contains('light') ? 'light' : 'dark';
       if (currentTheme !== prevTheme) {
         prevTheme = currentTheme;
-        const rootStyle = getComputedStyle(document.documentElement);
-        const colorHex = rootStyle.getPropertyValue('--section-home-text') || '#f4f1de';
+        const canvasStyle = getComputedStyle(canvas);
+        const colorHex = canvasStyle.getPropertyValue('--section-text') || '#f4f1de';
         cachedColor = parseHexColor(colorHex);
         opacityMult = currentTheme === 'light' ? 0.6 : 1.0;
       }
